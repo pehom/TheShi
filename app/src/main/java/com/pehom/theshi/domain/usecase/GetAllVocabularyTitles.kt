@@ -14,7 +14,7 @@ class GetAllVocabularyTitles(val data: MutableList<VocabularyTitle>) {
     fun execute() {
         val db = Firebase.firestore
 
-        db.collection("VocabularyTitles")
+        db.collection("Vocabularies")
             .get()
             .addOnSuccessListener { result ->
                 for (doc in result) {

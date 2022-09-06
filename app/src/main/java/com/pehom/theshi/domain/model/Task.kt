@@ -71,7 +71,7 @@ class Task() {
             val progress = values[1].toInt()
             val currentTestItem = values[2].toInt()
             val isDone = values[3].toBoolean()
-            val vocabulary = Vocabulary("", arrayOf(VocabularyItemScheme("","","","","",""))).fromString(values[4])
+            val vocabulary = Vocabulary("", mutableListOf(VocabularyItemScheme("","",""))).fromString(values[4])
             Task(title,vocabulary,progress,currentTestItem,isDone)
         } else null
     }

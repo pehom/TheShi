@@ -11,20 +11,17 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.pehom.theshi.domain.model.Task
 import com.pehom.theshi.presentation.viewmodel.MainViewModel
 import kotlinx.coroutines.launch
 import com.pehom.theshi.R
@@ -128,15 +125,16 @@ fun DrawerCreateNewTask(
                 .padding(horizontal = 20.dp),
                 enabled = selectedIndex.value!=-1,
                 onClick =  {
-                    val selectedVocabulary = getVocabularyByTitle(vocabularyTitles[selectedIndex.value].title)
                     if (!viewModel.isStudentProfileShown.value){
                         if (newTaskTitle.value == "") newTaskTitle.value = vocabularyTitles[selectedIndex.value].title
-                        viewModel.tasks.add( Task(newTaskTitle.value, selectedVocabulary))
+                        viewModel.useCases.getVocabularyByTitle.execute(newTaskTitle.value, viewModel.tasks)
                     }
                     else {
                         if (newTaskTitle.value == "") newTaskTitle.value = vocabularyTitles[selectedIndex.value].title
-                        viewModel.students[viewModel.studentNumber.value].
-                        tasks.add( Task(newTaskTitle.value, selectedVocabulary))
+                            viewModel.useCases.getVocabularyByTitle.execute(
+                                newTaskTitle.value,
+                                viewModel.students[viewModel.studentNumber.value].tasks
+                            )
                     }
 
                     scope.launch {

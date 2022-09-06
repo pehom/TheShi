@@ -9,28 +9,21 @@ fun getTasks(): MutableList<Task> {
     return mutableStateListOf(
         Task(
             "first task", Vocabulary(
-                "Animals", arrayOf(
-                    VocabularyItemScheme("animals1", "кот", "cat", "kat", "", ""),
-                    VocabularyItemScheme("animals2", "лев", "lion", "ˈlīən", "", ""),
-                    VocabularyItemScheme("animals3", "собака", "dog", "dôɡ", "", "")
+                "Animals", mutableListOf(
+                    VocabularyItemScheme( "кот", "cat",  ""),
+                    VocabularyItemScheme( "лев", "lion",  ""),
+                    VocabularyItemScheme( "собака", "dog",  "")
                 )
             )
         ), Task(
             "second task", Vocabulary(
-                "Jobs", arrayOf(
-                    VocabularyItemScheme("jobs1", "работать", "to work", "wərk", "", ""),
-                    VocabularyItemScheme("jobs2", "работник", "employee", "emˈploiē", "", ""),
-                    VocabularyItemScheme(
-                        "jobs3",
-                        "работодатель",
-                        "employer",
-                        "əmˈploiər",
-                        "",
-                        ""
-                    ),
-                    VocabularyItemScheme("jobs4", "зарплата", "salary", "ˈsal(ə)rē", "", ""),
-                    VocabularyItemScheme("jobs5", "контракт", "contract", "", "", ""),
-                    VocabularyItemScheme("jobs6", "офис", "office", "ˈôfis", "", "")
+                "Jobs", mutableListOf(
+                    VocabularyItemScheme( "работать", "to work",  ""),
+                    VocabularyItemScheme( "работник", "employee",  ""),
+                    VocabularyItemScheme( "работодатель", "employer",  ""),
+                    VocabularyItemScheme( "зарплата", "salary",  ""),
+                    VocabularyItemScheme( "контракт", "contract",  ""),
+                    VocabularyItemScheme( "офис", "office",  "")
                 )
             )
         )

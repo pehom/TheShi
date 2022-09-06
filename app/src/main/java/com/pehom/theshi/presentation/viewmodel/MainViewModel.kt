@@ -1,23 +1,17 @@
 package com.pehom.theshi.presentation.viewmodel
 
 import android.util.Log
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.pehom.theshi.domain.model.*
 import com.pehom.theshi.domain.usecase.CreateAccountUseCase
 import com.pehom.theshi.domain.usecase.GetAllVocabularyTitles
+import com.pehom.theshi.domain.usecase.AddVocabularyByTitle
 import com.pehom.theshi.domain.usecase.UseCases
 import com.pehom.theshi.testdata.getStudents
 import com.pehom.theshi.testdata.getTasks
 import com.pehom.theshi.testdata.setTasksForStudents
-import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.InternalCoroutinesApi
-import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 /*@HiltViewModel
 @InternalCoroutinesApi*/
@@ -43,7 +37,7 @@ class MainViewModel /*@Inject constructor(
     val loading = mutableStateOf(false)
     val allVocabularyTitles = mutableStateListOf<VocabularyTitle>()
 
-    val useCases = UseCases(GetAllVocabularyTitles(allVocabularyTitles))
+    val useCases = UseCases(GetAllVocabularyTitles(allVocabularyTitles), AddVocabularyByTitle())
 
     lateinit var createAccountUseCase: CreateAccountUseCase
 
