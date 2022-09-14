@@ -3,9 +3,9 @@ package com.pehom.theshi.domain.model
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 
-class Task() {
+class Task(val id:String, val title: String) {
     private val DIVIDER = "*/*"
-    lateinit var title: String
+   // lateinit var title: String
     lateinit var vocabulary: Vocabulary
     lateinit var currentTaskWord: MutableState<VocabularyItemScheme>
     lateinit var currentTestWord: MutableState<VocabularyItemScheme>
@@ -24,13 +24,18 @@ class Task() {
     var perfectTestsNumber = 0
     var currentWordDisplayTextDone = "the end"
 
-    constructor(title: String, vocabulary: Vocabulary) : this() {
-        this.title = title
+    constructor(id:String, title: String, vocabulary: Vocabulary) : this(id,title) {
+      //  this.title = title
         this.vocabulary = vocabulary
         this.currentTaskWord = mutableStateOf(this.vocabulary.items[currentTaskItem.value])
         this.currentTestWord = mutableStateOf(this.vocabulary.items[currentTestItem.value])
-        this.taskWordsRemain = mutableStateOf(this.vocabulary.items.size-this.currentTaskItem.value)
-        this.testWordsRemain = mutableStateOf(this.vocabulary.items.size-this.currentTestItem.value)
+        if (vocabulary.items.size == 1 && vocabulary.items[0].orig == "") {
+            this.taskWordsRemain = mutableStateOf(0)
+            this.testWordsRemain = mutableStateOf(0)
+        } else{
+            this.taskWordsRemain = mutableStateOf(this.vocabulary.items.size-this.currentTaskItem.value)
+            this.testWordsRemain = mutableStateOf(this.vocabulary.items.size-this.currentTestItem.value)
+        }
         this.currentTaskWordDisplay.value = currentTaskWord.value.orig
         this.currentTestWordDisplay.value = currentTestWord.value.orig
 
@@ -40,26 +45,31 @@ class Task() {
             this.currentTaskWordDisplay.value = currentWordDisplayTextDone*/
     }
 
-    constructor(_title: String, _vocabulary: Vocabulary, _currentVocabularyItem: Int, _currentTestItem: Int, _isDone: Boolean) : this() {
-        this.title = _title
+    constructor(_id:String, _title: String, _vocabulary: Vocabulary, _currentVocabularyItem: Int, _currentTestItem: Int, _isDone: Boolean) : this(_id,_title) {
+      //  this.title = _title
         this.vocabulary = _vocabulary
         this.currentTaskItem.value = _currentVocabularyItem
         this.currentTestItem.value = _currentTestItem
         this.isTaskDone = _isDone
         this.currentTaskWord = mutableStateOf(this.vocabulary.items[currentTaskItem.value])
         this.currentTestWord = mutableStateOf(this.vocabulary.items[currentTestItem.value])
-        this.taskWordsRemain = mutableStateOf(this.vocabulary.items.size-this.currentTaskItem.value)
-        this.testWordsRemain = mutableStateOf(this.vocabulary.items.size-this.currentTestItem.value)
+        if (vocabulary.items.size == 1 && vocabulary.items[0].orig == "") {
+            this.taskWordsRemain = mutableStateOf(0)
+            this.testWordsRemain = mutableStateOf(0)
+        } else{
+            this.taskWordsRemain = mutableStateOf(this.vocabulary.items.size-this.currentTaskItem.value)
+            this.testWordsRemain = mutableStateOf(this.vocabulary.items.size-this.currentTestItem.value)
+        }
         this.currentTaskWordDisplay.value = currentTaskWord.value.orig
         this.currentTestWordDisplay.value = currentTestWord.value.orig
-        /*  if (!this.isDone){
+          if (!this.isTaskDone){
               this.currentTaskWordDisplay.value = currentTaskWord.value.orig
           } else
-              this.currentTaskWordDisplay.value = currentWordDisplayTextDone*/
+              this.currentTaskWordDisplay.value = currentWordDisplayTextDone
     }
 
     override fun toString(): String {
-        var s = title
+        var s =id+DIVIDER+title
         s+DIVIDER+currentTaskItem.value+DIVIDER+currentTestItem.value+DIVIDER+isTaskDone+DIVIDER+vocabulary.toString()
         return s
     }
@@ -67,12 +77,13 @@ class Task() {
     fun fromString(source: String): Task? {
         val values = source.trim().split(DIVIDER)
         return if (values.size == 6) {
-            val title = values[0]
-            val progress = values[1].toInt()
-            val currentTestItem = values[2].toInt()
-            val isDone = values[3].toBoolean()
-            val vocabulary = Vocabulary("", mutableListOf(VocabularyItemScheme("","",""))).fromString(values[4])
-            Task(title,vocabulary,progress,currentTestItem,isDone)
+            val id = values[0]
+            val title = values[1]
+            val progress = values[2].toInt()
+            val currentTestItem = values[3].toInt()
+            val isDone = values[4].toBoolean()
+            val vocabulary = Vocabulary("", mutableListOf(VocabularyItemScheme("","",""))).fromString(values[5])
+            Task(id,title,vocabulary,progress,currentTestItem,isDone)
         } else null
     }
 
@@ -94,11 +105,17 @@ class Task() {
             this.currentTestWordDisplay.value = currentWordDisplayTextDone
     }
 
-    fun setReadyForTask() {
-        currentTaskItem.value = 0
-        taskWordsRemain.value = vocabulary.items.size
-        currentTaskWord.value = vocabulary.items[0]
+    fun setReadyForTask(_currentTaskItem: Int) {
+        currentTaskItem.value = _currentTaskItem
+        taskWordsRemain.value = vocabulary.items.size - _currentTaskItem
+        currentTaskWord.value = vocabulary.items[_currentTaskItem]
         currentTaskWordDisplay.value = currentTaskWord.value.orig
+    }
+    fun setReadyForTest(_currentTestItem: Int) {
+        currentTestItem.value = _currentTestItem
+        testWordsRemain.value = vocabulary.items.size - _currentTestItem
+        currentTestWord.value = vocabulary.items[_currentTestItem]
+        currentTestWordDisplay.value = currentTestWord.value.orig
     }
 
 }

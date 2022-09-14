@@ -1,18 +1,18 @@
 package com.pehom.theshi.presentation.screens.authscreen
 
-import android.util.Log
-import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
@@ -20,28 +20,21 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
-import kotlinx.coroutines.launch
 import com.pehom.theshi.R
 import com.pehom.theshi.domain.model.LoginModel
 import com.pehom.theshi.presentation.viewmodel.MainViewModel
-
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun RegisterScreen(viewModel: MainViewModel, auth: FirebaseAuth) {
-    val email = remember { mutableStateOf("") }
-    val password = remember { mutableStateOf("") }
-    val phoneNumber = remember { mutableStateOf("") }
+fun SignInScreen(viewModel: MainViewModel, auth: FirebaseAuth){
+    val email = remember {mutableStateOf("")}
     val scope = rememberCoroutineScope()
+    val password = remember { mutableStateOf("") }
     val kc = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
-    val context = LocalContext.current
-    val isPhoneNumberValid = remember { mutableStateOf(false)}
-    val isErrorState = remember { mutableStateOf(false)}
     Column(
-        Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -68,35 +61,6 @@ fun RegisterScreen(viewModel: MainViewModel, auth: FirebaseAuth) {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 40.dp),
-            value = phoneNumber.value,
-            onValueChange = {phoneNumber.value = it},
-            label = { Text(text = stringResource(id = R.string.enter_your_phone_number)) },
-            placeholder = { Text(text = stringResource(id = R.string.phone_number_placeholder)) },
-            //  visualTransformation = PhoneNumberVisualTransformation(),
-            singleLine = true,
-            isError = isErrorState.value,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone, imeAction = ImeAction.Done),
-            keyboardActions = KeyboardActions(
-                onDone = {
-                    scope.launch {
-                        findPhoneNumber(phoneNumber.value, isPhoneNumberValid) {
-                            if (isPhoneNumberValid.value) {
-                                isErrorState.value = false
-                                kc?.hide()
-                                focusManager.clearFocus()
-                            } else {
-                                isErrorState.value = true
-                                Toast.makeText(context, context.getString(R.string.invalid_phone), Toast.LENGTH_SHORT).show()
-                            }
-                        }
-                    }
-                })
-        )
-        Spacer(modifier = Modifier.height(20.dp))
-        OutlinedTextField(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 40.dp),
             value = password.value,
             onValueChange = {password.value = it},
             label = { Text(text = stringResource(id = R.string.enter_your_password)) },
@@ -112,25 +76,15 @@ fun RegisterScreen(viewModel: MainViewModel, auth: FirebaseAuth) {
         )
         Spacer(modifier = Modifier.height(20.dp))
         Button(
-            enabled = email.value.isNotEmpty() && isPhoneNumberValid.value && password.value.isNotEmpty(),
+            enabled = email.value.isNotEmpty() && password.value.isNotEmpty(),
             onClick = {
-                viewModel.useCases.createFirestoreAccountUseCase.execute(viewModel, auth, LoginModel( email.value, password.value, phoneNumber.value))
+                viewModel.useCases.signInUseCase.execute(
+                    viewModel,
+                    auth,
+                    LoginModel(email.value, password.value)
+                )
             }) {
-            Text(text = stringResource(id = R.string.create_account))
+            Text(text = stringResource(id = R.string.sign_in))
         }
     }
-}
-
-fun findPhoneNumber(phoneNumber: String, result: MutableState<Boolean>
-                    , onResponse: () -> Unit
-) {
-    Firebase.firestore.collection("Users").get()
-        .addOnSuccessListener { docs ->
-            for (doc in docs){
-                result.value = doc["phoneNumber"].toString() != phoneNumber
-            }
-            Log.d("docs", "result = ${result.value}")
-            onResponse()
-        }
-
 }

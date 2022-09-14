@@ -2,6 +2,7 @@ package com.pehom.theshi.presentation.screens.testscreen
 
 import android.util.Log
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.Button
 import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -19,11 +20,9 @@ import com.pehom.theshi.domain.model.Vocabulary
 
 @Composable
 fun TestScreen(viewModel: MainViewModel) {
-    Log.d("xxx", "vm.tasks[vm.currentTaskNumber.value].currentTestItem = ${viewModel.tasks[viewModel.currentTaskNumber.value].currentTestItem.value}")
-    val wordsRemain = remember {viewModel.tasks[viewModel.currentTaskNumber.value].testWordsRemain }
-    Log.d("xxx", "test screen: wordsRemain = ${wordsRemain.value}")
-
-    val currentTask = remember { mutableStateOf(viewModel.tasks[viewModel.currentTaskNumber.value]) }
+    val currentTask = remember { mutableStateOf(viewModel.currentTask.value) }
+    val wordsRemain = remember {currentTask.value.testWordsRemain}
+   // val currentWordDisplay = remember { currentTask.value.currentTestWordDisplay }
     val currentWordDisplay = remember { currentTask.value.currentTestWordDisplay }
     val isWrongAnswersShown = remember { mutableStateOf(false) }
     val isStarted = remember { currentTask.value.isTestGoing }
@@ -42,10 +41,32 @@ fun TestScreen(viewModel: MainViewModel) {
                     contentAlignment = Alignment.Center) {
                     Text(text = currentTask.value.title)
                 }
-                Box(modifier = Modifier.padding(5.dp),
-                    contentAlignment = Alignment.Center){
-                    Text(text = stringResource(id = R.string.words_remain) + "   ${wordsRemain.value}")
+                Row(modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically) {
+                    Box(modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
+                        .padding(start = 10.dp, top = 5.dp, bottom = 5.dp)
+                        ,contentAlignment = Alignment.CenterStart){
+                        Button(onClick = {
+                            viewModel.currentTask.value.currentTestItem.value = 0
+                            viewModel.currentTask.value.isTestGoing.value = false
+                            viewModel.currentTask.value.wrongTestAnswers.clear()
+                            viewModel.currentTask.value.correctTestAnswers.clear()
+                            viewModel.currentTask.value.testRefresh()
+                        }) {
+                            Text(text = stringResource(id = R.string.retry), fontSize = 11.sp)                        }
+                    }
+                    Box(modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
+                        .padding(vertical = 5.dp),
+                        contentAlignment = Alignment.Center){
+                        Text(text = stringResource(id = R.string.words_remain) + "   ${wordsRemain.value}")
+                    }
+                    Box(modifier = Modifier.fillMaxWidth().weight(1f))
                 }
+
             }
         }
         Card(
@@ -56,15 +77,12 @@ fun TestScreen(viewModel: MainViewModel) {
             elevation = 5.dp) {
             Box(modifier = Modifier.padding(horizontal = 10.dp),
                 contentAlignment = Alignment.Center) {
-                Text(text = currentWordDisplay.value,
+                Text(text = if (isStarted.value) currentWordDisplay.value
+                            else stringResource(id = R.string.test_must_go_on),
                     fontSize = 22.sp)
             }
         }
         if (isStarted.value) {
-            Log.d("ttt", "currentTask.wordsRemain ${currentTask.value.testWordsRemain.value}")
-            Log.d("ttt", "currentTask.currentTestItem ${currentTask.value.currentTestItem.value}")
-            Log.d("ttt", "currentTask.currentWordDisplay ${currentTask.value.currentTestWordDisplay.value}")
-
             if (wordsRemain.value > 0) {
                 CardTest(currentTask, isStarted)
             } else if (!isWrongAnswersShown.value){

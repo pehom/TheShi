@@ -79,28 +79,27 @@ fun CardTestResult(
                 Button(
                     onClick = {
                         // viewModel.tasks[taskNumber].progress = result
-                        viewModel.tasks[taskNumber].currentTestItem.value = 0
-                        viewModel.tasks[taskNumber].isTestGoing.value = false
-                        viewModel.tasks[taskNumber].wrongTestAnswers.clear()
-                        viewModel.tasks[taskNumber].correctTestAnswers.clear()
-                        viewModel.tasks[taskNumber].testRefresh()
+                        viewModel.currentTask.value.currentTestItem.value = 0
+                        viewModel.currentTask.value.isTestGoing.value = false
+                        viewModel.currentTask.value.wrongTestAnswers.clear()
+                        viewModel.currentTask.value.correctTestAnswers.clear()
+                        viewModel.currentTask.value.testRefresh()
                         viewModel.screenState.value = viewModel.MODE_TEST_SCREEN
                     }) {
                     Text(text = stringResource(id = R.string.retry))
                 }
                 Button(
                     onClick = {
-                        viewModel.tasks[taskNumber].currentTestItem.value = 0
-                        viewModel.tasks[taskNumber].isTestGoing.value = false
-                        viewModel.tasks[taskNumber].wrongTestAnswers.clear()
-                        viewModel.tasks[taskNumber].correctTestAnswers.clear()
-                        viewModel.tasks[taskNumber].testRefresh()
-                        viewModel.tasks[taskNumber].progress = result
-                        viewModel.tasks.forEachIndexed(){index, item ->
+                        viewModel.currentTask.value.currentTestItem.value = 0
+                        viewModel.currentTask.value.isTestGoing.value = false
+                        viewModel.currentTask.value.wrongTestAnswers.clear()
+                        viewModel.currentTask.value.correctTestAnswers.clear()
+                        viewModel.currentTask.value.testRefresh()
+                        viewModel.currentTask.value.progress = result
+                        viewModel.tasksInfo[viewModel.currentTaskNumber.value].progress = result
+                       /* viewModel.tasksInfo.forEachIndexed(){ index, item ->
                             Log.d("zzz", "task[$index].progress = ${item.progress}")
-                        }
-
-
+                        }*/
                         viewModel.screenState.value = viewModel.MODE_STUDENT_SCREEN
                     }) {
                     Text(text = stringResource(id = R.string.next))

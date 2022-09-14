@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.pehom.theshi.domain.model.VocabularyTitle
-import com.pehom.theshi.presentation.screens.mainscreenviews.TaskListItem
+import com.pehom.theshi.presentation.screens.mainscreenviews.VocabularyListItem
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -37,7 +37,7 @@ fun TitlesComponentList(
              vocabularyTitles += viewModel.allVocabularyTitles
          }*/
         itemsIndexed(titles) { index, item ->
-            TaskListItem(index, item.title, selectedIndex)
+            VocabularyListItem(index, item.title, selectedIndex)
         }
     }
 }

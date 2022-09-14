@@ -19,6 +19,7 @@ import com.pehom.theshi.presentation.viewmodel.MainViewModel
 import com.pehom.theshi.testdata.getPendingRequests
 import kotlinx.coroutines.launch
 import com.pehom.theshi.R
+import com.pehom.theshi.utils.Constants
 
 @Composable
 fun MentorScreenView(
@@ -72,6 +73,7 @@ fun MentorScreenView(
                 .padding(end = 10.dp, bottom = 10.dp), contentAlignment = Alignment.BottomEnd) {
                 FloatingActionButton( onClick = {
                     scope.launch {
+                        viewModel.drawerType.value = Constants.DRAWER_ADD_STUDENT
                         scaffoldState.drawerState.open()
                     }
                 }) {

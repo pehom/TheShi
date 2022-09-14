@@ -8,26 +8,25 @@ import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.google.firebase.auth.FirebaseAuth
 import com.pehom.theshi.domain.model.Student
-import com.pehom.theshi.presentation.screens.mainscreenviews.DrawerCreateNewTask
+import com.pehom.theshi.presentation.screens.mainscreenviews.DrawerCustom
 import com.pehom.theshi.presentation.screens.mainscreenviews.Header
 import com.pehom.theshi.presentation.screens.mainscreenviews.SwitchMode
 import com.pehom.theshi.presentation.viewmodel.MainViewModel
-import com.pehom.theshi.testdata.getTasks
+import com.pehom.theshi.testdata.getTasksForStudents
 
 @Composable
-fun StudentScreen(viewModel: MainViewModel) {
+fun StudentScreen(viewModel: MainViewModel, auth: FirebaseAuth) {
     val scaffoldState = rememberScaffoldState()
-    val userIsStudentMock = mutableListOf(Student("+79201112222", "Senya"))
-    userIsStudentMock[0].tasks = getTasks()
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         scaffoldState = scaffoldState,
         drawerContent = {
-            DrawerCreateNewTask(
-                viewModel,
-                scaffoldState,
-            )
+            DrawerCustom(
+                viewModel = viewModel,
+                scaffoldState = scaffoldState,
+                auth = auth)
         },
         drawerShape = MaterialTheme.shapes.large
     ) {
@@ -35,7 +34,7 @@ fun StudentScreen(viewModel: MainViewModel) {
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.fillMaxSize()
         ) {
-            Header()
+            Header(viewModel.drawerType, scaffoldState)
             SwitchMode(viewModel)
             StudentScreenView(viewModel, scaffoldState)
         }

@@ -28,7 +28,8 @@ import com.pehom.theshi.R
 @Composable
 fun TaskScreen(viewModel: MainViewModel) {
 
-    val currentTask = remember { mutableStateOf(viewModel.tasks[viewModel.currentTaskNumber.value]) }
+   val currentTask = remember { mutableStateOf(viewModel.currentTask.value) }
+  //  val currentTask = vi
     val wordsRemain = remember {currentTask.value.taskWordsRemain}
     val currentWord = remember {currentTask.value.currentTaskWord}
     val currentWordDisplay = remember {currentTask.value.currentTaskWordDisplay}
@@ -58,7 +59,7 @@ fun TaskScreen(viewModel: MainViewModel) {
                     ,horizontalArrangement = Arrangement.SpaceBetween
                     , verticalAlignment = Alignment.CenterVertically){
                     Button( onClick = {
-                        viewModel.tasks[viewModel.currentTaskNumber.value].setReadyForTask()
+                        viewModel.currentTask.value.setReadyForTask(0)
                     }) {
                         Text(stringResource(id = R.string.retry))
                     }

@@ -44,7 +44,7 @@ fun StudentProfileView(
                 contentAlignment = Alignment.CenterStart
             ) {
                 Text(
-                    stringResource(id = R.string.wordbook) + "  ${students[studentNumber.value].wordBook.size}  "
+                    stringResource(id = R.string.wordbook) + "  ${students[studentNumber.value].learnedWords}  "
                             + stringResource(id = R.string.words),
                     fontSize = 20.sp,
                     modifier = Modifier.padding(10.dp)

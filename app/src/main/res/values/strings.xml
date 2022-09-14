@@ -45,4 +45,9 @@
     <string name="email_placeholder">example@gexample.com</string>
     <string name="enter_your_password">Enter your password</string>
     <string name="create_account">Create account</string>
+    <string name="log_out">Log out</string>
+    <string name="your_vocabulary">Your vocabulary</string>
+    <string name="sign_out">Sign out</string>
+    <string name="test_must_go_on">Test must go on</string>
+    <string name="invalid_phone">Invalid phone number</string>
 </resources>

@@ -32,19 +32,20 @@ import com.pehom.theshi.R
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun DrawerMentor(
+fun DrawerAddStudent(
     viewModel: MainViewModel,
     scaffoldState: ScaffoldState
 ) {
     val scope = rememberCoroutineScope()
     val kc = LocalSoftwareKeyboardController.current
-    val newStudentId = remember { mutableStateOf("") }
+    val newStudentPhoneNumber = remember { mutableStateOf("") }
     val newStudentName = remember { mutableStateOf("") }
     val focusManager = LocalFocusManager.current
     val context = LocalContext.current
+    val searchingTextFieldBorderState = remember { mutableStateOf(0) }
+    val searchingTextFieldIsError = remember { mutableStateOf(false) }
     Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.SpaceBetween) {
-        val searchingTextFieldBorderState = remember { mutableStateOf(0) }
-        val searchingTextFieldIsError = remember { mutableStateOf(false) }
+
         Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.SpaceAround) {
             Box(modifier = Modifier
                 .fillMaxWidth()
@@ -55,8 +56,8 @@ fun DrawerMentor(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(10.dp),
-                value = newStudentId.value,
-                onValueChange = {newStudentId.value = it},
+                value = newStudentPhoneNumber.value,
+                onValueChange = {newStudentPhoneNumber.value = it},
                 singleLine = true,
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     /* focusedBorderColor = when (searchingTextFieldBorderState.value) {
@@ -95,7 +96,7 @@ fun DrawerMentor(
                 keyboardActions = KeyboardActions(
                     onSearch = {
                         scope.launch {
-                            if (findNewStudent(newStudentId.value) != "") {
+                            if (findNewStudent(newStudentPhoneNumber.value) != "") {
                                 //  searchingTextFieldBorderState.value = 2
                                 searchingTextFieldIsError.value = false
                                 searchingTextFieldBorderState.value = 1
@@ -139,7 +140,7 @@ fun DrawerMentor(
                 .padding(horizontal = 20.dp),
                 onClick = {
                     scope.launch {
-                        newStudentId.value = ""
+                        newStudentPhoneNumber.value = ""
                         newStudentName.value = ""
                         searchingTextFieldBorderState.value = 0
                         scaffoldState.drawerState.close()
@@ -151,17 +152,18 @@ fun DrawerMentor(
             Button(modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 20.dp),
+                enabled = !searchingTextFieldIsError.value && newStudentName.value.isNotEmpty(),
                 onClick =  {
                     scope.launch {
                         if (searchingTextFieldIsError.value) {
                             Toast.makeText(context, toastText , Toast.LENGTH_SHORT).show()
                         } else {
-                            val newStudent = Student(newStudentId.value, newStudentName.value)
+                            val newStudent = Student(newStudentPhoneNumber.value, newStudentName.value)
                             // TODO sendRequestToAdd(newStudent.id)
                             Log.d("newStudent", "newStudent.name = ${newStudent.name}")
                             viewModel.students.add(newStudent)
                             scaffoldState.drawerState.close()
-                            newStudentId.value = ""
+                            newStudentPhoneNumber.value = ""
                             newStudentName.value = ""
                             searchingTextFieldBorderState.value = 0
                         }

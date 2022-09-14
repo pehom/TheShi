@@ -25,8 +25,10 @@ import androidx.compose.ui.unit.sp
 import com.pehom.theshi.presentation.viewmodel.MainViewModel
 import kotlinx.coroutines.launch
 import com.pehom.theshi.R
+import com.pehom.theshi.domain.model.TaskInfo
 import com.pehom.theshi.presentation.screens.mainscreenviews.DrawerCreateNewTask.TitlesComponentList
 import com.pehom.theshi.presentation.screens.mainscreenviews.DrawerCreateNewTask.TitlesLoading
+import com.pehom.theshi.utils.TaskIdFactory
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -127,16 +129,15 @@ fun DrawerCreateNewTask(
                 onClick =  {
                     if (!viewModel.isStudentProfileShown.value){
                         if (newTaskTitle.value == "") newTaskTitle.value = vocabularyTitles[selectedIndex.value].title
-                        viewModel.useCases.getVocabularyByTitle.execute(newTaskTitle.value, viewModel.tasks)
+                        viewModel.tasksInfo.add(
+                            TaskInfo(TaskIdFactory.createId(),newTaskTitle.value, vocabularyTitles[selectedIndex.value]))
+                        viewModel.useCases.updateUserTasksFsUseCase.execute(viewModel){}
                     }
                     else {
                         if (newTaskTitle.value == "") newTaskTitle.value = vocabularyTitles[selectedIndex.value].title
-                            viewModel.useCases.getVocabularyByTitle.execute(
-                                newTaskTitle.value,
-                                viewModel.students[viewModel.studentNumber.value].tasks
-                            )
+                           viewModel.students[viewModel.studentNumber.value].tasks.add(
+                               TaskInfo(TaskIdFactory.createId(), newTaskTitle.value, vocabularyTitles[selectedIndex.value] ))
                     }
-
                     scope.launch {
                         scaffoldState.drawerState.close()
                         selectedIndex.value = -1

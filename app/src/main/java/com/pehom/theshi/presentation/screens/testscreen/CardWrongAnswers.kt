@@ -52,12 +52,13 @@ fun CardWrongAnswers(
                 }
                 Button(onClick = {
                     val result = ((currentTask.value.correctTestAnswers.size.toFloat()/currentTask.value.vocabulary.items.size.toFloat())*100).toInt()
-                    viewModel.tasks[taskNumber].currentTestItem.value = 0
-                    viewModel.tasks[taskNumber].isTestGoing.value = false
-                    viewModel.tasks[taskNumber].wrongTestAnswers.clear()
-                    viewModel.tasks[taskNumber].correctTestAnswers.clear()
-                    viewModel.tasks[taskNumber].testRefresh()
-                    viewModel.tasks[taskNumber].progress = result
+                    viewModel.currentTask.value.currentTestItem.value = 0
+                    viewModel.currentTask.value.isTestGoing.value = false
+                    viewModel.currentTask.value.wrongTestAnswers.clear()
+                    viewModel.currentTask.value.correctTestAnswers.clear()
+                    viewModel.currentTask.value.testRefresh()
+                    viewModel.currentTask.value.progress = result
+                    viewModel.tasksInfo[viewModel.currentTaskNumber.value].progress = result
                     viewModel.screenState.value = viewModel.MODE_STUDENT_SCREEN
                 }) {
                     Text(text = stringResource(id = R.string.next))
