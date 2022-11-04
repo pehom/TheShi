@@ -3,28 +3,28 @@ package com.pehom.theshi.domain.model
 import androidx.compose.runtime.mutableStateOf
 
 class Funds {
-    private val _amount = mutableStateOf(0)
+    val amount = mutableStateOf(0)
 
-    fun setAmount(amount: Int) {
-        _amount.value = amount
+    fun setAmount(_amount: Int) {
+        amount.value = _amount
     }
 
-    fun spend(amount: Int): Boolean {
-        if (_amount.value >= amount) {
-            _amount.value -= amount
+    fun spend(_amount: Int): Boolean {
+        if (amount.value >= _amount) {
+            amount.value -= _amount
             return true
         } else return false
     }
 
-    fun deposit(amount: Int) {
-        _amount.value += amount
+    fun deposit(_amount: Int) {
+        amount.value += _amount
     }
 
-    fun amount(): Int {
-        return _amount.value
-    }
+   /* fun amount(): Int {
+        return amount.value
+    }*/
 
     override fun toString(): String {
-        return "" + _amount.value
+        return "" + amount.value
     }
 }

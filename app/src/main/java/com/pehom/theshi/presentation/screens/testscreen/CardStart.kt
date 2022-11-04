@@ -19,7 +19,8 @@ import com.pehom.theshi.domain.model.Task
 @Composable
 fun CardStart(
     currentTask: MutableState<Task>,
-    isStarted: MutableState<Boolean>
+   // isStarted: MutableState<Boolean>,
+    isTestPaused: MutableState<Boolean>
 ) {
 
     Card(
@@ -29,7 +30,8 @@ fun CardStart(
         elevation = 5.dp) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             Button(onClick = {
-                isStarted.value = true
+              //  isStarted.value = true
+                isTestPaused.value = false
                 currentTask.value.isTestGoing.value = true
             }) {
                 Text(text = stringResource(id = R.string.start))

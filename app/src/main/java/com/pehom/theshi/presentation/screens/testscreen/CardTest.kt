@@ -18,67 +18,75 @@ import androidx.compose.ui.unit.sp
 import com.pehom.theshi.domain.model.Task
 import kotlinx.coroutines.delay
 import com.pehom.theshi.R
+import com.pehom.theshi.data.localdata.approomdatabase.TaskRoomItem
 
 @Composable
 fun CardTest(
     task: MutableState<Task>,
-    isStarted: MutableState<Boolean>
+    isTestPaused: MutableState<Boolean>,
+    taskRoomItem: MutableState<TaskRoomItem>
 ) {
     val currentTask = remember{ task }
     val vocabulary = currentTask.value.vocabulary
     val wordsRemain = remember {currentTask.value.testWordsRemain}
     val currentWord = remember {currentTask.value.currentTestWord}
     val currentTestItem = remember {currentTask.value.currentTestItem}
-    val variants = remember { setVariants(currentWord.value.translation, vocabulary) }
+    val variants = remember { setVariants(currentWord.value.trans, vocabulary) }
     val timerValue = remember { mutableStateOf(7) }
     var localVariants: MutableList<String>
-    val playButtonState = remember { mutableStateOf(false) }
     Card(
         Modifier
             .fillMaxWidth()
-            .padding(start = 15.dp, top = 15.dp, end = 15.dp, bottom = 15.dp), elevation = 5.dp) {
+            .padding(start = 15.dp, top = 15.dp, end = 15.dp, bottom = 10.dp), elevation = 5.dp) {
         val letters = listOf("a)", "b)", "c)", "d)", "e)")
         Column(
             Modifier
-                .fillMaxSize(),
-            verticalArrangement = Arrangement.SpaceAround) {
-
-            Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center){
-                Button( onClick = {
-                    task.value.isTestGoing.value = !task.value.isTestGoing.value
+                .fillMaxSize().padding(top = 10.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp)) {
+            Box(modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight().weight(1f),
+                contentAlignment = Alignment.Center){
+                Button(
+                    modifier = Modifier.width(70.dp),
+                    onClick = {
+                        isTestPaused.value = !isTestPaused.value
                 }) {
-                    if (!playButtonState.value)
+                    if (!isTestPaused.value)
                         Icon(painterResource(R.drawable.ic_baseline_pause_24), contentDescription = "pause test")
                     else
                         Icon(imageVector = Icons.Filled.PlayArrow, contentDescription = "start test")
                 }
             }
-            Box(modifier = Modifier.fillMaxWidth(),
+            Box(modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight().weight(1f),
                 contentAlignment = Alignment.Center) {
                 Card(
                     Modifier
-                        .width(100.dp)
-                        .padding(start = 15.dp, top = 15.dp, end = 15.dp), elevation = 5.dp) {
+                        .width(70.dp)
+                    ,elevation = 5.dp) {
                     Box(modifier = Modifier.padding( 5.dp),
                         contentAlignment = Alignment.Center) {
-                        if (isStarted.value) {
-                            LaunchedEffect(key1 = timerValue.value , key2 = isStarted.value ) {
-                                if (timerValue.value > 0 && isStarted.value) {
+                        if (!isTestPaused.value) {
+                            LaunchedEffect(key1 = timerValue.value , key2 = !isTestPaused.value ) {
+                                if (timerValue.value > 0 && !isTestPaused.value) {
                                     delay(1000)
                                     timerValue.value--
                                 } else{
                                     currentTask.value.wrongTestAnswers[currentTestItem.value] = "no answer time out"
+                                    taskRoomItem.value.wrongTestAnswers[currentTestItem.value] = "no answer time out"
                                     if (wordsRemain.value > 0) {
                                         currentTask.value.currentTestItem.value++
+                                        taskRoomItem.value.currentTestItem++
                                         currentTask.value.testRefresh()
-                                        localVariants = setVariants(currentWord.value.translation, vocabulary)
+                                        localVariants = setVariants(currentWord.value.trans, vocabulary)
                                         if (localVariants.size == variants.size) {
                                             for (i in localVariants.indices) variants[i] =
                                                 localVariants[i]
                                         }
                                         timerValue.value = 7
                                     }
-
                                 }
                             }
                         }
@@ -86,44 +94,50 @@ fun CardTest(
                     }
                 }
             }
-            for (i in variants.indices) {
-                Row(
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 10.dp),
-                    verticalAlignment = Alignment.CenterVertically){
-                    Box(
-                        Modifier
-                            .fillMaxWidth()
-                            .clickable {
-                                if (wordsRemain.value > 0) {
-                                    if (variants[i] == currentWord.value.translation) {
-                                        task.value.correctTestAnswers.add(currentWord.value)
-                                        timerValue.value = 7
-                                    } else {
-                                        task.value.wrongTestAnswers[currentTestItem.value] =
-                                            variants[i]
-                                        timerValue.value = 7
-                                    }
-                                    task.value.currentTestItem.value++
-                                    task.value.testRefresh()
-                                    Log.d(
-                                        "taggg",
-                                        "task.correctAnswers = ${task.value.correctTestAnswers}"
-                                    )
-                                    Log.d(
-                                        "taggg",
-                                        "task.currentTestItem = ${task.value.currentTestItem.value}"
-                                    )
-                                    localVariants =
-                                        setVariants(currentWord.value.translation, vocabulary)
-                                    if (localVariants.size == variants.size) {
-                                        for (j in localVariants.indices) variants[j] =
-                                            localVariants[j]
-                                    }
-                                }
-                            }, contentAlignment = Alignment.CenterStart){
-                        Text(text = "${letters[i]}  ${variants[i]}", fontSize = 22.sp)
+            Box(modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight()
+                .weight(6f),
+            contentAlignment = Alignment.Center){
+                Column(modifier = Modifier.fillMaxSize().padding(bottom = 15.dp),
+                    verticalArrangement = Arrangement.spacedBy(10.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                    for (i in variants.indices) {
+                        Card(
+                            Modifier.fillMaxWidth()
+                                .padding(horizontal = 10.dp)
+                                .fillMaxHeight().weight(1f),
+                            elevation = 5.dp
+                        ) {
+                            Box(
+                                Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 10.dp)
+                                    .clickable {
+                                        if (wordsRemain.value > 0) {
+                                            if (variants[i] == currentWord.value.trans) {
+                                                timerValue.value = 7
+                                            } else {
+                                                task.value.wrongTestAnswers[currentTestItem.value] = variants[i]
+                                                taskRoomItem.value.wrongTestAnswers[currentTestItem.value] = variants[i]
+                                                timerValue.value = 7
+                                            }
+                                            task.value.currentTestItem.value++
+                                            taskRoomItem.value.currentTestItem++
+                                            task.value.testRefresh()
+                                            Log.d("taggg", "task.currentTestItem = ${task.value.currentTestItem.value}")
+                                            localVariants =
+                                                setVariants(currentWord.value.trans, vocabulary)
+                                            if (localVariants.size == variants.size) {
+                                                for (j in localVariants.indices) variants[j] =
+                                                    localVariants[j]
+                                            }
+                                        }
+                                    }, contentAlignment = Alignment.CenterStart){
+                                Text(text = "${letters[i]}  ${variants[i]}", fontSize = 16.sp)
+                            }
+                        }
                     }
                 }
             }

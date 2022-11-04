@@ -1,5 +1,6 @@
 package com.pehom.theshi.presentation.screens.loginscreen
 
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
 import androidx.compose.material.Text
@@ -14,6 +15,7 @@ import com.pehom.theshi.R
 
 @Composable
 fun LoginScreen(viewModel: MainViewModel, auth: FirebaseAuth) {
+    Log.d("ppp", "LoginScreen is on")
     Column(
         Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,

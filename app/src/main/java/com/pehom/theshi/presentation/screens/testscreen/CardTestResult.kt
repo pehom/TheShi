@@ -11,22 +11,30 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewModelScope
 import com.pehom.theshi.domain.model.Task
 import com.pehom.theshi.presentation.viewmodel.MainViewModel
 import com.pehom.theshi.R
+import com.pehom.theshi.data.localdata.approomdatabase.TaskRoomItem
+import com.pehom.theshi.utils.Constants
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @Composable
 fun CardTestResult(
     task: MutableState<Task>,
     viewModel: MainViewModel,
     isWrongAnswersShown: MutableState<Boolean>,
+    taskRoomItem: MutableState<TaskRoomItem>,
+    isTestPaused: MutableState<Boolean>
 ) {
-    val taskNumber = viewModel.currentTaskNumber.value
     val currentTask = remember{ task }
-    val result = ((currentTask.value.correctTestAnswers.size.toFloat()/currentTask.value.vocabulary.items.size.toFloat())*100).toInt()
+    val result = ((1-currentTask.value.wrongTestAnswers.size.toFloat()/currentTask.value.vocabulary.items.size.toFloat())*100).toInt()
+    val currentVocabulary = currentTask.value.vocabulary
     Card(
         Modifier
             .fillMaxWidth()
@@ -51,7 +59,7 @@ fun CardTestResult(
                 .fillMaxHeight()
                 .weight(1f)
                 .padding(15.dp), contentAlignment = Alignment.CenterStart){
-                Text(text = stringResource(id = R.string.correct_answers) + "  ${currentTask.value.correctTestAnswers.size}", fontSize = 22.sp)
+                Text(text = stringResource(id = R.string.correct_answers) + "  ${currentTask.value.vocabulary.items.size - currentTask.value.wrongTestAnswers.size}", fontSize = 22.sp)
             }
             Box(modifier = Modifier
                 .fillMaxWidth()
@@ -61,7 +69,6 @@ fun CardTestResult(
                 .clickable {
                     if (currentTask.value.wrongTestAnswers.isNotEmpty()) {
                         isWrongAnswersShown.value = true
-                        Log.d("buba", "TestActivity: result = $result  taskNumber = $taskNumber")
                     }
                 }, contentAlignment = Alignment.CenterStart){
                 Text(text = stringResource(id = R.string.wrong_answers) + " " +
@@ -78,29 +85,46 @@ fun CardTestResult(
             ) {
                 Button(
                     onClick = {
-                        // viewModel.tasks[taskNumber].progress = result
                         viewModel.currentTask.value.currentTestItem.value = 0
                         viewModel.currentTask.value.isTestGoing.value = false
                         viewModel.currentTask.value.wrongTestAnswers.clear()
-                        viewModel.currentTask.value.correctTestAnswers.clear()
+                        val updateTaskRoomItem = taskRoomItem.value
+                        updateTaskRoomItem.progress = viewModel.currentTask.value.progress
+                        updateTaskRoomItem.currentLearningItem = viewModel.currentTask.value.currentLearningItem.value
+                        updateTaskRoomItem.currentTaskItem = viewModel.currentTask.value.currentTaskItem.value
+                        updateTaskRoomItem.currentTestItem = viewModel.currentTask.value.currentTestItem.value
+                        updateTaskRoomItem.wrongTestAnswers = viewModel.currentTask.value.wrongTestAnswers
+                        viewModel.viewModelScope.launch(Dispatchers.IO) {
+                            Constants.REPOSITORY.updateTaskRoomItem(updateTaskRoomItem){
+                                isTestPaused.value = true
+                            }
+                        }
                         viewModel.currentTask.value.testRefresh()
-                        viewModel.screenState.value = viewModel.MODE_TEST_SCREEN
                     }) {
                     Text(text = stringResource(id = R.string.retry))
                 }
                 Button(
                     onClick = {
+                        if ( result == 100) {  // synchronizing local wordbook with fsWordbook
+                            viewModel.useCases.addVocabularyToWordbookFsUseCase.execute(currentVocabulary, viewModel.user.value.fsId){}
+                            viewModel.useCases.addVocabularyToWordbookRoomUseCase.execute(viewModel){}
+                        }
                         viewModel.currentTask.value.currentTestItem.value = 0
                         viewModel.currentTask.value.isTestGoing.value = false
                         viewModel.currentTask.value.wrongTestAnswers.clear()
-                        viewModel.currentTask.value.correctTestAnswers.clear()
                         viewModel.currentTask.value.testRefresh()
                         viewModel.currentTask.value.progress = result
-                        viewModel.tasksInfo[viewModel.currentTaskNumber.value].progress = result
-                       /* viewModel.tasksInfo.forEachIndexed(){ index, item ->
-                            Log.d("zzz", "task[$index].progress = ${item.progress}")
-                        }*/
-                        viewModel.screenState.value = viewModel.MODE_STUDENT_SCREEN
+                        taskRoomItem.value.progress = result
+                        taskRoomItem.value.currentTestItem = 0
+                        taskRoomItem.value.wrongTestAnswers.clear()
+                        viewModel.useCases.updateTaskFsUseCase.execute(viewModel, taskRoomItem){}
+                        viewModel.viewModelScope.launch(Dispatchers.IO) {
+                            Constants.REPOSITORY.updateTaskRoomItem(taskRoomItem.value){
+                                viewModel.viewModelScope.launch(Dispatchers.Main) {
+                                    viewModel.screenState.value = viewModel.MODE_STUDENT_SCREEN
+                                }
+                            }
+                        }
                     }) {
                     Text(text = stringResource(id = R.string.next))
                 }

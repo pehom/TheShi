@@ -13,18 +13,24 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewModelScope
 import com.pehom.theshi.domain.model.Task
 import com.pehom.theshi.presentation.viewmodel.MainViewModel
 import com.pehom.theshi.R
+import com.pehom.theshi.data.localdata.approomdatabase.TaskRoomItem
+import com.pehom.theshi.utils.Constants
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @Composable
 fun CardWrongAnswers(
     task: MutableState<Task>,
     viewModel: MainViewModel,
-    isWrongAnswersShown: MutableState<Boolean>
+    isWrongAnswersShown: MutableState<Boolean>,
+    taskRoomItem: MutableState<TaskRoomItem>
 ) {
-    val taskNumber = viewModel.currentTaskNumber.value
-    val currentTask = remember{ task }
+    val currentTask = remember { task }
+    val currentVocabulary = currentTask.value.vocabulary
     Card(
         Modifier
             .fillMaxWidth()
@@ -37,7 +43,7 @@ fun CardWrongAnswers(
                 verticalArrangement = Arrangement.spacedBy(15.dp) ) {
                 itemsIndexed(currentTask.value.wrongTestAnswers.keys.toList()) {index, item ->
                     Text(text = "${index+1}) q = ${currentTask.value.vocabulary.items[item].orig}  answer = ${currentTask.value.wrongTestAnswers[item]} "
-                            + " cor.answer = ${currentTask.value.vocabulary.items[item].translation} ")
+                            + " cor.answer = ${currentTask.value.vocabulary.items[item].trans} ")
                 }
             }
             Row(
@@ -51,19 +57,29 @@ fun CardWrongAnswers(
                     Text(text = stringResource(id = R.string.back))
                 }
                 Button(onClick = {
-                    val result = ((currentTask.value.correctTestAnswers.size.toFloat()/currentTask.value.vocabulary.items.size.toFloat())*100).toInt()
+                    val result = ((1 - currentTask.value.wrongTestAnswers.size.toFloat()/currentTask.value.vocabulary.items.size.toFloat())*100).toInt()
+
+                    if ( result == 100) {  // synchronizing local wordbook with fsWordbook
+                        viewModel.useCases.addVocabularyToWordbookFsUseCase.execute(currentVocabulary, viewModel.user.value.fsId){}
+                        viewModel.useCases.addVocabularyToWordbookRoomUseCase.execute(viewModel){}
+                    }
                     viewModel.currentTask.value.currentTestItem.value = 0
                     viewModel.currentTask.value.isTestGoing.value = false
                     viewModel.currentTask.value.wrongTestAnswers.clear()
-                    viewModel.currentTask.value.correctTestAnswers.clear()
                     viewModel.currentTask.value.testRefresh()
                     viewModel.currentTask.value.progress = result
-                    viewModel.tasksInfo[viewModel.currentTaskNumber.value].progress = result
-                    viewModel.screenState.value = viewModel.MODE_STUDENT_SCREEN
+                    taskRoomItem.value.progress = result
+                    viewModel.useCases.updateTaskFsUseCase.execute(viewModel, taskRoomItem){}
+                    viewModel.viewModelScope.launch(Dispatchers.IO) {
+                        Constants.REPOSITORY.updateTaskRoomItem(taskRoomItem.value){
+                            viewModel.viewModelScope.launch(Dispatchers.Main) {
+                                viewModel.screenState.value = viewModel.MODE_STUDENT_SCREEN
+                            }
+                        }
+                    }
                 }) {
                     Text(text = stringResource(id = R.string.next))
                 }
-
             }
         }
     }

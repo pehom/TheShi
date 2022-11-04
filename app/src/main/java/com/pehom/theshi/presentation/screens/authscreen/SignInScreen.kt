@@ -1,5 +1,6 @@
 package com.pehom.theshi.presentation.screens.authscreen
 
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -13,6 +14,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
@@ -28,11 +30,14 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SignInScreen(viewModel: MainViewModel, auth: FirebaseAuth){
+    Log.d("ppp", "SignInScreen is on")
+
     val email = remember {mutableStateOf("")}
     val scope = rememberCoroutineScope()
     val password = remember { mutableStateOf("") }
     val kc = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
+    val context = LocalContext.current
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
@@ -79,6 +84,7 @@ fun SignInScreen(viewModel: MainViewModel, auth: FirebaseAuth){
             enabled = email.value.isNotEmpty() && password.value.isNotEmpty(),
             onClick = {
                 viewModel.useCases.signInUseCase.execute(
+                    context,
                     viewModel,
                     auth,
                     LoginModel(email.value, password.value)

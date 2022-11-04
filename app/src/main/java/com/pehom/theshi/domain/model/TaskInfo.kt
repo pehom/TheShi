@@ -9,9 +9,11 @@ data class TaskInfo(
     val vocabularyTitle: VocabularyTitle,
 
 ) {
-
-    val currentTestItem = mutableStateOf(0)
-    val currentTaskItem = mutableStateOf(0)
+    /*var currentTestItem = mutableStateOf(0)
+    var currentTaskItem = mutableStateOf(0)*/
+    var currentTestItem = 0
+    var currentTaskItem = 0
+    var currentLearningItem = 0
     var progress = 0
 
     override fun toString(): String {

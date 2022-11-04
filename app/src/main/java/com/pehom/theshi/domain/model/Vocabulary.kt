@@ -1,12 +1,13 @@
 package com.pehom.theshi.domain.model
 
-class Vocabulary(val title: String, val items: MutableList<VocabularyItemScheme>) {
+class Vocabulary(val title: VocabularyTitle, val items: MutableList<VocabularyItemScheme>) {
     private val DIVIDER = "|||"
     private val SCHEMEDIVIDER ="\\"
     private val LOCALDIVIDER = "+++"
+    //lateinit var timestamp: ServerTimestamp
 
     override fun toString(): String {
-        val s = title
+        val s = title.value
         val schemeString=""
 
         for (item in items) {
@@ -16,7 +17,7 @@ class Vocabulary(val title: String, val items: MutableList<VocabularyItemScheme>
                     item.orig+SCHEMEDIVIDER+
                   //  item.transcription+SCHEMEDIVIDER+
                   // item.pronouncingUrl+SCHEMEDIVIDER+
-                    item.translation+LOCALDIVIDER
+                    item.trans+LOCALDIVIDER
         }
         s+DIVIDER+schemeString
         println(s)

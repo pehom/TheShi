@@ -31,6 +31,8 @@ import com.pehom.theshi.presentation.viewmodel.MainViewModel
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun RegisterScreen(viewModel: MainViewModel, auth: FirebaseAuth) {
+    Log.d("ppp", "RegisterScreen is on")
+
     val email = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
     val phoneNumber = remember { mutableStateOf("") }
