@@ -33,6 +33,9 @@ fun TestScreen(
     val wordsRemain = remember {currentTask.value.testWordsRemain}
     val currentWordDisplay = remember { currentTask.value.currentTestWordDisplay }
     val isWrongAnswersShown = remember { mutableStateOf(false) }
+    if (taskRoomItem.value.currentTestItem == 0) {
+        taskRoomItem.value.wrongTestAnswers.clear()
+    }
     Column(
         modifier = Modifier.fillMaxSize().wrapContentSize(Alignment.Center),
         horizontalAlignment = Alignment.CenterHorizontally,

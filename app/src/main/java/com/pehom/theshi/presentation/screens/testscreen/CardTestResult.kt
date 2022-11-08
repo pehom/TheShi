@@ -1,6 +1,5 @@
 package com.pehom.theshi.presentation.screens.testscreen
 
-import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
@@ -11,7 +10,6 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -109,20 +107,23 @@ fun CardTestResult(
                             viewModel.useCases.addVocabularyToWordbookFsUseCase.execute(currentVocabulary, viewModel.user.value.fsId){}
                             viewModel.useCases.addVocabularyToWordbookRoomUseCase.execute(viewModel){}
                         }
-                        viewModel.currentTask.value.currentTestItem.value = 0
-                        viewModel.currentTask.value.isTestGoing.value = false
-                        viewModel.currentTask.value.wrongTestAnswers.clear()
-                        viewModel.currentTask.value.testRefresh()
-                        viewModel.currentTask.value.progress = result
                         taskRoomItem.value.progress = result
                         taskRoomItem.value.currentTestItem = 0
-                        taskRoomItem.value.wrongTestAnswers.clear()
+                        taskRoomItem.value.wrongTestAnswers = viewModel.currentTask.value.wrongTestAnswers
                         viewModel.useCases.updateTaskFsUseCase.execute(viewModel, taskRoomItem){}
+
+
+                      //  viewModel.currentTask.value.progress = result
+                     //   taskRoomItem.value.wrongTestAnswers.clear()
                         viewModel.viewModelScope.launch(Dispatchers.IO) {
                             Constants.REPOSITORY.updateTaskRoomItem(taskRoomItem.value){
-                                viewModel.viewModelScope.launch(Dispatchers.Main) {
+                              //  viewModel.viewModelScope.launch(Dispatchers.Main) {
                                     viewModel.screenState.value = viewModel.MODE_STUDENT_SCREEN
-                                }
+                                    viewModel.currentTask.value.currentTestItem.value = 0
+                                    viewModel.currentTask.value.isTestGoing.value = false
+                                    viewModel.currentTask.value.wrongTestAnswers.clear()
+                                    viewModel.currentTask.value.testRefresh()
+                                //  }
                             }
                         }
                     }) {

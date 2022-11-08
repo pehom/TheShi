@@ -63,18 +63,18 @@ fun CardWrongAnswers(
                         viewModel.useCases.addVocabularyToWordbookFsUseCase.execute(currentVocabulary, viewModel.user.value.fsId){}
                         viewModel.useCases.addVocabularyToWordbookRoomUseCase.execute(viewModel){}
                     }
-                    viewModel.currentTask.value.currentTestItem.value = 0
-                    viewModel.currentTask.value.isTestGoing.value = false
-                    viewModel.currentTask.value.wrongTestAnswers.clear()
-                    viewModel.currentTask.value.testRefresh()
-                    viewModel.currentTask.value.progress = result
                     taskRoomItem.value.progress = result
+                    taskRoomItem.value.wrongTestAnswers = viewModel.currentTask.value.wrongTestAnswers
                     viewModel.useCases.updateTaskFsUseCase.execute(viewModel, taskRoomItem){}
+
+                  //  viewModel.currentTask.value.progress = result
                     viewModel.viewModelScope.launch(Dispatchers.IO) {
                         Constants.REPOSITORY.updateTaskRoomItem(taskRoomItem.value){
-                            viewModel.viewModelScope.launch(Dispatchers.Main) {
-                                viewModel.screenState.value = viewModel.MODE_STUDENT_SCREEN
-                            }
+                            viewModel.screenState.value = viewModel.MODE_STUDENT_SCREEN
+                            viewModel.currentTask.value.currentTestItem.value = 0
+                            viewModel.currentTask.value.isTestGoing.value = false
+                            viewModel.currentTask.value.wrongTestAnswers.clear()
+                            viewModel.currentTask.value.testRefresh()
                         }
                     }
                 }) {

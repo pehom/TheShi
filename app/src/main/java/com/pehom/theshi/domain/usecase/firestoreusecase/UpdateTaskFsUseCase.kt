@@ -15,6 +15,12 @@ class UpdateTaskFsUseCase {
         onResponse: ()-> Unit
     ){
         val currentTask = taskRoomItem.value
+        val stringKeys = mutableSetOf<String>()
+        val stringMap =  mutableMapOf<String,String>()
+        currentTask.wrongTestAnswers.keys.forEach(){
+                stringMap[it.toString()] = currentTask.wrongTestAnswers[it].toString()
+            }
+
         val data = hashMapOf(
             Constants.CURRENT_TASK_ITEM to currentTask.currentTaskItem,
             Constants.CURRENT_TEST_ITEM to currentTask.currentTestItem,
@@ -26,8 +32,10 @@ class UpdateTaskFsUseCase {
             Constants.TASK_ID to currentTask.id,
             Constants.TASK_TITLE to currentTask.taskTitle,
             Constants.VOCABULARY_FS_DOC_REF_PATH to currentTask.vcbFsDocRefPath,
-            Constants.WRONG_TEST_ANSWERS to currentTask.wrongTestAnswers
+            Constants.WRONG_TEST_ANSWERS to stringMap
         )
+        Log.d("updateTaskFsUseCase", "data: $data")
+
         Firebase.firestore.collection(Constants.USERS).document(viewModel.user.value.fsId.value)
             .collection(Constants.TASKS).document(viewModel.currentTaskRoomItem.value.id)
             .update(Constants.DETAILS, data)
