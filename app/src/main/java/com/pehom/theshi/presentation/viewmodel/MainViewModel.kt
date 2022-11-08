@@ -104,7 +104,9 @@ class MainViewModel(
         GetWordbookSizeByUserFsId(),
         DeleteTaskByIdFsUseCase(),
         GetVocabularyByFsDocRefRoomUseCase(),
-        SetAllWordsWordbookTaskUseCase()
+        SetAllWordsWordbookTaskUseCase(),
+        UploadVocabularyToFsUseCase(),
+        CheckExistedVocabularyByTitleAndLevelFsUseCase()
         )
 
     init {

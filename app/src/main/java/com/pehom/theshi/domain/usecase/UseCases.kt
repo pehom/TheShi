@@ -44,5 +44,7 @@ data class UseCases(
     val getWordbookSizeByUserFsId: GetWordbookSizeByUserFsId,
     val deleteTaskByIdFsUseCase: DeleteTaskByIdFsUseCase,
     val getVocabularyByFsDocRefRoomUseCase: GetVocabularyByFsDocRefRoomUseCase,
-    val setAllWordsWordbookTaskUseCase: SetAllWordsWordbookTaskUseCase
+    val setAllWordsWordbookTaskUseCase: SetAllWordsWordbookTaskUseCase,
+    val uploadVocabularyToFsUseCase: UploadVocabularyToFsUseCase,
+    val checkExistedVocabularyByTitleAndLevelFsUseCase: CheckExistedVocabularyByTitleAndLevelFsUseCase
 )
