@@ -1,13 +1,12 @@
 package com.pehom.theshi.presentation
 
-import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.speech.tts.TextToSpeech
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
+
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
@@ -17,19 +16,15 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.pehom.theshi.presentation.screens.StarterScreen
 import com.pehom.theshi.presentation.screens.adminscreen.AdminScreen
 import com.pehom.theshi.presentation.screens.authscreen.RegisterScreen
 import com.pehom.theshi.presentation.screens.authscreen.SignInScreen
 import com.pehom.theshi.presentation.screens.developerscreen.DeveloperScreen
-import com.pehom.theshi.presentation.screens.learningscreen.LearningScreen
 import com.pehom.theshi.presentation.screens.loginscreen.LoginScreen
 import com.pehom.theshi.presentation.screens.mentorscreen.MentorScreen
 import com.pehom.theshi.presentation.screens.studentscreen.StudentScreen
-import com.pehom.theshi.presentation.screens.gamescreen.GameScreen
 import com.pehom.theshi.presentation.screens.taskscreen.TaskScreen
-import com.pehom.theshi.presentation.screens.testscreen.TestScreen
 import com.pehom.theshi.presentation.screens.wordbookscreen.WordbookScreen
 import com.pehom.theshi.presentation.screens.wordbookscreen.WordbookTaskScreen
 import com.pehom.theshi.presentation.viewmodel.MainViewModel
@@ -39,11 +34,14 @@ import com.pehom.theshi.utils.Constants
 import com.pehom.theshi.utils.isNetworkAvailable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.util.*
 
 
-class MainActivity : ComponentActivity() {
+class MainActivity : ComponentActivity(), TextToSpeech.OnInitListener {
     private lateinit var auth: FirebaseAuth
     private lateinit var vm: MainViewModel
+    private var tts: TextToSpeech? = null
+
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,20 +53,7 @@ class MainActivity : ComponentActivity() {
 
         vm = ViewModelProvider(this, MainViewModelFactory(this, this.application))[MainViewModel::class.java]
         vm.sharedPreferences = getSharedPreferences(Constants.APP_SHARED_PREF, MODE_PRIVATE)
-
-        /*val shPref = getSharedPreferences(Constants.APP_SHARED_PREF, MODE_PRIVATE)
-        if (isNetworkAvailable()) {
-            Log.d("onStart", "onStart currentUserUid = ${auth.currentUser?.uid}")
-            if (auth.currentUser != null) {
-                vm.useCases.setupMainViewModelFsUseCase.execute(this, vm, auth.currentUser!!){}
-            }
-        } else if (shPref.contains(Constants.SHARED_PREF_USER_ID) ) {
-            // TODO readUserInfoRoom()
-        }
-        //TODO network status checking needed
-        else
-            vm.screenState.value = vm.MODE_LOGIN_SCREEN*/
-
+        tts = TextToSpeech(this, this)
         setContent {
             TheShiTheme {
                 // A surface container using the 'background' color from the theme
@@ -164,30 +149,49 @@ class MainActivity : ComponentActivity() {
     }
 
     override fun onDestroy() {
-        super.onDestroy()
+        if (tts != null) {
+            tts!!.stop()
+            tts!!.shutdown()
+        }
         Log.d("lifecycle", "onDestroy() invoked")
+        super.onDestroy()
+    }
 
+    override fun onInit(status: Int) {
+        Log.d("TTS", "onInit invoked")
+        if (status == TextToSpeech.SUCCESS) {
+            // set US English as language for tts
+            val result = tts!!.setLanguage(Locale.US)
+            if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                Log.e("TTS","The Language specified is not supported!")
+            }
+        }
+        else {
+            Log.e("TTS", "Initilization Failed!")
+        }
+    }
+
+    @Composable
+    private fun SetupScreen(
+        viewModel: MainViewModel,
+        auth: FirebaseAuth,
+    ) {
+        when (viewModel.screenState.value) {
+            viewModel.MODE_STUDENT_SCREEN -> StudentScreen(viewModel, auth)
+            viewModel.MODE_TASK_SCREEN -> TaskScreen( viewModel, tts)
+            viewModel.MODE_MENTOR_SCREEN -> MentorScreen(viewModel, auth)
+            viewModel.MODE_LOGIN_SCREEN -> LoginScreen(viewModel, auth)
+            viewModel.MODE_REGISTER_SCREEN -> RegisterScreen(viewModel, auth)
+            viewModel.MODE_SIGN_IN_SCREEN -> SignInScreen( viewModel,auth )
+            viewModel.MODE_STARTER_SCREEN -> StarterScreen(viewModel, auth)
+            viewModel.MODE_DEVELOPER_SCREEN -> DeveloperScreen(viewModel)
+            viewModel.MODE_WORDBOOK_SCREEN -> WordbookScreen(viewModel)
+            viewModel.MODE_WORDBOOK_TASK_SCREEN -> WordbookTaskScreen(viewModel, tts)
+            viewModel.MODE_ADMIN_SCREEN -> AdminScreen(viewModel)
+        }
     }
 }
 
-@Composable
-fun SetupScreen(
-    viewModel: MainViewModel,
-    auth: FirebaseAuth,
-) {
-    when (viewModel.screenState.value) {
-        viewModel.MODE_STUDENT_SCREEN -> StudentScreen(viewModel, auth)
-        viewModel.MODE_TASK_SCREEN -> TaskScreen( viewModel)
-        viewModel.MODE_MENTOR_SCREEN -> MentorScreen(viewModel, auth)
-        viewModel.MODE_LOGIN_SCREEN -> LoginScreen(viewModel, auth)
-        viewModel.MODE_REGISTER_SCREEN -> RegisterScreen(viewModel, auth)
-        viewModel.MODE_SIGN_IN_SCREEN -> SignInScreen( viewModel,auth )
-        viewModel.MODE_STARTER_SCREEN -> StarterScreen(viewModel, auth)
-        viewModel.MODE_DEVELOPER_SCREEN -> DeveloperScreen(viewModel)
-        viewModel.MODE_WORDBOOK_SCREEN -> WordbookScreen(viewModel)
-        viewModel.MODE_WORDBOOK_TASK_SCREEN -> WordbookTaskScreen(viewModel)
-        viewModel.MODE_ADMIN_SCREEN -> AdminScreen(viewModel)
-    }
-}
+
 
 

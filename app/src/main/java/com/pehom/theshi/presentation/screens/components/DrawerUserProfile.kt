@@ -35,9 +35,6 @@ import kotlinx.coroutines.launch
 fun DrawerUserProfile(viewModel: MainViewModel, scaffoldState: ScaffoldState, auth: FirebaseAuth) {
 
     val TAG = "DrawerUserProfile"
-    val scope = rememberCoroutineScope()
-    val focusManager = LocalFocusManager.current
-    val keyboardController = LocalSoftwareKeyboardController.current
     val availableWordsRoomItems = Constants.REPOSITORY
         .readAllAvailableWordsRoomItem
         .observeAsState(listOf()).value
@@ -55,9 +52,7 @@ fun DrawerUserProfile(viewModel: MainViewModel, scaffoldState: ScaffoldState, au
     val availableVocabularyRoomItems = Constants.REPOSITORY.
         readAvailableVocabularyRoomItemsByUserFsId(viewModel.user.value.fsId.value).observeAsState(
         listOf()).value
-   /* val availableVocabularyRoomItem = Constants.REPOSITORY
-        .readAvailableVocabularyRoomItemByVcbDocRefPath("4i4", viewModel.user.value.fsId.value)
-        .observeAsState(AvailableVocabularyRoomItem()).value*/
+    val isAdminState = remember { mutableStateOf(false) }
 
     Column(
        modifier = Modifier.fillMaxSize(),
@@ -159,10 +154,15 @@ fun DrawerUserProfile(viewModel: MainViewModel, scaffoldState: ScaffoldState, au
         }) {
             Text(text = "get tasks RoomInfo")
         }
-        Button(onClick = {
-            viewModel.screenState.value = viewModel.MODE_ADMIN_SCREEN
-        }) {
-            Text(text = "admin screen")
+        viewModel.useCases.checkIsAdminFsUseCase.execute(viewModel.user.value){
+            isAdminState.value = it
+        }
+        if (isAdminState.value) {
+            Button(onClick = {
+                viewModel.screenState.value = viewModel.MODE_ADMIN_SCREEN
+            }) {
+                Text(text = "admin screen")
+            }
         }
 
         Button(onClick = {

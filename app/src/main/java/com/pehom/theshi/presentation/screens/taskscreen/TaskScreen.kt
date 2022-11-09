@@ -1,5 +1,6 @@
 package com.pehom.theshi.presentation.screens.taskscreen
 
+import android.speech.tts.TextToSpeech
 import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
@@ -18,7 +19,10 @@ import com.pehom.theshi.presentation.viewmodel.MainViewModel
 import com.pehom.theshi.utils.Constants
 
 @Composable
-fun TaskScreen(viewModel: MainViewModel) {
+fun TaskScreen(
+    viewModel: MainViewModel,
+    tts: TextToSpeech?
+) {
     Log.d("ppp", "TaskScreen is on")
 
     val taskScreenState = remember { mutableStateOf(Constants.MODE_TASK_INFO) }
@@ -38,12 +42,12 @@ fun TaskScreen(viewModel: MainViewModel) {
                     Constants.MODE_LEARNING_SCREEN -> {
                         isTestScreenActive.value = false
                       //  isTestStarted.value = false
-                        LearningScreen(viewModel = viewModel, viewModel.currentTaskRoomItem)
+                        LearningScreen(viewModel = viewModel, viewModel.currentTaskRoomItem, tts)
                     }
                     Constants.MODE_GAME_SCREEN -> {
                         isTestScreenActive.value = false
                       //  isTestStarted.value = false
-                        GameScreen(viewModel = viewModel, viewModel.currentTaskRoomItem)
+                        GameScreen(viewModel = viewModel, viewModel.currentTaskRoomItem, tts)
                     }
                     Constants.MODE_TEST_SCREEN -> {
                         isTestScreenActive.value = true

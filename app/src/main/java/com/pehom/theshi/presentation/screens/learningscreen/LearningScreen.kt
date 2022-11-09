@@ -1,16 +1,16 @@
 package com.pehom.theshi.presentation.screens.learningscreen
 
+import android.speech.tts.TextToSpeech
 import android.util.Log
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Button
-import androidx.compose.material.Card
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -29,7 +29,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun LearningScreen(
     viewModel: MainViewModel,
-    taskRoomItem: MutableState<TaskRoomItem>
+    taskRoomItem: MutableState<TaskRoomItem>,
+    tts: TextToSpeech?
     ) {
     Log.d("ppp", "LearningScreen is on")
 
@@ -38,7 +39,9 @@ fun LearningScreen(
     val currentWordDisplay = remember { currentTask.value.currentLearningWordDisplay }
     val isRestarted = remember { mutableStateOf(false)}
     Column(
-        modifier = Modifier.fillMaxSize().wrapContentSize(Alignment.Center),
+        modifier = Modifier
+            .fillMaxSize()
+            .wrapContentSize(Alignment.Center),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Card(
@@ -98,11 +101,42 @@ fun LearningScreen(
                 .weight(2f)
                 .padding(start = 15.dp, top = 15.dp, end = 15.dp),
             elevation = 5.dp) {
-            Box(modifier = Modifier.padding(horizontal = 10.dp),
-                contentAlignment = Alignment.Center) {
-                Text(text =  currentWordDisplay.value,
-                    fontSize = 22.sp)
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Box(modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight()
+                    .weight(5f)
+                    .padding(horizontal = 10.dp),
+                    contentAlignment = Alignment.Center) {
+                    Text(text =  currentWordDisplay.value,
+                        fontSize = 22.sp)
+                }
+                Box(modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight()
+                    .weight(2f)
+                    .padding(horizontal = 20.dp, vertical = 10.dp),
+                    contentAlignment = Alignment.CenterEnd) {
+                    IconButton(
+                        enabled = currentTask.value.learningWordsRemain.value > 0,
+                        onClick = {
+
+                        tts!!.speak(
+                            currentTask.value.currentLearningWord.value.trans,
+                            TextToSpeech.QUEUE_FLUSH,
+                            null,
+                            ""
+                        )
+                    }) {
+                        Icon(painter = painterResource(id = R.drawable.ic_speaker), contentDescription = "pronunciation")
+                    }
+                }
+
             }
+
         }
         Box(
             Modifier

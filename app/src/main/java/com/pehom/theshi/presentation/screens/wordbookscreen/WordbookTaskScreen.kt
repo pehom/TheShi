@@ -1,5 +1,6 @@
 package com.pehom.theshi.presentation.screens.wordbookscreen
 
+import android.speech.tts.TextToSpeech
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
@@ -19,7 +20,8 @@ import com.pehom.theshi.utils.Constants
 
 @Composable
 fun WordbookTaskScreen(
-    viewModel: MainViewModel
+    viewModel: MainViewModel,
+    tts: TextToSpeech?
 ){
     val wbTaskScreenState = remember { mutableStateOf(Constants.MODE_TASK_INFO) }
     val isTestScreenActive = remember { mutableStateOf(false) }
@@ -37,12 +39,12 @@ fun WordbookTaskScreen(
                     Constants.MODE_LEARNING_SCREEN -> {
                         isTestScreenActive.value = false
                         //  isTestStarted.value = false
-                        LearningScreen(viewModel = viewModel, viewModel.currentWordbookTaskRoomItem)
+                        LearningScreen(viewModel = viewModel, viewModel.currentWordbookTaskRoomItem, tts)
                     }
                     Constants.MODE_GAME_SCREEN -> {
                         isTestScreenActive.value = false
                         //  isTestStarted.value = false
-                        GameScreen(viewModel = viewModel,viewModel.currentWordbookTaskRoomItem)
+                        GameScreen(viewModel = viewModel,viewModel.currentWordbookTaskRoomItem, tts)
                     }
                     Constants.MODE_TEST_SCREEN -> {
                         isTestScreenActive.value = true

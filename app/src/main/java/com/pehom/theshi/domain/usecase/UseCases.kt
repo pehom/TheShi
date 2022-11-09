@@ -46,5 +46,6 @@ data class UseCases(
     val getVocabularyByFsDocRefRoomUseCase: GetVocabularyByFsDocRefRoomUseCase,
     val setAllWordsWordbookTaskUseCase: SetAllWordsWordbookTaskUseCase,
     val uploadVocabularyToFsUseCase: UploadVocabularyToFsUseCase,
-    val checkExistedVocabularyByTitleAndLevelFsUseCase: CheckExistedVocabularyByTitleAndLevelFsUseCase
+    val checkExistedVocabularyByTitleAndLevelFsUseCase: CheckExistedVocabularyByTitleAndLevelFsUseCase,
+    val checkIsAdminFsUseCase: CheckIsAdminFsUseCase
 )

@@ -1,18 +1,18 @@
 package com.pehom.theshi.presentation.screens.gamescreen
 
+import android.speech.tts.TextToSpeech
 import android.util.Log
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
-import androidx.compose.material.Card
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -24,14 +24,15 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import com.pehom.theshi.R
 import com.pehom.theshi.data.localdata.approomdatabase.TaskRoomItem
+import com.pehom.theshi.ui.theme.Teal200
 import com.pehom.theshi.utils.Constants
 import kotlinx.coroutines.Dispatchers
 
 @Composable
 fun GameScreen(
     viewModel: MainViewModel,
-    taskRoomItem: MutableState<TaskRoomItem>
-
+    taskRoomItem: MutableState<TaskRoomItem>,
+    tts: TextToSpeech?
     ) {
     Log.d("ppp", "GameScreen is on")
 
@@ -101,13 +102,35 @@ fun GameScreen(
                     Modifier
                         .fillMaxWidth()
                         .fillMaxHeight()
-                        .weight(3f), contentAlignment = Alignment.Center) {
+                        .weight(1f)
+                        .padding(horizontal = 10.dp)
+                    , contentAlignment = Alignment.CenterStart
+                ){
+                    IconButton(
+                        enabled = currentTask.value.taskWordsRemain.value > 0,
+                        onClick = {
+                            tts!!.speak(
+                                currentTask.value.currentLearningWord.value.trans,
+                                TextToSpeech.QUEUE_FLUSH,
+                                null,
+                                ""
+                            )
+                        }) {
+                        Icon(painter = painterResource(id = R.drawable.ic_speaker), contentDescription = "pronunciation")
+                    }
+                }
+                Box(
+                    Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight()
+                        .weight(4f), contentAlignment = Alignment.Center) {
+
                     Text(text = currentWordDisplay.value, fontSize = 22.sp)
                 }
                 Row(
                     Modifier
                         .fillMaxWidth()
-                        .weight(1f)
+                        .weight(2f)
                         .padding(start = 10.dp, end = 10.dp, bottom = 10.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically){

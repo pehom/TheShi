@@ -106,7 +106,8 @@ class MainViewModel(
         GetVocabularyByFsDocRefRoomUseCase(),
         SetAllWordsWordbookTaskUseCase(),
         UploadVocabularyToFsUseCase(),
-        CheckExistedVocabularyByTitleAndLevelFsUseCase()
+        CheckExistedVocabularyByTitleAndLevelFsUseCase(),
+        CheckIsAdminFsUseCase()
         )
 
     init {

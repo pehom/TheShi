@@ -83,6 +83,7 @@ object Constants {
     const val NEW_VOCABULARY_XL = "newVocabularyXl"
     const val OPEN_DOWNLOADS_REQUEST_CODE = 69
     const val SHARED_PREF_SCREEN_STATE = "sharedPrefScreenState"
+    const val ADMINS = "Admins"
     lateinit var REPOSITORY: DatabaseRepository
 
 

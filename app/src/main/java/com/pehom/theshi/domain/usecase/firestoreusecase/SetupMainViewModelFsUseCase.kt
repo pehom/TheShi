@@ -28,6 +28,7 @@ class SetupMainViewModelFsUseCase() {
                             viewModel.currentWordbookTaskRoomItem.value.studentFsId = user.fsId.value
                             viewModel.useCases.readRequestsAddFsUseCase.execute(viewModel){
                                 viewModel.useCases.setTaskIdFactoryFsUseCase.execute(fsId,viewModel){
+                                 //TODO   sync room with fs needed
                                     viewModel.useCases.getAllVocabularyTitlesFsUseCase.execute(viewModel){
                                         viewModel.isViewModelSet.value = true
                                         if (viewModel.isStarterScreenEnded.value){
