@@ -80,6 +80,8 @@ fun GameScreen(
                         updateTaskRoomItem.currentTaskItem = viewModel.currentTask.value.currentTaskItem.value
                         updateTaskRoomItem.currentTestItem = viewModel.currentTask.value.currentTestItem.value
                         updateTaskRoomItem.wrongTestAnswers = viewModel.currentTask.value.wrongTestAnswers
+                        updateTaskRoomItem.incrementSyncCount()
+                        viewModel.useCases.updateTaskFsUseCase.execute(viewModel, updateTaskRoomItem){}
                         viewModel.viewModelScope.launch(Dispatchers.IO) {
                             Constants.REPOSITORY.updateTaskRoomItem(updateTaskRoomItem){}
                         }

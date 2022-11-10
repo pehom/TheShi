@@ -110,7 +110,7 @@ fun CardTestResult(
                         taskRoomItem.value.progress = result
                         taskRoomItem.value.currentTestItem = 0
                         taskRoomItem.value.wrongTestAnswers = viewModel.currentTask.value.wrongTestAnswers
-                        viewModel.useCases.updateTaskFsUseCase.execute(viewModel, taskRoomItem){}
+                        viewModel.useCases.updateTaskFsUseCase.execute(viewModel, taskRoomItem.value){}
 
 
                       //  viewModel.currentTask.value.progress = result

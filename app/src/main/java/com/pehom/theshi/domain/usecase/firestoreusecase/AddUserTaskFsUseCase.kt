@@ -24,7 +24,8 @@ class AddUserTaskFsUseCase {
             Constants.CURRENT_TASK_ITEM to _newTask.currentTaskItem,
             Constants.CURRENT_TEST_ITEM to _newTask.currentTestItem,
             Constants.CURRENT_LEARNING_ITEM to _newTask.currentLearningItem,
-            Constants.WRONG_TEST_ANSWERS to _newTask.wrongTestAnswers
+            Constants.WRONG_TEST_ANSWERS to _newTask.wrongTestAnswers,
+            Constants.SYNC_COUNT to _newTask.syncCount
         )
         val details = hashMapOf(Constants.DETAILS to newTask)
         db.collection("Users").document(viewModel.user.value.fsId.value)

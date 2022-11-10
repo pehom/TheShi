@@ -87,7 +87,8 @@ class MainActivity : ComponentActivity(), TextToSpeech.OnInitListener {
             vm.MODE_TASK_SCREEN -> {
                 if (vm.currentTask.value.id != "") {
                     vm.currentTask.value.isTestGoing.value = false
-                    vm.useCases.updateTaskFsUseCase.execute(vm, vm.currentTaskRoomItem){}
+                    vm.currentTaskRoomItem.value.incrementSyncCount()
+                    vm.useCases.updateTaskFsUseCase.execute(vm, vm.currentTaskRoomItem.value){}
                     vm.viewModelScope.launch(Dispatchers.IO) {
                         Constants.REPOSITORY.updateTaskRoomItem(vm.currentTaskRoomItem.value){}
                     }
@@ -131,10 +132,13 @@ class MainActivity : ComponentActivity(), TextToSpeech.OnInitListener {
         super.onPause()
         Log.d("lifecycle", "onPause() invoked")
         if (vm.currentTaskRoomItem.value.id != "" && vm.currentTaskRoomItem.value.id != "taskId") {
-            vm.useCases.updateTaskFsUseCase.execute(vm, vm.currentTaskRoomItem){}
-            vm.useCases.updateTaskFsUseCase.execute(vm, vm.currentWordbookTaskRoomItem){}
+            vm.currentTaskRoomItem.value.incrementSyncCount()
+            vm.useCases.updateTaskFsUseCase.execute(vm, vm.currentTaskRoomItem.value){}
+            vm.currentWordbookTaskRoomItem.value.incrementSyncCount()
+            vm.useCases.updateTaskFsUseCase.execute(vm, vm.currentWordbookTaskRoomItem.value){}
             vm.viewModelScope.launch(Dispatchers.IO) {
                 Constants.REPOSITORY.updateTaskRoomItem(vm.currentTaskRoomItem.value){}
+                Constants.REPOSITORY.updateTaskRoomItem(vm.currentWordbookTaskRoomItem.value){}
             }
         }
         val sharedPref = getSharedPreferences(Constants.APP_SHARED_PREF, MODE_PRIVATE)
@@ -144,8 +148,8 @@ class MainActivity : ComponentActivity(), TextToSpeech.OnInitListener {
     }
 
     override fun onStop() {
-        super.onStop()
         Log.d("lifecycle", "onStop() invoked")
+        super.onStop()
     }
 
     override fun onDestroy() {

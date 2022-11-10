@@ -84,6 +84,8 @@ object Constants {
     const val OPEN_DOWNLOADS_REQUEST_CODE = 69
     const val SHARED_PREF_SCREEN_STATE = "sharedPrefScreenState"
     const val ADMINS = "Admins"
+    const val SYNC_COUNT = "syncCount"
+    const val TASKS_FROM_MENTOR = "tasksFromMentor"
     lateinit var REPOSITORY: DatabaseRepository
 
 

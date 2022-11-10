@@ -29,8 +29,6 @@ class ReadAllUserTasksFsUseCase {
                     val taskTitle = details[Constants.TASK_TITLE].toString()
                     val studentFsId = details[Constants.STUDENT_FS_ID].toString()
                     val mentorFsId = details[Constants.MENTOR_FS_ID].toString()
-                  //  val vcbRoomId = details[Constants.VOCABULARY_ID].toString().toInt()
-                    // Log.d("mmm", "vcbRoomId = $vcbRoomId")
                     val vcbFsDocRefPath = details[Constants.VOCABULARY_FS_DOC_REF_PATH].toString()
                     val isAvailable = details[Constants.IS_AVAILABLE].toString().toBoolean()
                     val progress = details[Constants.PROGRESS].toString().toInt()
@@ -38,14 +36,11 @@ class ReadAllUserTasksFsUseCase {
                     val currentTestItem = details[Constants.CURRENT_TEST_ITEM].toString().toInt()
                     val currentLearningItem = details[Constants.CURRENT_LEARNING_ITEM].toString().toInt()
                     val wrongTestAnswers = details[Constants.WRONG_TEST_ANSWERS] as MutableMap<Int, String>
-
-
                     val taskRoomItem = TaskRoomItem(
                         taskId,
                         mentorFsId,
                         studentFsId,
                         taskTitle,
-                     //   vcbRoomId,
                         vcbFsDocRefPath,
                         isAvailable,
                         progress,
@@ -53,12 +48,10 @@ class ReadAllUserTasksFsUseCase {
                         currentTestItem,
                         currentLearningItem,
                         wrongTestAnswers
-                       // mutableMapOf(0 to "4i4")
                     )
                     resultList.add(taskRoomItem)
                 }
                 result.value = resultList
-                //  onSuccess(result)
             }.addOnFailureListener{
                 Log.d("readAllUserTasksFsUseCase", "reading all tasks from firestore failed, Error: ${it.message}")
             }

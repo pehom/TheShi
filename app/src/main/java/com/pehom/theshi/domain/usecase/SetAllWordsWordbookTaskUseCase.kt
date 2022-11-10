@@ -57,7 +57,7 @@ class SetAllWordsWordbookTaskUseCase {
                                     viewModel.useCases.setTaskByVocabulary.execute(viewModel, vcb, viewModel.currentWordbookTaskRoomItem){
                                         viewModel.currentWordbookVocabulary.value = vcb
                                         viewModel.viewModelScope.launch(Dispatchers.IO) {
-                                            viewModel.useCases.updateTaskFsUseCase.execute(viewModel, viewModel.currentWordbookTaskRoomItem){}
+                                            viewModel.useCases.updateTaskFsUseCase.execute(viewModel, viewModel.currentWordbookTaskRoomItem.value){}
                                             Constants.REPOSITORY.updateTaskRoomItem(viewModel.currentWordbookTaskRoomItem.value){
                                                 onSuccess()
                                             }

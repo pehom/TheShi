@@ -70,13 +70,16 @@ fun TestScreen(
                                 updateTaskRoomItem.currentTaskItem = viewModel.currentTask.value.currentTaskItem.value
                                 updateTaskRoomItem.currentTestItem = viewModel.currentTask.value.currentTestItem.value
                                 updateTaskRoomItem.wrongTestAnswers = viewModel.currentTask.value.wrongTestAnswers
+                                updateTaskRoomItem.incrementSyncCount()
+                                viewModel.useCases.updateTaskFsUseCase.execute(viewModel, updateTaskRoomItem){}
                                 viewModel.viewModelScope.launch(Dispatchers.IO) {
                                     Constants.REPOSITORY.updateTaskRoomItem(updateTaskRoomItem){
                                         isTestPaused.value = true
                                     }
                                 }
                         }) {
-                            Text(text = stringResource(id = R.string.retry), fontSize = 12.sp)                        }
+                            Text(text = stringResource(id = R.string.retry), fontSize = 12.sp)
+                        }
                     }
                     Box(modifier = Modifier
                         .fillMaxWidth()

@@ -42,5 +42,14 @@ data class TaskRoomItem(
     var currentLearningItem: Int = 0,
 
     @ColumnInfo(name= Constants.WRONG_TEST_ANSWERS)
-    var wrongTestAnswers: MutableMap<Int, String> = mutableMapOf()
-)
+    var wrongTestAnswers: MutableMap<Int, String> = mutableMapOf(),
+
+    @ColumnInfo(name = Constants.SYNC_COUNT)
+    var syncCount: Int = 0
+){
+     fun incrementSyncCount(){
+        if (syncCount < 1000000)
+            syncCount++
+        else syncCount = 2
+    }
+}
