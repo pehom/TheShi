@@ -13,20 +13,22 @@ class ReadRequestsAddFsUseCase {
 
     fun execute(
         viewModel: MainViewModel,
-        onResponse: ()-> Unit
+        onSuccess: (List<RequestAdd>)-> Unit
     ) {
+        val resultList = mutableListOf<RequestAdd>()
         Firebase.firestore.collection(Constants.USERS).document(viewModel.user.value.fsId.value).collection(Constants.PENDING_REQUESTS).get()
             .addOnSuccessListener { docs ->
                 if (docs.size() > 0) {
                     viewModel.requestsAdd.clear()
                     for (doc in docs) {
+                        val details = doc[Constants.DETAILS] as Map<*,*>
                         val receiverFsId = FsId(doc[Constants.RECEIVER_FSID].toString())
                         val senderFsId = FsId(doc[Constants.SENDER_FSID].toString())
                         val request = RequestAdd(senderFsId, receiverFsId)
-                        request.receiverName = doc[Constants.RECEIVER_NAME].toString()
-                        request.receiverPhone = doc[Constants.RECEIVER_PHONE].toString()
-                        request.senderName = doc[Constants.SENDER_NAME].toString()
-                        request.senderPhone = doc[Constants.SENDER_PHONE].toString()
+                        request.receiverName = details[Constants.RECEIVER_NAME].toString()
+                        request.receiverPhone = details[Constants.RECEIVER_PHONE].toString()
+                        request.senderName = details[Constants.SENDER_NAME].toString()
+                        request.senderPhone = details[Constants.SENDER_PHONE].toString()
                         request.state = doc[Constants.STATE].toString()
 
                         when (request.state) {
@@ -34,7 +36,7 @@ class ReadRequestsAddFsUseCase {
                                 if (request.receiverFsId.value == viewModel.user.value.fsId.value) {
                                     doc.reference.delete()
                                 } else {
-                                    val newStudent = Student(request.receiverFsId, request.receiverName)
+                                    val newStudent = Student(request.receiverFsId, request.receiverName, request.receiverPhone)
                                     doc.reference.delete()
                                     viewModel.useCases.addStudentFsUseCase.execute(viewModel, newStudent) {}
                                 }
@@ -44,13 +46,14 @@ class ReadRequestsAddFsUseCase {
                             }
 
                             Constants.PENDING -> {
+                                resultList.add((request))
                                 viewModel.requestsAdd.add(request)
                             }
                         }
                     }
                 }
                 Log.d("readRequestsAddFsUseCase", "viewmodel.requestsAdd = ${viewModel.requestsAdd}")
-                onResponse()
+                onSuccess(resultList)
             }
             .addOnFailureListener {
                 Log.d("readRequestsAddFsUseCase", "reading requests failed, Error: ${it.message}")

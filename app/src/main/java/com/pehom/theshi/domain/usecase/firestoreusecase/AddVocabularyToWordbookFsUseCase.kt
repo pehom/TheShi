@@ -13,14 +13,13 @@ class AddVocabularyToWordbookFsUseCase {
     fun execute(vocabulary: Vocabulary,
                 fsId: FsId,
                 onSuccess: ()-> Unit) {
-            val wordbookRef = Firebase.firestore.collection(Constants.USERS).document(fsId.value)
-                .collection(Constants.WORDBOOK).document(vocabulary.title.value)
-         //   val isNetworkAvailable = true  //TODO Network status checking needed
             val data = hashMapOf(
-                Constants.VOCABULARY_FS_DOC_REF_PATH to vocabulary.title.fsDocRefPath
+                Constants.VOCABULARY_FS_DOC_REF_PATH to vocabulary.title.fsDocRefPath,
+                Constants.VOCABULARY_TITLE to vocabulary.title.value
             )
             if (isNetworkAvailable()) {
-                wordbookRef.set(data)
+                Firebase.firestore.collection(Constants.USERS).document(fsId.value)
+                    .collection(Constants.WORDBOOK).document(vocabulary.title.value).set(data)
                     .addOnSuccessListener {
                         onSuccess()
                     }

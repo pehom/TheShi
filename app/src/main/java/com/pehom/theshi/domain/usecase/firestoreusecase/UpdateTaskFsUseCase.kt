@@ -35,7 +35,7 @@ class UpdateTaskFsUseCase {
         Log.d("updateTaskFsUseCase", "data: $data")
 
         Firebase.firestore.collection(Constants.USERS).document(viewModel.user.value.fsId.value)
-            .collection(Constants.TASKS).document(viewModel.currentTaskRoomItem.value.id)
+            .collection(Constants.TASKS_BY_USER).document(viewModel.currentTaskRoomItem.value.id)
             .update(Constants.DETAILS, data)
             .addOnSuccessListener {
                 onResponse()

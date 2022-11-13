@@ -22,8 +22,6 @@ fun PendingRequestsView(
     viewModel: MainViewModel,
     scaffoldState: ScaffoldState
 ){
-  //  val pendingRequests = viewModel.requestsAdd
-    val scope = rememberCoroutineScope()
     val pendingRequests = remember { viewModel.requestsAdd}
     Log.d("pendingRequestsView", "pendingRequests.size = ${pendingRequests.size}")
     val myFsId = viewModel.user.value.fsId

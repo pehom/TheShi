@@ -20,7 +20,9 @@ interface DatabaseRepository {
 
     val readAllTaskRoomItems: LiveData<List<TaskRoomItem>>
 
-    fun readTaskRoomItemsByFsId(fsId: String): LiveData<List<TaskRoomItem>>
+    fun readTaskRoomItemsByUserFsId(userFsId: String): LiveData<List<TaskRoomItem>>
+
+    suspend fun readTaskRoomItemIdsByUserFsId(userFsId: String): List<String>
 
     suspend fun readTaskRoomItemById(taskId: String, onSuccess: (TaskRoomItem?) -> Unit)
 

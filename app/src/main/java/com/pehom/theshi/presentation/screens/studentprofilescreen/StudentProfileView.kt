@@ -1,5 +1,6 @@
 package com.pehom.theshi.presentation.screens.studentprofilescreen
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -8,11 +9,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -27,6 +25,8 @@ import com.pehom.theshi.R
 import com.pehom.theshi.data.localdata.approomdatabase.StudentRoomItem
 import com.pehom.theshi.domain.model.FsId
 import com.pehom.theshi.domain.model.Student
+import com.pehom.theshi.domain.model.TaskInfo
+import com.pehom.theshi.domain.model.VocabularyTitle
 import com.pehom.theshi.presentation.viewmodel.MainViewModel
 import com.pehom.theshi.utils.Constants
 import kotlinx.coroutines.Dispatchers
@@ -38,114 +38,150 @@ fun StudentProfileView(
 ) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
-    val studentRoomItem = viewModel.currentStudent.value
-    var student = Student(FsId(studentRoomItem.fsId), studentRoomItem.name)
-    val tasks = remember {student.tasks}
+    var student = viewModel.currentStudent.value
+    val tasks = remember { viewModel.studentTasks }
+    val wordbook = remember { viewModel.studentWordbook }
 
-    viewModel.useCases.readStudentTasksFsUseCase.execute(context, viewModel){_tasks ->
-        tasks.clear()
-        tasks += _tasks
+    if (viewModel.lastStudent.value.fsId.value != viewModel.currentStudent.value.fsId.value) {
+        viewModel.useCases.readStudentTasksFsUseCase.execute(context, viewModel){_tasks ->
+            viewModel.studentTasks.clear()
+            Log.d("Student", "_task = $_tasks")
+            viewModel.studentTasks += _tasks
+            _tasks.forEach(){
+                Log.d("Student", "task = ${it.title}")
+            }
+        }
+        viewModel.useCases.readStudentWordbookFsUseCase.execute(student.fsId.value){_wordbook ->
+            viewModel.studentWordbook.clear()
+            viewModel.studentWordbook.addAll(_wordbook)
+        }
     }
+
+
     Card(modifier = Modifier
         .fillMaxWidth()
         .fillMaxHeight()
         .padding(10.dp),
         elevation = 5.dp) {
         Column(Modifier.fillMaxSize()) {
-            Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                Text(text = studentRoomItem.name, fontSize = 22.sp)
-            }
-            Card(modifier = Modifier
-                .fillMaxWidth()
-                .padding(10.dp),
-                elevation = 5.dp){
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    contentAlignment = Alignment.CenterStart
-                ) {
-                    Text(
-                        stringResource(id = R.string.wordbook),
-                        fontSize = 20.sp,
-                        modifier = Modifier.padding(10.dp)
-                    )
-                }
-            }
-
-            Column(
+            Box(
                 modifier = Modifier
-                    .fillMaxSize()
-            ) {
-                Box(
+                    .fillMaxHeight()
+                    .weight(0.7f)
+                    .fillMaxWidth()
+                    .padding(horizontal = 10.dp),
+                contentAlignment = Alignment.CenterStart) {
+                Text(text = stringResource(id = R.string.student) + ": ${student.name}" )
+            }
+            Row(modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight()
+                .weight(9f),
+                ){
+                Column(
                     modifier = Modifier
-                        .fillMaxWidth()
                         .fillMaxHeight()
+                        .fillMaxWidth()
                         .weight(1f)
                 ) {
-                    Text(
-                        stringResource(id = R.string.tasks),
-                        fontSize = 20.sp,
-                        modifier = Modifier.padding(10.dp)
-                    )
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        contentAlignment = Alignment.CenterStart
+                    ) {
+                        Text(
+                            stringResource(id = R.string.wordbook) + ":",
+                            modifier = Modifier.padding(horizontal = 10.dp)
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(5.dp))
+                    LazyColumn(){
+                       itemsIndexed(wordbook){_,item ->
+                           Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center){
+                               Text(text = item)
+                           }
+                           Spacer(modifier = Modifier.height(5.dp))
+                       }
+                    }
                 }
-                LazyColumn(
+                Spacer(modifier = Modifier.width(10.dp))
+                Column(
                     modifier = Modifier
-                        .fillMaxWidth()
                         .fillMaxHeight()
-                        .weight(7f)
-                        .padding(10.dp),
-                    verticalArrangement = Arrangement.spacedBy(15.dp)
+                        .fillMaxWidth()
+                        .weight(1f)
                 ) {
-                    itemsIndexed(tasks) { index, item ->
-                        val taskProgress = item.progress
-                        Row(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .background(
-                                    Brush.horizontalGradient(
-                                        (taskProgress.toFloat() / 100) to Color.Green,
-                                        (0.05f + taskProgress.toFloat() / 100) to Color.Red,
-                                        startX = 0.1f
-                                    ), RoundedCornerShape(4.dp)
-                                ),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Text(
-                                text = item.title,
-                                fontSize = 20.sp,
-                                modifier = Modifier.padding(start = 10.dp)
-                            )
-                            Text(
-                                text = ".. ${taskProgress}%",
-                                fontSize = 16.sp,
-                                modifier = Modifier.padding(end = 10.dp)
-                            )   //(1-taskProgress.value.toFloat()/100)  (taskProgress.value.toFloat() / 100)
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        contentAlignment = Alignment.CenterStart
+                    ) {
+                        Text(
+                            stringResource(id = R.string.tasks),
+                            modifier = Modifier.padding(horizontal = 10.dp)
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(5.dp))
+                    LazyColumn(){
+                        itemsIndexed(tasks) { _, item ->
+                            if (item.title != "") {
+                                StudentTasksItem(item = item)
+                                Spacer(modifier = Modifier.height(5.dp))
+                            }
                         }
                     }
                 }
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight()
-                        .weight(1.5f)
-                        .padding(end = 10.dp, bottom = 10.dp),
-                    contentAlignment = Alignment.BottomEnd
-                ) {
-                    FloatingActionButton(
-                        onClick = {
-                            viewModel.drawerType.value = Constants.DRAWER_ADD_NEW_TASK
-                            scope.launch {
-                                scaffoldState.drawerState.open()
-                            }
-                        }) {
-                        Icon(
-                            Icons.Filled.Add,
-                            contentDescription = stringResource(id = R.string.new_task)
-                        )
-                    }
+
+            }
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight()
+                    .weight(1.5f)
+                    .padding(end = 10.dp, bottom = 10.dp),
+                contentAlignment = Alignment.BottomEnd
+            ) {
+                FloatingActionButton(
+                    onClick = {
+                        viewModel.drawerType.value = Constants.DRAWER_ADD_NEW_TASK
+                        scope.launch {
+                            scaffoldState.drawerState.open()
+                        }
+                    }) {
+                    Icon(
+                        Icons.Filled.Add,
+                        contentDescription = stringResource(id = R.string.new_task)
+                    )
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun StudentTasksItem(item: TaskInfo){
+    val taskProgress = item.progress
+    Row(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 5.dp)
+            .background(
+                Brush.horizontalGradient(
+                    (taskProgress.toFloat() / 100) to Color.Green,
+                    (0.05f + taskProgress.toFloat() / 100) to Color.Red,
+                    startX = 0.1f
+                ), RoundedCornerShape(4.dp)
+            ),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(
+            text = item.title,
+            modifier = Modifier.padding(start = 10.dp)
+        )
+        Text(
+            text = ".. ${taskProgress}%",
+            modifier = Modifier.padding(end = 10.dp)
+        )
     }
 }

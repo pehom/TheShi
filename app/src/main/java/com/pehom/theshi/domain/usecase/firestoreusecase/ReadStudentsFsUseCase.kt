@@ -11,18 +11,21 @@ import com.pehom.theshi.utils.Constants
 class ReadStudentsFsUseCase {
     fun execute(
         viewModel: MainViewModel,
-        onResponse: () -> Unit
+        onSuccess: (List<Student>) -> Unit
     ) {
-        viewModel.students.clear()
+        val resultList = mutableListOf<Student>()
         Firebase.firestore.collection(Constants.USERS).document(viewModel.user.value.fsId.value)
             .collection(Constants.STUDENTS).get()
             .addOnSuccessListener { docs ->
                 for (doc in docs) {
-                    val student = Student(FsId(doc[Constants.FS_ID].toString()), doc[Constants.NAME].toString())
-                    student.learnedWords = doc[Constants.LEARNED_WORDS].toString().toInt()
-                    viewModel.students.add(student)
+                    val student = Student(
+                        FsId(doc[Constants.FS_ID].toString()),
+                        doc[Constants.NAME].toString(),
+                        doc[Constants.PHONE_NUMBER].toString()
+                        )
+                   resultList.add(student)
                 }
-                onResponse()
+                onSuccess(resultList)
             }
             .addOnFailureListener {
                 Log.d("readStudentsFsUseCase", "reading students failed, Error: ${it.message}")

@@ -47,5 +47,10 @@ data class UseCases(
     val setAllWordsWordbookTaskUseCase: SetAllWordsWordbookTaskUseCase,
     val uploadVocabularyToFsUseCase: UploadVocabularyToFsUseCase,
     val checkExistedVocabularyByTitleAndLevelFsUseCase: CheckExistedVocabularyByTitleAndLevelFsUseCase,
-    val checkIsAdminFsUseCase: CheckIsAdminFsUseCase
+    val checkIsAdminFsUseCase: CheckIsAdminFsUseCase,
+    val getTaskByReferenceFsUseCase: GetTaskByReferenceFsUseCase,
+    val syncUserTasksUseCase: SyncUserTasksUseCase,
+    val writeNewTasksByMentorToRoomFsUseCase: WriteNewTasksByMentorToRoomFsUseCase,
+    val readStudentWordbookFsUseCase: ReadStudentWordbookFsUseCase,
+    val addMentorFsUseCase: AddMentorFsUseCase
 )

@@ -20,11 +20,11 @@ data class TaskRoomItem(
     @ColumnInfo(name = Constants.TASK_TITLE)
     var taskTitle: String = "taskTitle",
 
- /*   @ColumnInfo(name = Constants.VOCABULARY_ID)
-    var vcbId: Int,*/
-
     @ColumnInfo(name= Constants.VOCABULARY_FS_DOC_REF_PATH)
     var vcbFsDocRefPath: String = "vcbDocRefPath",
+
+    @ColumnInfo(name = Constants.VOCABULARY_TITLE)
+    var vcbTitle: String = "vcbTitle",
 
     @ColumnInfo(name= Constants.IS_AVAILABLE)
     var isAvailable: Boolean = false,

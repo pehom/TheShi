@@ -19,6 +19,9 @@ interface TaskRoomDao {
     @Query("SELECT * FROM tasks_table WHERE studentFsId =:fsId AND id <> 'wbTaskRoomItem' AND id <> 'allWordsWordbookTask'")
     fun getTaskRoomItemsByFsId(fsId: String): LiveData<List<TaskRoomItem>>
 
+    @Query("SELECT id FROM tasks_table WHERE studentFsId =:userFsId AND id <> 'wbTaskRoomItem' AND id <> 'allWordsWordbookTask'")
+    fun getTaskRoomItemIdsByUserFsId(userFsId: String): List<String>
+
     @Update
     suspend fun updateTaskRoomItem(taskRoomItem: TaskRoomItem)
 

@@ -3,6 +3,7 @@ package com.pehom.theshi.presentation.screens.components
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.ScaffoldState
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
@@ -33,7 +34,10 @@ fun Header(
             .padding(10.dp)
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth().fillMaxHeight().weight(1f),
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight()
+                .weight(1f),
            // horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -53,7 +57,9 @@ fun Header(
                             }
                         })
             }
-            Box(modifier = Modifier.fillMaxWidth().weight(1f), contentAlignment = Alignment.Center) {
+            Box(modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f), contentAlignment = Alignment.Center) {
                 Text(
                     text = "EVAT",
                     fontSize = 17.sp,
@@ -61,10 +67,15 @@ fun Header(
                     letterSpacing = 2.sp
                 )
             }
-            Box(modifier = Modifier.fillMaxWidth().weight(1f))
+            Box(modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f))
         }
         Row(
-            modifier = Modifier.fillMaxWidth().fillMaxHeight().weight(1f),
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight()
+                .weight(1f),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -74,14 +85,22 @@ fun Header(
                 textAlign = TextAlign.Left,
                 modifier = Modifier.padding(horizontal = 25.dp)
             )
-            Text(
-                text = "Pending requests " + viewModel.requestsAdd.size,
-                fontSize = 14.sp,
-                color = if (viewModel.requestsAdd.size > 0) Color.Green
-                        else Color.Transparent,
-                textAlign = TextAlign.Right,
-                modifier = Modifier.padding(horizontal = 10.dp)
-            )
+            IconButton(
+                enabled = viewModel.requestsAdd.size > 0,
+                onClick = {
+
+                    viewModel.screenState.value = viewModel.MODE_REQUESTS_SCREEN
+            }) {
+                Text(
+                    text = "Pending requests " + viewModel.requestsAdd.size,
+                    fontSize = 14.sp,
+                    color = if (viewModel.requestsAdd.size > 0) Color.Green
+                    else Color.Transparent,
+                    textAlign = TextAlign.Right,
+                    modifier = Modifier
+                        .padding(horizontal = 10.dp)
+                )
+            }
         }
     }
 }

@@ -14,7 +14,7 @@ class DeleteTaskByIdFsUseCase {
         onSuccess: () -> Unit
     ){
         Firebase.firestore.collection(Constants.USERS).document(viewModel.user.value.fsId.value)
-            .collection(Constants.TASKS).document(taskId).delete()
+            .collection(Constants.TASKS_BY_USER).document(taskId).delete()
             .addOnSuccessListener {
                 onSuccess()
             }

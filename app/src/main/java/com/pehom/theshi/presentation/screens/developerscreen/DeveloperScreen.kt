@@ -27,7 +27,7 @@ fun DeveloperScreen(
 ) {
     Log.d("ppp", "DeveloperScreen is on")
 
-    val tasks = Constants.REPOSITORY.readTaskRoomItemsByFsId(viewModel.user.value.fsId.value).observeAsState(listOf()).value
+    val tasks = Constants.REPOSITORY.readTaskRoomItemsByUserFsId(viewModel.user.value.fsId.value).observeAsState(listOf()).value
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center){
         Column() {
             Button(onClick = {

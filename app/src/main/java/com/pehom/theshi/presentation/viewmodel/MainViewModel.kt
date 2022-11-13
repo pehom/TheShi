@@ -6,7 +6,6 @@ import android.content.SharedPreferences
 import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
 import com.pehom.theshi.data.localdata.approomdatabase.AppRoomDatabase
 import com.pehom.theshi.data.localdata.approomdatabase.StudentRoomItem
@@ -40,17 +39,20 @@ class MainViewModel(
     val MODE_WORDBOOK_SCREEN = 13
     val MODE_WORDBOOK_TASK_SCREEN = 14
     val MODE_ADMIN_SCREEN = 15
+    val MODE_REQUESTS_SCREEN = 16
 
     var currentTask = mutableStateOf(Task("","", Vocabulary(VocabularyTitle("","","",0), mutableListOf(VocabularyItemScheme("","","")))))
     val wordbook = mutableSetOf<VocabularyItemScheme>()
     val students = mutableStateListOf<Student>()
     val switchState = mutableStateOf(true)
     val screenState = mutableStateOf(MODE_STARTER_SCREEN)
-    val currentTaskNumber = mutableStateOf(0)
-    val currentTaskRoomItem = mutableStateOf(TaskRoomItem("","","","", "",false,0,0,0,0, mutableMapOf()))
+    var lastScreen = -1
+    val currentTaskRoomItem = mutableStateOf(TaskRoomItem("","","","", "","",false,0,0,0,0, mutableMapOf()))
     val studentNumber =  mutableStateOf(0)
-    val studentFsId = mutableStateOf("")
-    val currentStudent = mutableStateOf(StudentRoomItem("","",""))
+    val studentTasks = mutableStateListOf<TaskInfo>()
+    val studentWordbook = mutableStateListOf<String>()
+    val currentStudent = mutableStateOf(Student(FsId(""),"",""))
+    val lastStudent = mutableStateOf(Student(FsId(""),"",""))
     val isStudentProfileShown = mutableStateOf(false)
     val requestsAdd = mutableStateListOf<RequestAdd>()
     val currentWordbookVocabulary = mutableStateOf(Vocabulary(VocabularyTitle(""), mutableListOf()))
@@ -107,7 +109,12 @@ class MainViewModel(
         SetAllWordsWordbookTaskUseCase(),
         UploadVocabularyToFsUseCase(),
         CheckExistedVocabularyByTitleAndLevelFsUseCase(),
-        CheckIsAdminFsUseCase()
+        CheckIsAdminFsUseCase(),
+        GetTaskByReferenceFsUseCase(),
+        SyncUserTasksUseCase(),
+        WriteNewTasksByMentorToRoomFsUseCase(),
+        ReadStudentWordbookFsUseCase(),
+        AddMentorFsUseCase()
         )
 
     init {

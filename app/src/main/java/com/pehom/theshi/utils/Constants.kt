@@ -13,7 +13,7 @@ object Constants {
     const val USERS = "Users"
     const val PHONE_NUMBER = "phoneNumber"
     const val EMAIL = "email"
-    const val TASKS = "tasks"
+    const val TASKS_BY_USER = "tasksByUser"
     const val STUDENTS = "students"
     const val AVAILABLE_VOCABULARIES = "availableVocabularies"
     const val FUNDS = "funds"
@@ -85,7 +85,11 @@ object Constants {
     const val SHARED_PREF_SCREEN_STATE = "sharedPrefScreenState"
     const val ADMINS = "Admins"
     const val SYNC_COUNT = "syncCount"
-    const val TASKS_FROM_MENTOR = "tasksFromMentor"
+    const val TASKS_BY_MENTOR = "tasksByMentor"
+    const val TASKS_BY_MENTOR_GOT_CHANGES = "tasksByMentorGotChanges"
+    const val REFERENCE = "reference"
+    const val IS_CHECKED = "isChecked"
+    const val MENTORS = "mentors"
     lateinit var REPOSITORY: DatabaseRepository
 
 

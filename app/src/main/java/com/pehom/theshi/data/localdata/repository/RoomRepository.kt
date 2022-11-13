@@ -46,10 +46,14 @@ class RoomRepository(
     override val readAllTaskRoomItems: LiveData<List<TaskRoomItem>>
         get() = taskRoomDao.getAllTaskRoomItems()
 
-    override  fun readTaskRoomItemsByFsId(
-        fsId: String
+    override  fun readTaskRoomItemsByUserFsId(
+        userFsId: String
     ): LiveData<List<TaskRoomItem>> {
-        return taskRoomDao.getTaskRoomItemsByFsId(fsId)
+        return taskRoomDao.getTaskRoomItemsByFsId(userFsId)
+    }
+
+    override suspend fun readTaskRoomItemIdsByUserFsId(userFsId: String): List<String> {
+        return taskRoomDao.getTaskRoomItemIdsByUserFsId(userFsId)
     }
 
     override suspend fun readTaskRoomItemById(taskId: String, onSuccess: (TaskRoomItem?) -> Unit) {

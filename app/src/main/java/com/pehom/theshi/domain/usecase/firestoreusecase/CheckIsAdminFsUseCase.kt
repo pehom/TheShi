@@ -14,25 +14,28 @@ class CheckIsAdminFsUseCase {
         user: User,
         onResult: (Boolean) -> Unit
     ) {
-        if (isNetworkAvailable()) {
-            Firebase.firestore.collection(Constants.ADMINS).document(user.fsId.value).get()
-                .addOnSuccessListener {
-                    Log.d(TAG, "doc = ${it.data}")
-                    if (it.exists()) {
-                        Log.d(TAG, "check isAdmin result: true")
-                        onResult(true)
-                    } else{
-                        Log.d(TAG, "check isAdmin result: false")
+        if (user.fsId.value != ""){
+            if (isNetworkAvailable()) {
+                Firebase.firestore.collection(Constants.ADMINS).document(user.fsId.value).get()
+                    .addOnSuccessListener {
+                        Log.d(TAG, "doc = ${it.data}")
+                        if (it.exists()) {
+                            Log.d(TAG, "check isAdmin result: true")
+                            onResult(true)
+                        } else{
+                            Log.d(TAG, "check isAdmin result: false")
+                            onResult(false)
+                        }
+                    }
+                    .addOnFailureListener {
+                        Log.d(TAG, "check isAdmin failed, Error: ${it.message}")
                         onResult(false)
                     }
-                }
-                .addOnFailureListener {
-                    Log.d(TAG, "check isAdmin failed, Error: ${it.message}")
-                    onResult(false)
-                }
-        } else{
-            Log.d(TAG, "check isAdmin result: network is not available")
+            } else{
+                Log.d(TAG, "check isAdmin result: network is not available")
+                onResult(false)
+            }
+        } else
             onResult(false)
-        }
     }
 }

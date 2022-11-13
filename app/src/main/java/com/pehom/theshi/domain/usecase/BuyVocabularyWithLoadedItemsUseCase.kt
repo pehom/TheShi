@@ -29,7 +29,7 @@ class BuyVocabularyWithLoadedItemsUseCase {
                 .update(Constants.FUNDS, viewModel.user.value.funds.amount.value)
             viewModel.currentTaskRoomItem.value.isAvailable = true
             Firebase.firestore.collection(Constants.USERS).document(viewModel.user.value.fsId.value)
-                .collection(Constants.TASKS).document(viewModel.currentTaskRoomItem.value.id)
+                .collection(Constants.TASKS_BY_USER).document(viewModel.currentTaskRoomItem.value.id)
                 .update("${Constants.DETAILS}.${Constants.IS_AVAILABLE}", true)
 
             Firebase.firestore.collection(Constants.USERS).document(viewModel.user.value.fsId.value)

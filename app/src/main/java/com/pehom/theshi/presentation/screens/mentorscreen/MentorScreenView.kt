@@ -10,6 +10,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -30,8 +31,16 @@ fun MentorScreenView(
     viewModel: MainViewModel,
     scaffoldState: ScaffoldState,
 ) {
-    val students = Constants.REPOSITORY
-        .readStudentRoomItemsByMentorId(viewModel.user.value.fsId.value).observeAsState(listOf()).value
+    /*val students = Constants.REPOSITORY
+        .readStudentRoomItemsByMentorId(viewModel.user.value.fsId.value).observeAsState(listOf()).value*/
+    val students = remember { mutableStateListOf(Student(FsId(""),"","")) }
+    if (viewModel.user.value.fsId.value != "") {
+        viewModel.useCases.readStudentsFsUseCase.execute(viewModel){
+            students.clear()
+            students.addAll(it)
+        }
+    }
+
     val scope = rememberCoroutineScope()
    // val pendingRequests = remember { viewModel.addingRequests}
     Card(modifier = Modifier
@@ -48,13 +57,6 @@ fun MentorScreenView(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween) {
                 Text( text =  stringResource(id = R.string.your_students), fontSize = 20.sp,modifier= Modifier.padding(10.dp))
-                Text( text =  stringResource(id = R.string.pending_Requests) + "  ${viewModel.requestsAdd.size}",
-                    fontSize = 16.sp ,modifier= Modifier
-                        .padding(10.dp)
-                        .clickable {
-                            //TODO pending requests info
-                        },
-                    color = if (viewModel.requestsAdd.size != 0)  Color.Green else Color.Transparent)
             }
             LazyColumn(modifier = Modifier
                 .fillMaxWidth()
@@ -62,15 +64,15 @@ fun MentorScreenView(
                 .weight(7f)
                 .padding(10.dp)
             ) {
-                itemsIndexed(students) {index, item ->
+                itemsIndexed(students) { _, item ->
                     Box(modifier = Modifier
                         .fillMaxWidth()
                         .padding(start = 10.dp, end = 10.dp, top = 5.dp, bottom = 5.dp)
                         .clickable {
                             viewModel.currentStudent.value = item
-                           // viewModel.studentFsId.value = item.fsId
+                            // viewModel.studentFsId.value = item.fsId
                             viewModel.isStudentProfileShown.value = true
-                           // viewModel.studentNumber.value = index
+                            // viewModel.studentNumber.value = index
                         }
                         ,contentAlignment = Alignment.CenterStart) {
                         Text(text = item.name, fontSize = 20.sp,)

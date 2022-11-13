@@ -13,39 +13,51 @@ class CreateRequestAddFsUseCase {
         request: RequestAdd,
         onResponse: () -> Unit
     ) {
-      //  viewModel.requestsAdd.add(request)
-        val dataRequestSent = hashMapOf(
-            Constants.RECEIVER_FSID to request.receiverFsId.value,
-            Constants.STATE to request.state,
-            Constants.RECEIVER_NAME to request.receiverName,
-            Constants.RECEIVER_PHONE to request.receiverPhone,
-            Constants.SENDER_NAME to request.senderName,
-            Constants.SENDER_PHONE to request.senderPhone,
-            Constants.SENDER_FSID to request.senderFsId.value
-        )
         Firebase.firestore.collection(Constants.USERS).document(viewModel.user.value.fsId.value)
-            .collection(Constants.PENDING_REQUESTS).add(dataRequestSent)
-                .addOnSuccessListener {
-                    val dataRequestReceived = hashMapOf(
-                        Constants.SENDER_FSID to viewModel.user.value.fsId.value,
-                        Constants.RECEIVER_FSID to request.receiverFsId.value,
-                        Constants.STATE to Constants.PENDING,
+            .collection(Constants.PENDING_REQUESTS).document(request.receiverPhone).get()
+            .addOnSuccessListener {
+                if (!it.exists()) {
+                    val details = hashMapOf(
                         Constants.RECEIVER_NAME to request.receiverName,
                         Constants.RECEIVER_PHONE to request.receiverPhone,
-                        Constants.SENDER_NAME to request.senderName,
-                        Constants.SENDER_PHONE to request.senderPhone
+                        Constants.SENDER_PHONE to request.senderPhone,
+                        Constants.SENDER_FSID to request.senderFsId.value
                     )
-                    Firebase.firestore.collection(Constants.USERS).document(request.receiverFsId.value)
-                        .collection(Constants.PENDING_REQUESTS).add(dataRequestReceived)
+
+                    val dataRequestSent = hashMapOf(
+                        Constants.SENDER_NAME to request.senderName,
+                        Constants.RECEIVER_FSID to request.receiverFsId.value,
+                        Constants.STATE to request.state,
+                        Constants.DETAILS to details
+                    )
+                    Firebase.firestore.collection(Constants.USERS).document(viewModel.user.value.fsId.value)
+                        .collection(Constants.PENDING_REQUESTS).document(request.receiverPhone).set(dataRequestSent)
                         .addOnSuccessListener {
-                            onResponse()
+                            val detailsReceived = hashMapOf(
+                                Constants.RECEIVER_NAME to request.receiverName,
+                                Constants.RECEIVER_PHONE to request.receiverPhone,
+                                Constants.SENDER_NAME to request.senderName,
+                                Constants.SENDER_PHONE to request.senderPhone
+                            )
+                            val dataRequestReceived = hashMapOf(
+                                Constants.RECEIVER_FSID to request.receiverFsId.value,
+                                Constants.SENDER_FSID to viewModel.user.value.fsId.value,
+                                Constants.STATE to Constants.PENDING,
+                                Constants.DETAILS to detailsReceived
+                            )
+                            Firebase.firestore.collection(Constants.USERS).document(request.receiverFsId.value)
+                                .collection(Constants.PENDING_REQUESTS).document(request.senderPhone).set(dataRequestReceived)
+                                .addOnSuccessListener {
+                                    onResponse()
+                                }
+                                .addOnFailureListener {
+                                    Log.d("createRequestAddFsUseCase", "adding requestReceived failed, Error: ${it.message}")
+                                }
                         }
                         .addOnFailureListener {
-                            Log.d("createRequestAddFsUseCase", "adding requestReceived failed, Error: ${it.message}")
+                            Log.d("createRequestAddFsUseCase", "adding requestSent failed, Error: ${it.message}")
                         }
                 }
-                .addOnFailureListener {
-                    Log.d("createRequestAddFsUseCase", "adding requestSent failed, Error: ${it.message}")
-                }
+            }
     }
 }

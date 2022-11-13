@@ -29,15 +29,21 @@ fun StudentScreenView(
 ) {
     val TAG = "StudentScreenView"
     val scope = rememberCoroutineScope()
-    val taskRoomItems = Constants.REPOSITORY.readTaskRoomItemsByFsId(viewModel.user.value.fsId.value).observeAsState(listOf()).value
-    Log.d(TAG, " taskRoomItems = $taskRoomItems")
+    viewModel.useCases.writeNewTasksByMentorToRoomFsUseCase.execute(viewModel)
     var tasksFs = listOf<TaskRoomItem>()
-    if (taskRoomItems.isEmpty()) {
-        tasksFs = viewModel.useCases.readAllUserTasksFsUseCase.execute(viewModel).observeAsState(listOf()).value
-        tasksFs.forEach {
-            viewModel.useCases.addTaskRoomUseCase.execute(viewModel, it){}
+    var taskRoomItems = listOf<TaskRoomItem>()
+    if (viewModel.user.value.fsId.value != "") {
+        taskRoomItems = Constants.REPOSITORY.readTaskRoomItemsByUserFsId(viewModel.user.value.fsId.value).observeAsState(listOf()).value
+        if (taskRoomItems.isEmpty()) {
+            tasksFs = viewModel.useCases.readAllUserTasksFsUseCase.execute(viewModel).observeAsState(listOf()).value
+            tasksFs.forEach {
+                viewModel.useCases.addTaskRoomUseCase.execute(viewModel, it){}
+            }
         }
     }
+   // val taskRoomItems = Constants.REPOSITORY.readTaskRoomItemsByUserFsId(viewModel.user.value.fsId.value).observeAsState(listOf()).value
+    Log.d(TAG, " taskRoomItems = $taskRoomItems")
+
     Card(modifier = Modifier
         .fillMaxWidth()
         .fillMaxHeight()

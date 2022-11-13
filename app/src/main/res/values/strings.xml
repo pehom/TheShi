@@ -3,7 +3,7 @@
     <string name="title_activity_auth">AuthActivity</string>
     <string name="tasks">Tasks:</string>
     <string name="jajaa">do</string>
-    <string name="mentor">mentor</string>
+    <string name="mentor">Mentor</string>
     <string name="student">Student</string>
     <string name="new_task">New task</string>
     <string name="new_task_title">New task title</string>
@@ -76,4 +76,6 @@
     <string name="all_words">All words</string>
     <string name="vocabularies">Vocabularies</string>
     <string name="overwrite_vocabulary_alert">Such vocabulary already exists. Overwrite?</string>
+    <string name="mentors">Mentors:</string>
+    <string name="students">Students:</string>
 </resources>

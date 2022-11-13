@@ -124,7 +124,10 @@ fun DrawerAddStudent(
                 .padding(horizontal = 20.dp),
                 enabled = !searchingTextFieldIsError.value && newStudentName.value.isNotEmpty(),
                 onClick =  {
-                        val newStudent = Student(FsId(newStudentPhoneNumber.value), newStudentName.value)
+                        val newStudent = Student(
+                            FsId(newStudentPhoneNumber.value),
+                            newStudentName.value,
+                            newStudentPhoneNumber.value)
                         // TODO sendRequestToAdd(newStudent.id)
                         viewModel.useCases.getUserFsIdByPhoneFsUseCase.execute(newStudentPhoneNumber.value) { receiverFsId ->
                             Log.d("vvv", "receiverFsId = ${receiverFsId.value}")

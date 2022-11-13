@@ -19,7 +19,7 @@ import com.pehom.theshi.presentation.viewmodel.MainViewModel
 @Composable
 fun StudentScreen(viewModel: MainViewModel, auth: FirebaseAuth) {
     Log.d("ppp", "StudentScreen is on")
-
+   // viewModel.lastScreen = viewModel.MODE_STUDENT_SCREEN
     val scaffoldState = rememberScaffoldState()
     Scaffold(
         modifier = Modifier.fillMaxSize(),

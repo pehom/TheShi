@@ -15,15 +15,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
 import com.pehom.theshi.R
-import com.pehom.theshi.data.localdata.approomdatabase.AvailableVocabularyRoomItem
 import com.pehom.theshi.data.localdata.approomdatabase.WordbookRoomItem
 import com.pehom.theshi.presentation.viewmodel.MainViewModel
 import com.pehom.theshi.utils.Constants
@@ -46,7 +42,7 @@ fun DrawerUserProfile(viewModel: MainViewModel, scaffoldState: ScaffoldState, au
         }
     } )
     val context = LocalContext.current
-    val tasks = Constants.REPOSITORY.readTaskRoomItemsByFsId(viewModel.user.value.fsId.value).observeAsState(
+    val tasks = Constants.REPOSITORY.readTaskRoomItemsByUserFsId(viewModel.user.value.fsId.value).observeAsState(
         listOf()
     ).value
     val availableVocabularyRoomItems = Constants.REPOSITORY.
@@ -113,7 +109,7 @@ fun DrawerUserProfile(viewModel: MainViewModel, scaffoldState: ScaffoldState, au
 
         Button(onClick = {
             viewModel.viewModelScope.launch(Dispatchers.IO) {
-                wordbookRoomItems.forEachIndexed() { index, wordbookItem ->
+                wordbookRoomItems.forEachIndexed() { _, wordbookItem ->
                     viewModel.viewModelScope.launch(Dispatchers.IO) {
                         Constants.REPOSITORY.deleteWordbookRoomItem(wordbookItem){}
                     }
@@ -127,7 +123,7 @@ fun DrawerUserProfile(viewModel: MainViewModel, scaffoldState: ScaffoldState, au
         }
         Button(onClick = {
            viewModel.viewModelScope.launch(Dispatchers.IO) {
-               tasks.forEachIndexed { index, taskRoomItem ->
+               tasks.forEachIndexed { _, taskRoomItem ->
                    Constants.REPOSITORY.deleteTaskRoomItem(taskRoomItem){}
                }
                Log.d("deleteTaskRoomItem", "allTaskRoomItems.size = ${Constants.REPOSITORY.readAllTaskRoomItems.value?.size}")

@@ -33,6 +33,7 @@ import kotlinx.coroutines.launch
 import com.pehom.theshi.R
 import com.pehom.theshi.data.localdata.approomdatabase.AvailableVocabularyRoomItem
 import com.pehom.theshi.data.localdata.approomdatabase.TaskRoomItem
+import com.pehom.theshi.domain.model.TaskInfo
 import com.pehom.theshi.domain.model.VocabularyTitle
 import com.pehom.theshi.presentation.screens.components.VocabularyListItem
 import com.pehom.theshi.utils.Constants
@@ -53,7 +54,7 @@ fun DrawerCreateNewTask(
     val selectedIndex = remember { mutableStateOf(-1) }
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
-    val vocabularyTitles = remember {viewModel.allVocabularyTitles}
+    val vocabularyTitles = remember { viewModel.allVocabularyTitles }
 
     Column(modifier = Modifier.fillMaxSize()) {
         OutlinedTextField(
@@ -152,6 +153,7 @@ fun DrawerCreateNewTask(
                                         viewModel.user.value.fsId.value,
                                         newTaskTitle.value,
                                         vocabularyTitles[selectedIndex.value].fsDocRefPath,
+                                        vocabularyTitles[selectedIndex.value].value,
                                         true,
                                         0,
                                         0,
@@ -175,9 +177,10 @@ fun DrawerCreateNewTask(
                                     val newTask = TaskRoomItem(
                                         viewModel.taskIdFactory.createId(),
                                         viewModel.user.value.fsId.value,
-                                        viewModel.currentStudent.value.fsId,
+                                        viewModel.currentStudent.value.fsId.value,
                                         newTaskTitle.value,
                                         vocabularyTitles[selectedIndex.value].fsDocRefPath,
+                                        vocabularyTitles[selectedIndex.value].value,
                                         true,
                                         0,
                                         0,
@@ -187,14 +190,22 @@ fun DrawerCreateNewTask(
                                     )
                                     viewModel.useCases.addStudentTaskFsUseCase.execute(viewModel, newTask){}
                                     viewModel.useCases.updateLastTaskIdSfxFsUseCase.execute(viewModel.taskIdFactory.lastIdSfx, viewModel) {}
-                                    viewModel.useCases.addTaskRoomUseCase.execute(viewModel, newTask) {
-                                        scope.launch {
-                                            scaffoldState.drawerState.close()
-                                            selectedIndex.value = -1
-                                            searchingValue.value = ""
-                                            newTaskTitle.value = ""
-                                        }
+                                    viewModel.studentTasks.add(TaskInfo(newTask.id, newTask.taskTitle,  vocabularyTitles[selectedIndex.value]))
+                                    scope.launch {
+                                        scaffoldState.drawerState.close()
+                                        selectedIndex.value = -1
+                                        searchingValue.value = ""
+                                        newTaskTitle.value = ""
                                     }
+
+//                                    viewModel.useCases.addTaskRoomUseCase.execute(viewModel, newTask) {
+//                                        scope.launch {
+//                                            scaffoldState.drawerState.close()
+//                                            selectedIndex.value = -1
+//                                            searchingValue.value = ""
+//                                            newTaskTitle.value = ""
+//                                        }
+//                                    }
                                 }
                             } else {
                                 if (!viewModel.isStudentProfileShown.value){
@@ -205,6 +216,7 @@ fun DrawerCreateNewTask(
                                         viewModel.user.value.fsId.value,
                                         newTaskTitle.value,
                                         vocabularyTitles[selectedIndex.value].fsDocRefPath,
+                                        vocabularyTitles[selectedIndex.value].value,
                                         false,
                                         0,
                                         0,
@@ -228,9 +240,10 @@ fun DrawerCreateNewTask(
                                     val newTask = TaskRoomItem(
                                         viewModel.taskIdFactory.createId(),
                                         viewModel.user.value.fsId.value,
-                                        viewModel.currentStudent.value.fsId,
+                                        viewModel.currentStudent.value.fsId.value,
                                         newTaskTitle.value,
                                         vocabularyTitles[selectedIndex.value].fsDocRefPath,
+                                        vocabularyTitles[selectedIndex.value].value,
                                         false,
                                         0,
                                         0,
@@ -240,14 +253,21 @@ fun DrawerCreateNewTask(
                                     )
                                     viewModel.useCases.addStudentTaskFsUseCase.execute(viewModel, newTask){}
                                     viewModel.useCases.updateLastTaskIdSfxFsUseCase.execute(viewModel.taskIdFactory.lastIdSfx, viewModel) {}
-                                    viewModel.useCases.addTaskRoomUseCase.execute(viewModel, newTask) {
+                                    viewModel.studentTasks.add(TaskInfo(newTask.id, newTask.taskTitle,  vocabularyTitles[selectedIndex.value]))
+                                    scope.launch {
+                                        scaffoldState.drawerState.close()
+                                        selectedIndex.value = -1
+                                        searchingValue.value = ""
+                                        newTaskTitle.value = ""
+                                    }
+                                    /*viewModel.useCases.addTaskRoomUseCase.execute(viewModel, newTask) {
                                         scope.launch {
                                             scaffoldState.drawerState.close()
                                             selectedIndex.value = -1
                                             searchingValue.value = ""
                                             newTaskTitle.value = ""
                                         }
-                                    }
+                                    }*/
                                 }
                             }
                         }

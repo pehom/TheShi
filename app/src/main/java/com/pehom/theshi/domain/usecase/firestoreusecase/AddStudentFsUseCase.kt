@@ -17,7 +17,8 @@ class AddStudentFsUseCase {
         val newStudent = hashMapOf(
             Constants.FS_ID to _newStudent.fsId.value,
             Constants.NAME to _newStudent.name,
-            Constants.LEARNED_WORDS to _newStudent.learnedWords
+            Constants.PHONE_NUMBER to _newStudent.phone
+          //  Constants.LEARNED_WORDS to _newStudent.learnedWords
         )
         db.collection(Constants.USERS).document(viewModel.user.value.fsId.value).collection(Constants.STUDENTS)
             .document(_newStudent.fsId.value).set(newStudent)

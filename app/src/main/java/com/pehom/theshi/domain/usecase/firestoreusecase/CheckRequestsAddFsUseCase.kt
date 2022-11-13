@@ -6,19 +6,21 @@ import com.google.firebase.ktx.Firebase
 import com.pehom.theshi.presentation.viewmodel.MainViewModel
 import com.pehom.theshi.utils.Constants
 
-class SetTaskProgressFsUseCase {
+class CheckRequestsAddFsUseCase {
+    private val TAG = "CheckRequestsAddFsUseCase"
+
     fun execute(
-        viewModel: MainViewModel,
-        onResponse: () -> Unit
-    ) {
+        viewModel: MainViewModel
+    ){
         Firebase.firestore.collection(Constants.USERS).document(viewModel.user.value.fsId.value)
-            .collection(Constants.TASKS_BY_USER).document(viewModel.currentTask.value.id)
-            .update(Constants.PROGRESS, viewModel.currentTask.value.progress)
-            .addOnSuccessListener {
-                onResponse()
+            .collection(Constants.PENDING_REQUESTS).get()
+            .addOnSuccessListener { docs ->
+                for (doc in docs) {
+
+                }
             }
             .addOnFailureListener {
-                Log.d("setTaskProgressFsUseCase", "updating progress failed, Error: ${it.message}")
+                Log.d(TAG, "getting requests failed, Error: ${it.message}")
             }
     }
 }

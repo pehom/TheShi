@@ -23,6 +23,7 @@ import com.pehom.theshi.presentation.screens.authscreen.SignInScreen
 import com.pehom.theshi.presentation.screens.developerscreen.DeveloperScreen
 import com.pehom.theshi.presentation.screens.loginscreen.LoginScreen
 import com.pehom.theshi.presentation.screens.mentorscreen.MentorScreen
+import com.pehom.theshi.presentation.screens.requestsScreen.RequestsScreen
 import com.pehom.theshi.presentation.screens.studentscreen.StudentScreen
 import com.pehom.theshi.presentation.screens.taskscreen.TaskScreen
 import com.pehom.theshi.presentation.screens.wordbookscreen.WordbookScreen
@@ -96,7 +97,10 @@ class MainActivity : ComponentActivity(), TextToSpeech.OnInitListener {
                 vm.screenState.value = vm.MODE_STUDENT_SCREEN
             }
             vm.MODE_MENTOR_SCREEN -> {
-                if (vm.isStudentProfileShown.value) vm.isStudentProfileShown.value =!vm.isStudentProfileShown.value
+                if (vm.isStudentProfileShown.value){
+                    vm.lastStudent.value = vm.currentStudent.value
+                    vm.isStudentProfileShown.value =!vm.isStudentProfileShown.value
+                }
                 else super.onBackPressed()
             }
             vm.MODE_STUDENT_SCREEN -> super.onBackPressed()
@@ -118,6 +122,9 @@ class MainActivity : ComponentActivity(), TextToSpeech.OnInitListener {
             }
             vm.MODE_ADMIN_SCREEN -> {
                 vm.screenState.value = vm.MODE_STUDENT_SCREEN
+            }
+            vm.MODE_REQUESTS_SCREEN -> {
+                vm.screenState.value = vm.lastScreen
             }
         }
     }
@@ -181,17 +188,55 @@ class MainActivity : ComponentActivity(), TextToSpeech.OnInitListener {
         auth: FirebaseAuth,
     ) {
         when (viewModel.screenState.value) {
-            viewModel.MODE_STUDENT_SCREEN -> StudentScreen(viewModel, auth)
-            viewModel.MODE_TASK_SCREEN -> TaskScreen( viewModel, tts)
-            viewModel.MODE_MENTOR_SCREEN -> MentorScreen(viewModel, auth)
-            viewModel.MODE_LOGIN_SCREEN -> LoginScreen(viewModel, auth)
-            viewModel.MODE_REGISTER_SCREEN -> RegisterScreen(viewModel, auth)
-            viewModel.MODE_SIGN_IN_SCREEN -> SignInScreen( viewModel,auth )
-            viewModel.MODE_STARTER_SCREEN -> StarterScreen(viewModel, auth)
-            viewModel.MODE_DEVELOPER_SCREEN -> DeveloperScreen(viewModel)
-            viewModel.MODE_WORDBOOK_SCREEN -> WordbookScreen(viewModel)
-            viewModel.MODE_WORDBOOK_TASK_SCREEN -> WordbookTaskScreen(viewModel, tts)
-            viewModel.MODE_ADMIN_SCREEN -> AdminScreen(viewModel)
+            viewModel.MODE_STUDENT_SCREEN -> {
+                StudentScreen(viewModel, auth)
+                viewModel.drawerType.value = Constants.DRAWER_USER_PROFILE
+                viewModel.lastScreen = viewModel.MODE_STUDENT_SCREEN
+            }
+            viewModel.MODE_TASK_SCREEN ->{
+                TaskScreen( viewModel, tts)
+               // viewModel.lastScreen = viewModel.MODE_TASK_SCREEN
+            }
+            viewModel.MODE_MENTOR_SCREEN -> {
+                MentorScreen(viewModel, auth)
+                viewModel.lastScreen = viewModel.MODE_MENTOR_SCREEN
+            }
+            viewModel.MODE_LOGIN_SCREEN -> {
+                LoginScreen(viewModel, auth)
+               // viewModel.lastScreen = viewModel.MODE_LOGIN_SCREEN
+            }
+            viewModel.MODE_REGISTER_SCREEN -> {
+                RegisterScreen(viewModel, auth)
+              //  viewModel.lastScreen = viewModel.MODE_REGISTER_SCREEN
+            }
+            viewModel.MODE_SIGN_IN_SCREEN -> {
+                SignInScreen( viewModel,auth )
+               // viewModel.lastScreen = viewModel.MODE_SIGN_IN_SCREEN
+            }
+            viewModel.MODE_STARTER_SCREEN -> {
+                StarterScreen(viewModel, auth)
+               // viewModel.lastScreen = viewModel.MODE_STARTER_SCREEN
+            }
+            viewModel.MODE_DEVELOPER_SCREEN -> {
+                DeveloperScreen(viewModel)
+              //  viewModel.lastScreen = viewModel.MODE_DEVELOPER_SCREEN
+            }
+            viewModel.MODE_WORDBOOK_SCREEN -> {
+                WordbookScreen(viewModel)
+               // viewModel.lastScreen = viewModel.MODE_WORDBOOK_SCREEN
+            }
+            viewModel.MODE_WORDBOOK_TASK_SCREEN -> {
+                WordbookTaskScreen(viewModel, tts)
+              //  viewModel.lastScreen = viewModel.MODE_WORDBOOK_TASK_SCREEN
+            }
+            viewModel.MODE_ADMIN_SCREEN -> {
+                AdminScreen(viewModel)
+              //  viewModel.lastScreen = viewModel.MODE_ADMIN_SCREEN
+            }
+            viewModel.MODE_REQUESTS_SCREEN -> {
+                RequestsScreen(viewModel)
+              //  viewModel.lastScreen = viewModel.MODE_REQUESTS_SCREEN
+            }
         }
     }
 }

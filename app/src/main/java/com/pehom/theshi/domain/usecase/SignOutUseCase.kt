@@ -11,24 +11,18 @@ class SignOutUseCase {
         viewModel: MainViewModel,
         auth: FirebaseAuth
     ) {
+        viewModel.screenState.value = viewModel.MODE_LOGIN_SCREEN
         auth.signOut()
         viewModel.user.value = User(FsId(""), "", "", "", Funds())
         viewModel.requestsAdd.clear()
-       // viewModel.pendingRequests.value = 0
-       // viewModel.tasksInfo.clear()
         viewModel.wordbook.clear()
         viewModel.currentTask.value = Task("","", Vocabulary(VocabularyTitle(""), mutableListOf()))
-        viewModel.currentTaskNumber.value = 0
         viewModel.lastTaskInfo.value =  TaskInfo("", "", VocabularyTitle(""))
         viewModel.students.clear()
         viewModel.studentNumber.value = 0
-        viewModel.studentFsId.value = ""
-        viewModel.drawerType.value = Constants.DRAWER_USER_PROFILE
         viewModel.switchState.value = true
-       // viewModel.vocabularies.clear()
         viewModel.isStudentProfileShown.value = false
         viewModel.allVocabularyTitles.clear()
-        viewModel.screenState.value = viewModel.MODE_LOGIN_SCREEN
 
     }
 }
