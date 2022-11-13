@@ -193,6 +193,17 @@ class RoomRepository(
        onSuccess(mentorRoomDao.readMentorRoomItemByMentorFsId(mentorFsId))
     }
 
+    override suspend fun getMentorRoomItemsCountByUserFsId(
+        userFsId: String,
+        onSuccess: (Int) -> Unit
+    ) {
+        onSuccess(mentorRoomDao.getMentorRoomItemsCountByUserFsId(userFsId))
+    }
+
+    override fun readMentorRoomItemsByUserFsId(userFsId: String): LiveData<List<MentorRoomItem>> {
+        return mentorRoomDao.readMentorRoomItemsByUserFsId(userFsId)
+    }
+
     override suspend fun updateMentorRoomItem(mentorRoomItem: MentorRoomItem) {
         mentorRoomDao.updateMentorRoomItem(mentorRoomItem)
     }

@@ -6,7 +6,7 @@ import com.google.firebase.ktx.Firebase
 import com.pehom.theshi.presentation.viewmodel.MainViewModel
 import com.pehom.theshi.utils.Constants
 
-class DeleteTaskByIdFsUseCase {
+class DeleteUserTaskByIdFsUseCase {
     private val TAG = "DeleteTaskByIdFsUseCase"
     fun execute(
         viewModel: MainViewModel,

@@ -47,7 +47,7 @@ fun MentorScreen(
                 SwitchMode(viewModel)
             }
 
-            Box(modifier = Modifier.fillMaxWidth().fillMaxHeight().weight(7f)) {
+            Box(modifier = Modifier.fillMaxWidth().fillMaxHeight().weight(10f)) {
                 if (viewModel.isStudentProfileShown.value)
                     StudentProfileView(viewModel = viewModel, scaffoldState = scaffoldState)
                 else

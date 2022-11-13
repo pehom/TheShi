@@ -11,10 +11,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewModelScope
 import com.pehom.theshi.R
+import com.pehom.theshi.data.localdata.approomdatabase.MentorRoomItem
 import com.pehom.theshi.domain.model.Mentor
 import com.pehom.theshi.domain.model.RequestAdd
 import com.pehom.theshi.presentation.viewmodel.MainViewModel
+import com.pehom.theshi.utils.Constants
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @Composable
 fun RequestsItem(
@@ -70,8 +75,10 @@ fun RequestsItem(
                     Button(onClick = {
                         viewModel.useCases.acceptRequestAddUseCase.execute(requestAdd, viewModel){
                             requestsList.remove(requestAdd)
-                            val mentor = Mentor(requestAdd.senderFsId.value, requestAdd.senderPhone, requestAdd.senderName)
-                            viewModel.useCases.addMentorFsUseCase.execute(viewModel.user.value, mentor){}
+                            val mentorRoomItem = MentorRoomItem(requestAdd.senderFsId.value, requestAdd.senderName, requestAdd.senderPhone, viewModel.user.value.fsId.value)
+                            viewModel.viewModelScope.launch(Dispatchers.IO) {
+                                Constants.REPOSITORY.addMentorRoomItem(mentorRoomItem)
+                            }
                         }
                     }) {
                         Icon(painterResource(id = R.drawable.ic_baseline_done_24), contentDescription = "accept" )

@@ -75,7 +75,7 @@ private fun DialogCancelTaskContent(
                 .weight(1f), contentAlignment = Alignment.Center){
                 Button(onClick = {
                     scope.launch(Dispatchers.IO) {
-                        viewModel.useCases.deleteTaskByIdFsUseCase.execute(viewModel, viewModel.currentTaskRoomItem.value.id){}
+                        viewModel.useCases.deleteUserTaskByIdFsUseCase.execute(viewModel, viewModel.currentTaskRoomItem.value.id){}
                         Constants.REPOSITORY.deleteTaskRoomItem(viewModel.currentTaskRoomItem.value){
                             dialogState.value = false
                             viewModel.screenState.value = viewModel.MODE_STUDENT_SCREEN

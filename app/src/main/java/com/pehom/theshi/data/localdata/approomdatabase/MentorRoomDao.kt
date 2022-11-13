@@ -17,7 +17,13 @@ interface MentorRoomDao {
     suspend fun addMentorRoomItem(mentorRoomItem: MentorRoomItem)
 
     @Query("SELECT * FROM mentors_table WHERE mentorFsID =:mentorFsId")
-    fun readMentorRoomItemByMentorFsId(mentorFsId: String): MentorRoomItem?
+    suspend fun readMentorRoomItemByMentorFsId(mentorFsId: String): MentorRoomItem?
+
+    @Query("SELECT * FROM mentors_table WHERE studentFsId =:userFsId")
+    fun readMentorRoomItemsByUserFsId (userFsId: String ): LiveData<List<MentorRoomItem>>
+
+    @Query("SELECT COUNT(*) FROM mentors_table WHERE studentFsId =:userFsId")
+    fun getMentorRoomItemsCountByUserFsId (userFsId: String): Int
 
     @Update
     suspend fun updateMentorRoomItem(mentorRoomItem: MentorRoomItem)

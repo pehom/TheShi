@@ -23,7 +23,15 @@ class AddMentorFsUseCase {
                 Constants.PHONE_NUMBER to mentor.phoneNumber
             ))
             .addOnSuccessListener {
-                onSuccess()
+                Firebase.firestore.collection(Constants.USERS).document(user.fsId.value)
+                    .collection(Constants.PENDING_REQUESTS).document(mentor.phoneNumber).get()
+                    .addOnSuccessListener {
+                        it.reference.delete()
+                        onSuccess()
+                    }
+                    .addOnFailureListener {
+                        Log.d(TAG, "deleting pending request failed, Error: ${it.message}")
+                    }
             }
             .addOnFailureListener {
                 Log.d(TAG, "adding mentor failed, Error: ${it.message}")

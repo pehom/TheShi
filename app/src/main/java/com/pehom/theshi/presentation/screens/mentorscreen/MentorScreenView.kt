@@ -1,6 +1,7 @@
 package com.pehom.theshi.presentation.screens.mentorscreen
 
 import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -31,8 +32,6 @@ fun MentorScreenView(
     viewModel: MainViewModel,
     scaffoldState: ScaffoldState,
 ) {
-    /*val students = Constants.REPOSITORY
-        .readStudentRoomItemsByMentorId(viewModel.user.value.fsId.value).observeAsState(listOf()).value*/
     val students = remember { mutableStateListOf(Student(FsId(""),"","")) }
     if (viewModel.user.value.fsId.value != "") {
         viewModel.useCases.readStudentsFsUseCase.execute(viewModel){
@@ -40,9 +39,7 @@ fun MentorScreenView(
             students.addAll(it)
         }
     }
-
     val scope = rememberCoroutineScope()
-   // val pendingRequests = remember { viewModel.addingRequests}
     Card(modifier = Modifier
         .fillMaxWidth()
         .fillMaxHeight()
@@ -53,30 +50,31 @@ fun MentorScreenView(
             Row(modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxHeight()
-                .weight(1f),
+                .weight(0.7f),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween) {
-                Text( text =  stringResource(id = R.string.your_students), fontSize = 20.sp,modifier= Modifier.padding(10.dp))
+                Text( text =  stringResource(id = R.string.your_students), modifier= Modifier.padding(horizontal = 10.dp))
             }
             LazyColumn(modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxHeight()
-                .weight(7f)
-                .padding(10.dp)
+                .weight(10f)
             ) {
                 itemsIndexed(students) { _, item ->
                     Box(modifier = Modifier
                         .fillMaxWidth()
-                        .padding(start = 10.dp, end = 10.dp, top = 5.dp, bottom = 5.dp)
+                        .padding(horizontal = 10.dp)
                         .clickable {
                             viewModel.currentStudent.value = item
                             // viewModel.studentFsId.value = item.fsId
                             viewModel.isStudentProfileShown.value = true
+                            viewModel.drawerType.value = Constants.DRAWER_ADD_NEW_TASK
                             // viewModel.studentNumber.value = index
                         }
                         ,contentAlignment = Alignment.CenterStart) {
-                        Text(text = item.name, fontSize = 20.sp,)
+                        Text(text = item.name)
                     }
+                    Spacer(modifier = Modifier.height(5.dp))
                 }
             }
             Box(modifier = Modifier

@@ -26,6 +26,8 @@ import com.pehom.theshi.presentation.screens.mentorscreen.MentorScreen
 import com.pehom.theshi.presentation.screens.requestsScreen.RequestsScreen
 import com.pehom.theshi.presentation.screens.studentscreen.StudentScreen
 import com.pehom.theshi.presentation.screens.taskscreen.TaskScreen
+import com.pehom.theshi.presentation.screens.userinfoscreen.UserInfoScreen
+import com.pehom.theshi.presentation.screens.usermentorsscreen.UserMentorsScreen
 import com.pehom.theshi.presentation.screens.wordbookscreen.WordbookScreen
 import com.pehom.theshi.presentation.screens.wordbookscreen.WordbookTaskScreen
 import com.pehom.theshi.presentation.viewmodel.MainViewModel
@@ -126,6 +128,12 @@ class MainActivity : ComponentActivity(), TextToSpeech.OnInitListener {
             vm.MODE_REQUESTS_SCREEN -> {
                 vm.screenState.value = vm.lastScreen
             }
+            vm.MODE_USER_MENTORS_SCREEN -> {
+                vm.screenState.value = vm.lastScreen
+            }
+            vm.MODE_USER_INFO_SCREEN -> {
+                vm.screenState.value = vm.lastScreen
+            }
         }
     }
 
@@ -193,50 +201,22 @@ class MainActivity : ComponentActivity(), TextToSpeech.OnInitListener {
                 viewModel.drawerType.value = Constants.DRAWER_USER_PROFILE
                 viewModel.lastScreen = viewModel.MODE_STUDENT_SCREEN
             }
-            viewModel.MODE_TASK_SCREEN ->{
-                TaskScreen( viewModel, tts)
-               // viewModel.lastScreen = viewModel.MODE_TASK_SCREEN
-            }
+            viewModel.MODE_TASK_SCREEN ->{ TaskScreen( viewModel, tts) }
             viewModel.MODE_MENTOR_SCREEN -> {
                 MentorScreen(viewModel, auth)
                 viewModel.lastScreen = viewModel.MODE_MENTOR_SCREEN
             }
-            viewModel.MODE_LOGIN_SCREEN -> {
-                LoginScreen(viewModel, auth)
-               // viewModel.lastScreen = viewModel.MODE_LOGIN_SCREEN
-            }
-            viewModel.MODE_REGISTER_SCREEN -> {
-                RegisterScreen(viewModel, auth)
-              //  viewModel.lastScreen = viewModel.MODE_REGISTER_SCREEN
-            }
-            viewModel.MODE_SIGN_IN_SCREEN -> {
-                SignInScreen( viewModel,auth )
-               // viewModel.lastScreen = viewModel.MODE_SIGN_IN_SCREEN
-            }
-            viewModel.MODE_STARTER_SCREEN -> {
-                StarterScreen(viewModel, auth)
-               // viewModel.lastScreen = viewModel.MODE_STARTER_SCREEN
-            }
-            viewModel.MODE_DEVELOPER_SCREEN -> {
-                DeveloperScreen(viewModel)
-              //  viewModel.lastScreen = viewModel.MODE_DEVELOPER_SCREEN
-            }
-            viewModel.MODE_WORDBOOK_SCREEN -> {
-                WordbookScreen(viewModel)
-               // viewModel.lastScreen = viewModel.MODE_WORDBOOK_SCREEN
-            }
-            viewModel.MODE_WORDBOOK_TASK_SCREEN -> {
-                WordbookTaskScreen(viewModel, tts)
-              //  viewModel.lastScreen = viewModel.MODE_WORDBOOK_TASK_SCREEN
-            }
-            viewModel.MODE_ADMIN_SCREEN -> {
-                AdminScreen(viewModel)
-              //  viewModel.lastScreen = viewModel.MODE_ADMIN_SCREEN
-            }
-            viewModel.MODE_REQUESTS_SCREEN -> {
-                RequestsScreen(viewModel)
-              //  viewModel.lastScreen = viewModel.MODE_REQUESTS_SCREEN
-            }
+            viewModel.MODE_LOGIN_SCREEN -> { LoginScreen(viewModel, auth) }
+            viewModel.MODE_REGISTER_SCREEN -> { RegisterScreen(viewModel, auth) }
+            viewModel.MODE_SIGN_IN_SCREEN -> { SignInScreen( viewModel,auth ) }
+            viewModel.MODE_STARTER_SCREEN -> { StarterScreen(viewModel, auth) }
+            viewModel.MODE_DEVELOPER_SCREEN -> { DeveloperScreen(viewModel) }
+            viewModel.MODE_WORDBOOK_SCREEN -> { WordbookScreen(viewModel) }
+            viewModel.MODE_WORDBOOK_TASK_SCREEN -> { WordbookTaskScreen(viewModel, tts) }
+            viewModel.MODE_ADMIN_SCREEN -> { AdminScreen(viewModel) }
+            viewModel.MODE_REQUESTS_SCREEN -> { RequestsScreen(viewModel) }
+            viewModel.MODE_USER_MENTORS_SCREEN -> UserMentorsScreen(viewModel)
+            viewModel.MODE_USER_INFO_SCREEN -> UserInfoScreen(viewModel)
         }
     }
 }

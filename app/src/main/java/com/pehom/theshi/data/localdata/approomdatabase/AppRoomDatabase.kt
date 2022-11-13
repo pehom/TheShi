@@ -16,7 +16,7 @@ import com.pehom.theshi.utils.MapConverter
     StudentRoomItem::class,
     AvailableWordsRoomItem::class,
     MentorRoomItem::class
-                     ], version = 20)
+                     ], version = 23)
 @TypeConverters(MapConverter::class)
 abstract class AppRoomDatabase: RoomDatabase() {
 

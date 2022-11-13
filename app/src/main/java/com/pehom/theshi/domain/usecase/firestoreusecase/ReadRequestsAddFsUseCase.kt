@@ -4,13 +4,14 @@ import android.util.Log
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.pehom.theshi.domain.model.FsId
+import com.pehom.theshi.domain.model.Mentor
 import com.pehom.theshi.domain.model.RequestAdd
 import com.pehom.theshi.domain.model.Student
 import com.pehom.theshi.presentation.viewmodel.MainViewModel
 import com.pehom.theshi.utils.Constants
 
 class ReadRequestsAddFsUseCase {
-
+    private val TAG = "ReadRequestsAddFsUseCase"
     fun execute(
         viewModel: MainViewModel,
         onSuccess: (List<RequestAdd>)-> Unit
@@ -32,18 +33,22 @@ class ReadRequestsAddFsUseCase {
                         request.state = doc[Constants.STATE].toString()
 
                         when (request.state) {
-                            Constants.ACCEPTED -> {
+                           /* Constants.ACCEPTED -> {
                                 if (request.receiverFsId.value == viewModel.user.value.fsId.value) {
-                                    doc.reference.delete()
+                                    val mentor = Mentor(request.senderFsId.value, request.senderPhone, request.senderName)
+                                    viewModel.useCases.addMentorFsUseCase.execute(viewModel.user.value, mentor){
+                                        doc.reference.delete()
+                                    }
                                 } else {
                                     val newStudent = Student(request.receiverFsId, request.receiverName, request.receiverPhone)
-                                    doc.reference.delete()
-                                    viewModel.useCases.addStudentFsUseCase.execute(viewModel, newStudent) {}
+                                    viewModel.useCases.addStudentFsUseCase.execute(viewModel, newStudent) {
+                                        doc.reference.delete()
+                                    }
                                 }
-                            }
-                            Constants.DECLINED, Constants.CANCELLED -> {
+                            }*/
+                           /* Constants.DECLINED, Constants.CANCELLED -> {
                                 doc.reference.delete()
-                            }
+                            }*/
 
                             Constants.PENDING -> {
                                 resultList.add((request))

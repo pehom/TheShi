@@ -49,6 +49,8 @@ fun DrawerUserProfile(viewModel: MainViewModel, scaffoldState: ScaffoldState, au
         readAvailableVocabularyRoomItemsByUserFsId(viewModel.user.value.fsId.value).observeAsState(
         listOf()).value
     val isAdminState = remember { mutableStateOf(false) }
+    val mentors = Constants.REPOSITORY.readAllMentorRoomItems.observeAsState(listOf()).value
+
 
     Column(
        modifier = Modifier.fillMaxSize(),
@@ -67,17 +69,6 @@ fun DrawerUserProfile(viewModel: MainViewModel, scaffoldState: ScaffoldState, au
            viewModel.useCases.signOutUseCase.execute(viewModel, auth)
        }) {
            Text(text = stringResource(id = R.string.sign_out))
-       }
-       Button(onClick = {
-           Log.d("userInfo", "vm.user fsID = ${viewModel.user.value.fsId} ")
-           Log.d("userInfo", "vm.user phoneNumber = ${viewModel.user.value.phoneNumber} ")
-           Log.d("userInfo", "vm.user email = ${viewModel.user.value.email} ")
-           Log.d("userInfo", "vm.user funds = ${viewModel.user.value.funds.amount.value} ")
-           viewModel.useCases.readFirestoreUserInfoUseCase.execute(viewModel.user.value.fsId.value, context) {
-               Log.d("userInfo", "vm.user.tasks.size = ${viewModel.user.value.tasks.size}")
-           }
-       }) {
-           Text(text = "user info")
        }
 
         Button(onClick = {
@@ -140,16 +131,13 @@ fun DrawerUserProfile(viewModel: MainViewModel, scaffoldState: ScaffoldState, au
         }) {
             Text(text = "clear vcbRoom (size = ${availableVocabularyRoomItems.size})")
         }
-        Button(onClick = { /*TODO*/ }) {
-            Text("watch docRef")
-        }
         Button(onClick = {
-            tasks.forEach {
-                Log.d(TAG, "task = $it")
-            }
+            viewModel.lastScreen = viewModel.screenState.value
+            viewModel.screenState.value = viewModel.MODE_USER_INFO_SCREEN
         }) {
-            Text(text = "get tasks RoomInfo")
+            Text("edit username")
         }
+
         viewModel.useCases.checkIsAdminFsUseCase.execute(viewModel.user.value){
             isAdminState.value = it
         }
@@ -162,14 +150,20 @@ fun DrawerUserProfile(viewModel: MainViewModel, scaffoldState: ScaffoldState, au
         }
 
         Button(onClick = {
-            viewModel.viewModelScope.launch(Dispatchers.IO) {
-                Constants.REPOSITORY.readWordbookRoomItemByVcbDocRefPath("buba") {
-                    Log.d("bbbb", "wordbookRoomItem = $it")
+            viewModel.lastScreen = viewModel.screenState.value
+            viewModel.screenState.value = viewModel.MODE_USER_MENTORS_SCREEN
+        }) {
+            Text("userMentorsScreen")
+        }
+
+        Button(onClick = {
+            mentors.forEach {
+                viewModel.viewModelScope.launch(Dispatchers.IO){
+                    Constants.REPOSITORY.deleteMentorRoomItem(it)
                 }
             }
-
         }) {
-            Text("check readWordbookItem")
+            Text(text = "clear mentorsRoom (size = ${mentors.size})")
         }
 
    }

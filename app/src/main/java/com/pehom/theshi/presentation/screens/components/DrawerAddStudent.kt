@@ -139,6 +139,7 @@ fun DrawerAddStudent(
                                 requestAdd.receiverName = newStudentName.value
                                 requestAdd.receiverPhone = newStudentPhoneNumber.value
                                 requestAdd.senderPhone = viewModel.user.value.phoneNumber
+                                requestAdd.senderName = viewModel.user.value.name
                                 viewModel.requestsAdd.add(requestAdd)
                                 viewModel.useCases.createRequestAddFsUseCase.execute(viewModel, requestAdd) {}
                                 Log.d("newStudent", "newStudent.name = ${newStudent.name}")

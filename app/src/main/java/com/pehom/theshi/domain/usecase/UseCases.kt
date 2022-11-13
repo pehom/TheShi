@@ -42,7 +42,7 @@ data class UseCases(
     val checkAvailableVocabularyByFsDocRefPathFsUseCase: CheckAvailableVocabularyByFsDocRefPathFsUseCase,
     val saveAvailableVocabularyRoomUseCase: SaveAvailableVocabularyRoomUseCase,
     val getWordbookSizeByUserFsId: GetWordbookSizeByUserFsId,
-    val deleteTaskByIdFsUseCase: DeleteTaskByIdFsUseCase,
+    val deleteUserTaskByIdFsUseCase: DeleteUserTaskByIdFsUseCase,
     val getVocabularyByFsDocRefRoomUseCase: GetVocabularyByFsDocRefRoomUseCase,
     val setAllWordsWordbookTaskUseCase: SetAllWordsWordbookTaskUseCase,
     val uploadVocabularyToFsUseCase: UploadVocabularyToFsUseCase,
@@ -52,5 +52,7 @@ data class UseCases(
     val syncUserTasksUseCase: SyncUserTasksUseCase,
     val writeNewTasksByMentorToRoomFsUseCase: WriteNewTasksByMentorToRoomFsUseCase,
     val readStudentWordbookFsUseCase: ReadStudentWordbookFsUseCase,
-    val addMentorFsUseCase: AddMentorFsUseCase
+    val addMentorFsUseCase: AddMentorFsUseCase,
+    val deleteStudentTaskByIdFsUseCase: DeleteStudentTaskByIdFsUseCase,
+    val readAllUserMentorsFsUseCase: ReadAllUserMentorsFsUseCase
 )

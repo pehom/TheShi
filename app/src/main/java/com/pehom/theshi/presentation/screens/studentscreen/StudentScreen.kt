@@ -46,7 +46,7 @@ fun StudentScreen(viewModel: MainViewModel, auth: FirebaseAuth) {
             Box(modifier = Modifier.fillMaxWidth().fillMaxHeight().weight(1f)) {
                 WordbookCard(viewModel)
             }
-            Box(modifier = Modifier.fillMaxWidth().fillMaxHeight().weight(7f)) {
+            Box(modifier = Modifier.fillMaxWidth().fillMaxHeight().weight(9f)) {
                 StudentScreenView(viewModel, scaffoldState)
             }
         }

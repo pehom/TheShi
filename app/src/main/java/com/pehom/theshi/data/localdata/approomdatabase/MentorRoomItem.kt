@@ -12,5 +12,11 @@ data class MentorRoomItem(
     var mentorFsID: String = "mentorFsID",
 
     @ColumnInfo(name = Constants.NAME)
-    var name: String = "mentorName"
+    var name: String = "mentorName",
+
+    @ColumnInfo(name = Constants.PHONE_NUMBER)
+    var phone: String = "phoneNumber",
+
+    @ColumnInfo(name = Constants.STUDENT_FS_ID)
+    var studentFsId: String = "studentFsId"
 )

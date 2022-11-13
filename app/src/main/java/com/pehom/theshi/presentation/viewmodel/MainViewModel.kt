@@ -8,7 +8,6 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.pehom.theshi.data.localdata.approomdatabase.AppRoomDatabase
-import com.pehom.theshi.data.localdata.approomdatabase.StudentRoomItem
 import com.pehom.theshi.data.localdata.approomdatabase.TaskRoomItem
 import com.pehom.theshi.data.localdata.repository.RoomRepository
 import com.pehom.theshi.domain.model.*
@@ -40,6 +39,8 @@ class MainViewModel(
     val MODE_WORDBOOK_TASK_SCREEN = 14
     val MODE_ADMIN_SCREEN = 15
     val MODE_REQUESTS_SCREEN = 16
+    val MODE_USER_MENTORS_SCREEN = 17
+    val MODE_USER_INFO_SCREEN = 18
 
     var currentTask = mutableStateOf(Task("","", Vocabulary(VocabularyTitle("","","",0), mutableListOf(VocabularyItemScheme("","","")))))
     val wordbook = mutableSetOf<VocabularyItemScheme>()
@@ -53,6 +54,7 @@ class MainViewModel(
     val studentWordbook = mutableStateListOf<String>()
     val currentStudent = mutableStateOf(Student(FsId(""),"",""))
     val lastStudent = mutableStateOf(Student(FsId(""),"",""))
+    val mentors = mutableStateListOf<Mentor>()
     val isStudentProfileShown = mutableStateOf(false)
     val requestsAdd = mutableStateListOf<RequestAdd>()
     val currentWordbookVocabulary = mutableStateOf(Vocabulary(VocabularyTitle(""), mutableListOf()))
@@ -104,7 +106,7 @@ class MainViewModel(
         CheckAvailableVocabularyByFsDocRefPathFsUseCase(),
         SaveAvailableVocabularyRoomUseCase(),
         GetWordbookSizeByUserFsId(),
-        DeleteTaskByIdFsUseCase(),
+        DeleteUserTaskByIdFsUseCase(),
         GetVocabularyByFsDocRefRoomUseCase(),
         SetAllWordsWordbookTaskUseCase(),
         UploadVocabularyToFsUseCase(),
@@ -114,7 +116,9 @@ class MainViewModel(
         SyncUserTasksUseCase(),
         WriteNewTasksByMentorToRoomFsUseCase(),
         ReadStudentWordbookFsUseCase(),
-        AddMentorFsUseCase()
+        AddMentorFsUseCase(),
+        DeleteStudentTaskByIdFsUseCase(),
+        ReadAllUserMentorsFsUseCase()
         )
 
     init {
@@ -133,10 +137,17 @@ class MainViewModel(
         if (switchState.value) {
             drawerType.value = Constants.DRAWER_ADD_NEW_TASK
             screenState.value = MODE_STUDENT_SCREEN
+            lastStudent.value = currentStudent.value
         }
         else {
-            drawerType.value = Constants.DRAWER_ADD_STUDENT
-            screenState.value = MODE_MENTOR_SCREEN
+            if (!isStudentProfileShown.value) {
+                drawerType.value = Constants.DRAWER_ADD_STUDENT
+                screenState.value = MODE_MENTOR_SCREEN
+            } else {
+                drawerType.value = Constants.DRAWER_ADD_NEW_TASK
+                screenState.value = MODE_MENTOR_SCREEN
+            }
+
         }
     }
 
