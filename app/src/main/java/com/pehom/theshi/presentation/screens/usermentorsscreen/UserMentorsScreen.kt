@@ -28,7 +28,7 @@ fun UserMentorsScreen(
     val mentorsRoom = Constants.REPOSITORY.readMentorRoomItemsByUserFsId(viewModel.user.value.fsId.value).observeAsState(
         listOf()).value
     LaunchedEffect(key1 = null ){
-        viewModel.viewModelScope.launch(Dispatchers.IO) {
+      //  viewModel.viewModelScope.launch(Dispatchers.IO) {
             Constants.REPOSITORY.getMentorRoomItemsCountByUserFsId(viewModel.user.value.fsId.value){
                 if (it == 0) {
                     viewModel.useCases.readAllUserMentorsFsUseCase.execute(viewModel){
@@ -40,7 +40,7 @@ fun UserMentorsScreen(
                     }
                 }
             }
-        }
+      //  }
     }
     Column(
         modifier = Modifier.fillMaxSize(),

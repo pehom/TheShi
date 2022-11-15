@@ -26,7 +26,7 @@ import com.pehom.theshi.presentation.screens.mentorscreen.MentorScreen
 import com.pehom.theshi.presentation.screens.requestsScreen.RequestsScreen
 import com.pehom.theshi.presentation.screens.studentscreen.StudentScreen
 import com.pehom.theshi.presentation.screens.taskscreen.TaskScreen
-import com.pehom.theshi.presentation.screens.userinfoscreen.UserInfoScreen
+import com.pehom.theshi.presentation.screens.editprofilescreen.EditProfileScreen
 import com.pehom.theshi.presentation.screens.usermentorsscreen.UserMentorsScreen
 import com.pehom.theshi.presentation.screens.wordbookscreen.WordbookScreen
 import com.pehom.theshi.presentation.screens.wordbookscreen.WordbookTaskScreen
@@ -216,7 +216,7 @@ class MainActivity : ComponentActivity(), TextToSpeech.OnInitListener {
             viewModel.MODE_ADMIN_SCREEN -> { AdminScreen(viewModel) }
             viewModel.MODE_REQUESTS_SCREEN -> { RequestsScreen(viewModel) }
             viewModel.MODE_USER_MENTORS_SCREEN -> UserMentorsScreen(viewModel)
-            viewModel.MODE_USER_INFO_SCREEN -> UserInfoScreen(viewModel)
+            viewModel.MODE_USER_INFO_SCREEN -> EditProfileScreen(viewModel)
         }
     }
 }

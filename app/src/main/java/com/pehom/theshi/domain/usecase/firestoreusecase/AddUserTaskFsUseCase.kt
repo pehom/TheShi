@@ -16,7 +16,6 @@ class AddUserTaskFsUseCase {
             Constants.TASK_ID to _newTask.id,
             Constants.TASK_TITLE to _newTask.taskTitle,
             Constants.STUDENT_FS_ID to _newTask.studentFsId,
-            Constants.MENTOR_FS_ID to _newTask.mentorFsId,
             Constants.VOCABULARY_FS_DOC_REF_PATH to _newTask.vcbFsDocRefPath,
             Constants.VOCABULARY_TITLE to _newTask.vcbTitle,
             Constants.IS_AVAILABLE to _newTask.isAvailable,
@@ -27,7 +26,10 @@ class AddUserTaskFsUseCase {
             Constants.WRONG_TEST_ANSWERS to _newTask.wrongTestAnswers,
             Constants.SYNC_COUNT to _newTask.syncCount
         )
-        val details = hashMapOf(Constants.DETAILS to newTask)
+        val details = hashMapOf(
+            Constants.DETAILS to newTask,
+            Constants.MENTOR_FS_ID to _newTask.mentorFsId
+        )
         db.collection("Users").document(viewModel.user.value.fsId.value)
             .collection(Constants.TASKS_BY_USER).document(_newTask.id).set(details)
             .addOnSuccessListener {

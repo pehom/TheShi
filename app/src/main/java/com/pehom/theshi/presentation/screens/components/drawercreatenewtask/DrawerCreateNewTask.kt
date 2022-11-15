@@ -35,6 +35,7 @@ import com.pehom.theshi.data.localdata.approomdatabase.AvailableVocabularyRoomIt
 import com.pehom.theshi.data.localdata.approomdatabase.TaskRoomItem
 import com.pehom.theshi.domain.model.TaskInfo
 import com.pehom.theshi.domain.model.VocabularyTitle
+import com.pehom.theshi.presentation.screens.components.ExpandableListItem
 import com.pehom.theshi.presentation.screens.components.VocabularyListItem
 import com.pehom.theshi.utils.Constants
 import kotlinx.coroutines.Dispatchers
@@ -115,7 +116,7 @@ fun DrawerCreateNewTask(
             }
         }
         else
-            TitlesComponentList(vocabularyTitles, vocabulariesListState, selectedIndex)
+            TitlesComponentList(vocabularyTitles, vocabulariesListState, selectedIndex, viewModel)
         Row(
             horizontalArrangement = Arrangement.Center,
             modifier = Modifier
@@ -260,14 +261,6 @@ fun DrawerCreateNewTask(
                                         searchingValue.value = ""
                                         newTaskTitle.value = ""
                                     }
-                                    /*viewModel.useCases.addTaskRoomUseCase.execute(viewModel, newTask) {
-                                        scope.launch {
-                                            scaffoldState.drawerState.close()
-                                            selectedIndex.value = -1
-                                            searchingValue.value = ""
-                                            newTaskTitle.value = ""
-                                        }
-                                    }*/
                                 }
                             }
                         }
@@ -299,7 +292,11 @@ private fun TitlesLoading() {
 private fun TitlesComponentList(
     titles: List<VocabularyTitle>,
     vocabulariesListState: LazyListState,
-    selectedIndex: MutableState<Int>){
+    selectedIndex: MutableState<Int>,
+    viewModel: MainViewModel
+
+){
+    val itemsIds by viewModel.vocabularyTitlesIds.collectAsState()
     LazyColumn(
         state = vocabulariesListState,
         modifier = Modifier
@@ -310,7 +307,15 @@ private fun TitlesComponentList(
         verticalArrangement = Arrangement.Center
     ) {
         itemsIndexed(titles) { index, item ->
-            VocabularyListItem(index, item.value, selectedIndex)
+          //  VocabularyListItem(index, item.value, selectedIndex)
+            ExpandableListItem(
+                index = index,
+                vcbTitle = item ,
+                selectedIndex = selectedIndex,
+                onClickItem = { viewModel.onVcbTitleItemClicked(index) },
+                expanded = itemsIds.contains(index),
+                viewModel = viewModel
+            )
         }
     }
 }

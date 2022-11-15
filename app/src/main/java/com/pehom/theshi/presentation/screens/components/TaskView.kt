@@ -1,5 +1,6 @@
 package com.pehom.theshi.presentation.screens.components
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -30,9 +31,11 @@ fun TaskView(
     val TAG = "TaskView"
     val taskProgress = taskRoomItem.progress
     val mentorName = remember{ mutableStateOf("You")}
+    Log.d(TAG, "taskRoomItem = $taskRoomItem")
     if (taskRoomItem.mentorFsId != userFsID) {
         LaunchedEffect(key1 = null ) {
             Constants.REPOSITORY.readMentorRoomItemByMentorFsId(taskRoomItem.mentorFsId){
+                Log.d(TAG, "mentorRoomItem = ${it}" )
                 if (it != null) {
                     mentorName.value = it.name
                 }

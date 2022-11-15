@@ -1,6 +1,5 @@
-package com.pehom.theshi.presentation.screens.userinfoscreen
+package com.pehom.theshi.presentation.screens.editprofilescreen
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,14 +16,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.pehom.theshi.R
 import com.pehom.theshi.presentation.viewmodel.MainViewModel
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun UserInfoScreen(
+fun EditProfileScreen(
     viewModel: MainViewModel
 ){
     val keyboardController = LocalSoftwareKeyboardController.current

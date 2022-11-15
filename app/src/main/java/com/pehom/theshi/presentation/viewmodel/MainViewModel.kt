@@ -17,6 +17,8 @@ import com.pehom.theshi.utils.Constants
 import com.pehom.theshi.domain.usecase.firestoreusecase.SetupMainViewModelFsUseCase
 import com.pehom.theshi.domain.usecase.roomusecase.*
 import com.pehom.theshi.utils.TaskIdFactory
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 class MainViewModel(
     val context: Context,
@@ -65,6 +67,10 @@ class MainViewModel(
     val isStarterScreenEnded = mutableStateOf(false)
     val isViewModelSet = mutableStateOf(false)
     val currentWordbookTaskRoomItem = mutableStateOf(TaskRoomItem(id = Constants.WORDBOOK_TASK_ROOM_ITEM))
+
+    private val vocabularyTitlesIdsList = MutableStateFlow(listOf<Int>())
+    val vocabularyTitlesIds: StateFlow<List<Int>> get() = vocabularyTitlesIdsList
+
     lateinit var taskIdFactory: TaskIdFactory
     lateinit var sharedPreferences: SharedPreferences
 
@@ -147,7 +153,16 @@ class MainViewModel(
                 drawerType.value = Constants.DRAWER_ADD_NEW_TASK
                 screenState.value = MODE_MENTOR_SCREEN
             }
+        }
+    }
 
+    fun onVcbTitleItemClicked(itemId: Int) {
+        vocabularyTitlesIdsList.value = vocabularyTitlesIdsList.value.toMutableList().also {
+            if (it.contains(itemId)){
+                it.remove(itemId)
+            } else {
+                it.add(itemId)
+            }
         }
     }
 
