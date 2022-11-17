@@ -79,7 +79,8 @@ fun StudentProfileView(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .fillMaxHeight().weight(10f)
+                .fillMaxHeight()
+                .weight(10f)
         ) {
             Card(
                 modifier = Modifier
@@ -184,23 +185,31 @@ private fun StudentTasksItem(
     viewModel: MainViewModel
     ){
     val taskProgress = item.progress
+    val taskStatus = remember { mutableStateOf(item.status) }
     Row(
         modifier = Modifier
             .fillMaxSize()
             .padding(horizontal = 5.dp)
-           // .background(Color.Transparent, RoundedCornerShape(4.dp))
-            .border(width = 1.dp, color = Color.Gray, shape = RoundedCornerShape(4.dp) ),
+            // .background(Color.Transparent, RoundedCornerShape(4.dp))
+            .border(width = 1.dp, color = Color.Gray, shape = RoundedCornerShape(4.dp)),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
             painter = painterResource(id = R.drawable.ic_baseline_cancel_mk2_24),
-            contentDescription = "delete task",
+            contentDescription = "cancel task",
             modifier = Modifier.clickable {
-                viewModel.useCases.deleteStudentTaskByIdFsUseCase
+                viewModel.useCases.cancelStudentTaskByIdFsUseCase.execute(
+                    viewModel.currentStudent.value.fsId.value,
+                    item.id
+                ){
+                    item.status = Constants.STATUS_CANCELLED
+                    taskStatus.value = Constants.STATUS_CANCELLED
+                }
+                /*viewModel.useCases.deleteStudentTaskByIdFsUseCase
                     .execute(viewModel.currentStudent.value.fsId.value, item.id)
-                viewModel.studentTasks.remove(item)
+                viewModel.studentTasks.remove(item)*/
             })
-        Row(
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(
@@ -208,21 +217,31 @@ private fun StudentTasksItem(
                         (taskProgress.toFloat() / 100) to Color.Green,
                         (0.05f + taskProgress.toFloat() / 100) to Color.Red,
                         startX = 0.1f
-                    )
-                    , RoundedCornerShape(4.dp)
-                ),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+                    ), RoundedCornerShape(4.dp)
+                )
         ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
 
-            Text(
-                text = item.title,
-                modifier = Modifier.padding(start = 10.dp)
-            )
-            Text(
-                text = ".. ${taskProgress}%",
-                modifier = Modifier.padding(end = 10.dp)
-            )
+                Text(
+                    text = item.title,
+                    modifier = Modifier.padding(start = 10.dp)
+                )
+                Text(
+                    text = ".. ${taskProgress}%",
+                    modifier = Modifier.padding(end = 10.dp)
+                )
+            }
+            Spacer(modifier = Modifier.height(3.dp))
+            Box(
+                modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.CenterStart){
+                Text(text = stringResource(id = R.string.status) + " ${taskStatus.value}")
+            }
         }
     }
 }

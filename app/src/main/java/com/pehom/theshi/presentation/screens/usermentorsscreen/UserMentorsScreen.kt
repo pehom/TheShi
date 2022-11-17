@@ -25,10 +25,10 @@ fun UserMentorsScreen(
     viewModel: MainViewModel
 ){
     
-    val mentorsRoom = Constants.REPOSITORY.readMentorRoomItemsByUserFsId(viewModel.user.value.fsId.value).observeAsState(
-        listOf()).value
+    val mentorsRoom = Constants.REPOSITORY.readMentorRoomItemsByUserFsId(viewModel.user.value.fsId.value)
+        .observeAsState(listOf()).value
     LaunchedEffect(key1 = null ){
-      //  viewModel.viewModelScope.launch(Dispatchers.IO) {
+        viewModel.viewModelScope.launch(Dispatchers.IO) {
             Constants.REPOSITORY.getMentorRoomItemsCountByUserFsId(viewModel.user.value.fsId.value){
                 if (it == 0) {
                     viewModel.useCases.readAllUserMentorsFsUseCase.execute(viewModel){
@@ -40,7 +40,7 @@ fun UserMentorsScreen(
                     }
                 }
             }
-      //  }
+        }
     }
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -77,7 +77,7 @@ fun UserMentorsScreen(
                             .padding(start = 10.dp),
                         contentAlignment = Alignment.CenterStart
                         ){
-                        Text(text = item.name)
+                        Text(text = item.name + " ${item.phone}")
                     }
                 }
                 Spacer(modifier = Modifier.height(5.dp))

@@ -9,7 +9,7 @@ import com.pehom.theshi.utils.Constants
 data class MentorRoomItem(
 
     @PrimaryKey(autoGenerate = false)
-    var mentorFsID: String = "mentorFsID",
+    var mentorFsID: String ,
 
     @ColumnInfo(name = Constants.NAME)
     var name: String = "mentorName",
@@ -18,5 +18,8 @@ data class MentorRoomItem(
     var phone: String = "phoneNumber",
 
     @ColumnInfo(name = Constants.STUDENT_FS_ID)
-    var studentFsId: String = "studentFsId"
+    var studentFsId: String = "studentFsId",
+
+    @ColumnInfo(name = Constants.STATUS)
+    var mentorStatus: String = "mentorStatus"
 )

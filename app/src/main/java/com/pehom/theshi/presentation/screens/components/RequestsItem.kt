@@ -1,10 +1,7 @@
 package com.pehom.theshi.presentation.screens.components
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Button
-import androidx.compose.material.Card
-import androidx.compose.material.Icon
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
@@ -55,7 +52,20 @@ fun RequestsItem(
                     .padding(start = 10.dp),
                 contentAlignment = Alignment.CenterStart
             ){
-                Button(onClick = {
+                IconButton(onClick = {
+                    //TODO expandable list to edit name
+                }) {
+                    Icon(painterResource(id = R.drawable.ic_baseline_edit_24), contentDescription = "edit name" )
+                }
+            }
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .padding(start = 10.dp),
+                contentAlignment = Alignment.CenterStart
+            ){
+                IconButton(onClick = {
                     viewModel.useCases.cancelRequestAddFsUseCase.execute(requestAdd, viewModel){
                         requestsList.remove(requestAdd)
                     }
@@ -72,7 +82,7 @@ fun RequestsItem(
                         .padding(start = 10.dp),
                     contentAlignment = Alignment.CenterStart
                 ){
-                    Button(onClick = {
+                    IconButton(onClick = {
                         viewModel.useCases.acceptRequestAddUseCase.execute(requestAdd, viewModel){
                             requestsList.remove(requestAdd)
                             val mentorRoomItem = MentorRoomItem(requestAdd.senderFsId.value, requestAdd.senderName, requestAdd.senderPhone, viewModel.user.value.fsId.value)

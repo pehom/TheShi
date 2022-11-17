@@ -8,6 +8,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -15,12 +16,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewModelScope
 import com.pehom.theshi.presentation.viewmodel.MainViewModel
 import kotlinx.coroutines.launch
 import com.pehom.theshi.R
 import com.pehom.theshi.data.localdata.approomdatabase.TaskRoomItem
 import com.pehom.theshi.presentation.screens.components.TaskListItem
 import com.pehom.theshi.utils.Constants
+import kotlinx.coroutines.Dispatchers
 
 @Composable
 fun StudentScreenView(
@@ -29,17 +32,12 @@ fun StudentScreenView(
 ) {
     val TAG = "StudentScreenView"
     val scope = rememberCoroutineScope()
-    viewModel.useCases.writeNewTasksByMentorToRoomFsUseCase.execute(viewModel)
-    var tasksFs = listOf<TaskRoomItem>()
+   // var tasksFs = listOf<TaskRoomItem>()
     var taskRoomItems = listOf<TaskRoomItem>()
     if (viewModel.user.value.fsId.value != "") {
         taskRoomItems = Constants.REPOSITORY.readTaskRoomItemsByUserFsId(viewModel.user.value.fsId.value).observeAsState(listOf()).value
-        if (taskRoomItems.isEmpty()) {
-            tasksFs = viewModel.useCases.readAllUserTasksFsUseCase.execute(viewModel).observeAsState(listOf()).value
-            tasksFs.forEach {
-                viewModel.useCases.addTaskRoomUseCase.execute(viewModel, it){}
-            }
-        }
+
+
     }
    // val taskRoomItems = Constants.REPOSITORY.readTaskRoomItemsByUserFsId(viewModel.user.value.fsId.value).observeAsState(listOf()).value
     Log.d(TAG, " taskRoomItems = $taskRoomItems")

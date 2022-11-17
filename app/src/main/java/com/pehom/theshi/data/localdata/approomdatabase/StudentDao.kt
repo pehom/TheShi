@@ -5,7 +5,7 @@ import androidx.room.*
 
 @Dao
 interface StudentDao {
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addStudentRoomItem(studentRoomItem: StudentRoomItem)
 
     @Query("SELECT * FROM students_table")

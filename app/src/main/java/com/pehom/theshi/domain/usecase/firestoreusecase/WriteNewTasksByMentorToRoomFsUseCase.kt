@@ -7,16 +7,42 @@ import com.google.firebase.ktx.Firebase
 import com.pehom.theshi.data.localdata.approomdatabase.TaskRoomItem
 import com.pehom.theshi.presentation.viewmodel.MainViewModel
 import com.pehom.theshi.utils.Constants
+import com.pehom.theshi.utils.isNetworkAvailable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class WriteNewTasksByMentorToRoomFsUseCase {
-    private val TAG = "GetNewTasksByMentorFsUseCase"
+    private val TAG = "WriteNewTasksByMentorFsUseCase"
 
     fun execute(
-        viewModel: MainViewModel
+        viewModel: MainViewModel,
+        onSuccess: () -> Unit
     ){
-        if (viewModel.user.value.fsId.value != "") {
+        Log.d(TAG, "$TAG .execute() invoked")
+        if (isNetworkAvailable()){
+            viewModel.useCases.readNewUserTasksByMentorFsUseCase.execute(viewModel.user.value){
+                if (it.isNotEmpty()) {
+                    Log.d(TAG, "newTaskRoomList.size  = ${it.size}")
+                    viewModel.viewModelScope.launch(Dispatchers.IO) {
+                        it.forEachIndexed() {index, taskRoomItem ->
+                            Constants.REPOSITORY.createTaskRoomItem(taskRoomItem){
+                                //  docRef.update(Constants.IS_CHECKED, true)
+                                if (index == it.size-1) {
+                                    onSuccess()
+                                }
+                            }
+                        }
+                    }
+                }else {
+                    Log.d(TAG, "newTaskRoomList.size  = 0")
+                    onSuccess()
+                }
+            }
+        } else {
+            onSuccess()
+        }
+
+        /*if (viewModel.user.value.fsId.value != "") {
             Firebase.firestore.collection(Constants.USERS).document(viewModel.user.value.fsId.value).get()
                 .addOnSuccessListener { doc ->
                     if (doc.exists()){
@@ -67,6 +93,6 @@ class WriteNewTasksByMentorToRoomFsUseCase {
                         }
                     }
                 }
-        }
+        }*/
     }
 }

@@ -79,4 +79,7 @@
     <string name="mentors">Mentors:</string>
     <string name="students">Students:</string>
     <string name="username">username</string>
+    <string name="you">You</string>
+    <string name="status">Status:</string>
+    <string name="wrong_phone_number">wrong phone number</string>
 </resources>

@@ -35,7 +35,8 @@ class AcceptRequestAddUseCase {
                                                         .set(hashMapOf(
                                                             Constants.FS_ID to request.receiverFsId.value,
                                                             Constants.PHONE_NUMBER to request.receiverPhone,
-                                                            Constants.NAME to request.receiverName
+                                                            Constants.NAME to request.receiverName,
+                                                            Constants.STATUS to Constants.ACCEPTED
                                                         ))
                                                         .addOnSuccessListener {
                                                             onResponse()
@@ -57,7 +58,8 @@ class AcceptRequestAddUseCase {
                                             .set(hashMapOf(
                                                 Constants.FS_ID to request.receiverFsId.value,
                                                 Constants.PHONE_NUMBER to request.receiverPhone,
-                                                Constants.NAME to request.receiverName
+                                                Constants.NAME to request.receiverName,
+                                                Constants.STATUS to Constants.ACCEPTED
                                             ))
                                             .addOnSuccessListener {
                                                 onResponse()

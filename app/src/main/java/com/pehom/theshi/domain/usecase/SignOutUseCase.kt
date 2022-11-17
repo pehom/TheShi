@@ -17,7 +17,7 @@ class SignOutUseCase {
         viewModel.requestsAdd.clear()
         viewModel.wordbook.clear()
         viewModel.currentTask.value = Task("","", Vocabulary(VocabularyTitle(""), mutableListOf()))
-        viewModel.lastTaskInfo.value =  TaskInfo("", "", VocabularyTitle(""))
+        viewModel.lastTaskInfo.value =  TaskInfo("", "", VocabularyTitle(""), "")
         viewModel.students.clear()
         viewModel.studentNumber.value = 0
         viewModel.switchState.value = true

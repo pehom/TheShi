@@ -29,7 +29,7 @@ class GetTaskByReferenceFsUseCase {
                 val currentTestItem = details[Constants.CURRENT_TEST_ITEM].toString().toInt()
                 val currentLearningItem = details[Constants.CURRENT_LEARNING_ITEM].toString().toInt()
                 val wrongTestAnswers = details[Constants.WRONG_TEST_ANSWERS] as MutableMap<Int, String>
-                val syncCount = details[Constants.SYNC_COUNT].toString().toInt()
+                val status = details[Constants.STATUS].toString()
                 val taskRoomItem = TaskRoomItem(
                     taskId,
                     mentorFsId,
@@ -43,7 +43,7 @@ class GetTaskByReferenceFsUseCase {
                     currentTestItem,
                     currentLearningItem,
                     wrongTestAnswers,
-                    syncCount
+                    status
                 )
                 onSuccess(taskRoomItem)
             }

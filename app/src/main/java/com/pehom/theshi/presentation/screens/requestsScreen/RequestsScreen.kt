@@ -21,12 +21,7 @@ import com.pehom.theshi.presentation.screens.components.RequestsItem
 fun RequestsScreen(
     viewModel: MainViewModel
 ) {
-  //  val requests = remember {mutableStateListOf<RequestAdd>()}
     val requests = viewModel.requestsAdd
-
-//    viewModel.useCases.readRequestsAddFsUseCase.execute(viewModel){
-//        requests.addAll(it)
-//    }
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally

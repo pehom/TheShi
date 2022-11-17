@@ -1,5 +1,6 @@
 package com.pehom.theshi.data.localdata.repository
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import com.pehom.theshi.data.localdata.DatabaseRepository
 import com.pehom.theshi.data.localdata.approomdatabase.*
@@ -58,6 +59,10 @@ class RoomRepository(
 
     override suspend fun readTaskRoomItemById(taskId: String, onSuccess: (TaskRoomItem?) -> Unit) {
         onSuccess(taskRoomDao.getTaskRoomItemById(taskId))
+    }
+
+    override suspend fun getTaskRoomItemsCountByUserFsId(userFsId: String): Int {
+        return taskRoomDao.getTaskRoomItemsCountByUserFsId(userFsId)
     }
 
     override suspend fun createTaskRoomItem(taskRoom: TaskRoomItem, onSuccess: () -> Unit) {
@@ -186,6 +191,8 @@ class RoomRepository(
         get() = mentorRoomDao.readAllMentorRoomItems()
 
     override suspend fun addMentorRoomItem(mentorRoomItem: MentorRoomItem) {
+        Log.d("addMentor", "addMentorRoomItem invoked, mentor = $mentorRoomItem")
+
         mentorRoomDao.addMentorRoomItem(mentorRoomItem)
     }
 

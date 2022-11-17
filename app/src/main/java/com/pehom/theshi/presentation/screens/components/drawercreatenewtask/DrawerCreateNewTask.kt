@@ -1,5 +1,6 @@
 package com.pehom.theshi.presentation.screens.components.drawercreatenewtask
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -56,6 +57,7 @@ fun DrawerCreateNewTask(
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
     val vocabularyTitles = remember { viewModel.allVocabularyTitles }
+    Log.d(TAG, "drawer create new task has been built")
 
     Column(modifier = Modifier.fillMaxSize()) {
         OutlinedTextField(
@@ -160,7 +162,8 @@ fun DrawerCreateNewTask(
                                         0,
                                         0,
                                         0,
-                                        mutableMapOf()
+                                        mutableMapOf(),
+                                        Constants.STATUS_IN_PROGRESS
                                     )
                                     viewModel.useCases.addUserTaskFsUseCase.execute(viewModel, newTask){}
                                     viewModel.useCases.updateLastTaskIdSfxFsUseCase.execute(viewModel.taskIdFactory.lastIdSfx, viewModel) {}
@@ -187,26 +190,18 @@ fun DrawerCreateNewTask(
                                         0,
                                         0,
                                         0,
-                                        mutableMapOf()
+                                        mutableMapOf(),
+                                        Constants.STATUS_IN_PROGRESS
                                     )
                                     viewModel.useCases.addStudentTaskFsUseCase.execute(viewModel, newTask){}
                                     viewModel.useCases.updateLastTaskIdSfxFsUseCase.execute(viewModel.taskIdFactory.lastIdSfx, viewModel) {}
-                                    viewModel.studentTasks.add(TaskInfo(newTask.id, newTask.taskTitle,  vocabularyTitles[selectedIndex.value]))
+                                    viewModel.studentTasks.add(TaskInfo(newTask.id, newTask.taskTitle,  vocabularyTitles[selectedIndex.value], Constants.STATUS_IN_PROGRESS))
                                     scope.launch {
                                         scaffoldState.drawerState.close()
                                         selectedIndex.value = -1
                                         searchingValue.value = ""
                                         newTaskTitle.value = ""
                                     }
-
-//                                    viewModel.useCases.addTaskRoomUseCase.execute(viewModel, newTask) {
-//                                        scope.launch {
-//                                            scaffoldState.drawerState.close()
-//                                            selectedIndex.value = -1
-//                                            searchingValue.value = ""
-//                                            newTaskTitle.value = ""
-//                                        }
-//                                    }
                                 }
                             } else {
                                 if (!viewModel.isStudentProfileShown.value){
@@ -223,7 +218,9 @@ fun DrawerCreateNewTask(
                                         0,
                                         0,
                                         0,
-                                        mutableMapOf()
+                                        mutableMapOf(),
+                                        Constants.STATUS_IN_PROGRESS
+
                                     )
                                     viewModel.useCases.addUserTaskFsUseCase.execute(viewModel, newTask){}
                                     viewModel.useCases.updateLastTaskIdSfxFsUseCase.execute(viewModel.taskIdFactory.lastIdSfx, viewModel) {}
@@ -250,11 +247,13 @@ fun DrawerCreateNewTask(
                                         0,
                                         0,
                                         0,
-                                        mutableMapOf()
+                                        mutableMapOf(),
+                                        Constants.STATUS_IN_PROGRESS
+
                                     )
                                     viewModel.useCases.addStudentTaskFsUseCase.execute(viewModel, newTask){}
                                     viewModel.useCases.updateLastTaskIdSfxFsUseCase.execute(viewModel.taskIdFactory.lastIdSfx, viewModel) {}
-                                    viewModel.studentTasks.add(TaskInfo(newTask.id, newTask.taskTitle,  vocabularyTitles[selectedIndex.value]))
+                                    viewModel.studentTasks.add(TaskInfo(newTask.id, newTask.taskTitle,  vocabularyTitles[selectedIndex.value], Constants.STATUS_IN_PROGRESS))
                                     scope.launch {
                                         scaffoldState.drawerState.close()
                                         selectedIndex.value = -1
@@ -307,14 +306,16 @@ private fun TitlesComponentList(
         verticalArrangement = Arrangement.Center
     ) {
         itemsIndexed(titles) { index, item ->
-          //  VocabularyListItem(index, item.value, selectedIndex)
+           // VocabularyListItem(index, item.value, selectedIndex)
+
             ExpandableListItem(
                 index = index,
                 vcbTitle = item ,
                 selectedIndex = selectedIndex,
-                onClickItem = { viewModel.onVcbTitleItemClicked(index) },
+                onClickItem = { viewModel.onVcbTitleItemClicked(index, item) },
                 expanded = itemsIds.contains(index),
-                viewModel = viewModel
+                viewModel = viewModel,
+                lazyListState = vocabulariesListState
             )
         }
     }

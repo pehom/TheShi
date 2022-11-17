@@ -54,5 +54,8 @@ data class UseCases(
     val readStudentWordbookFsUseCase: ReadStudentWordbookFsUseCase,
     val addMentorFsUseCase: AddMentorFsUseCase,
     val deleteStudentTaskByIdFsUseCase: DeleteStudentTaskByIdFsUseCase,
-    val readAllUserMentorsFsUseCase: ReadAllUserMentorsFsUseCase
+    val readAllUserMentorsFsUseCase: ReadAllUserMentorsFsUseCase,
+    val readNewUserTasksByMentorFsUseCase: ReadNewUserTasksByMentorFsUseCase,
+    val cancelStudentTaskByIdFsUseCase: CancelStudentTaskByIdFsUseCase,
+    val readNewUserMentorsFsUseCase: ReadNewUserMentorsFsUseCase
 )

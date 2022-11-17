@@ -90,7 +90,7 @@ class MainActivity : ComponentActivity(), TextToSpeech.OnInitListener {
             vm.MODE_TASK_SCREEN -> {
                 if (vm.currentTask.value.id != "") {
                     vm.currentTask.value.isTestGoing.value = false
-                    vm.currentTaskRoomItem.value.incrementSyncCount()
+                  //  vm.currentTaskRoomItem.value.incrementSyncCount()
                     vm.useCases.updateTaskFsUseCase.execute(vm, vm.currentTaskRoomItem.value){}
                     vm.viewModelScope.launch(Dispatchers.IO) {
                         Constants.REPOSITORY.updateTaskRoomItem(vm.currentTaskRoomItem.value){}
@@ -147,9 +147,9 @@ class MainActivity : ComponentActivity(), TextToSpeech.OnInitListener {
         super.onPause()
         Log.d("lifecycle", "onPause() invoked")
         if (vm.currentTaskRoomItem.value.id != "" && vm.currentTaskRoomItem.value.id != "taskId") {
-            vm.currentTaskRoomItem.value.incrementSyncCount()
+          //  vm.currentTaskRoomItem.value.incrementSyncCount()
             vm.useCases.updateTaskFsUseCase.execute(vm, vm.currentTaskRoomItem.value){}
-            vm.currentWordbookTaskRoomItem.value.incrementSyncCount()
+          //  vm.currentWordbookTaskRoomItem.value.incrementSyncCount()
             vm.useCases.updateTaskFsUseCase.execute(vm, vm.currentWordbookTaskRoomItem.value){}
             vm.viewModelScope.launch(Dispatchers.IO) {
                 Constants.REPOSITORY.updateTaskRoomItem(vm.currentTaskRoomItem.value){}

@@ -20,7 +20,10 @@ interface TaskRoomDao {
     fun getTaskRoomItemsByFsId(fsId: String): LiveData<List<TaskRoomItem>>
 
     @Query("SELECT id FROM tasks_table WHERE studentFsId =:userFsId AND id <> 'wbTaskRoomItem' AND id <> 'allWordsWordbookTask'")
-    fun getTaskRoomItemIdsByUserFsId(userFsId: String): List<String>
+    suspend fun getTaskRoomItemIdsByUserFsId(userFsId: String): List<String>
+
+    @Query("SELECT COUNT(*) FROM tasks_table WHERE studentFsId =:userFsId AND id <> 'wbTaskRoomItem' AND id <> 'allWordsWordbookTask'")
+    suspend fun getTaskRoomItemsCountByUserFsId(userFsId: String): Int
 
     @Update
     suspend fun updateTaskRoomItem(taskRoomItem: TaskRoomItem)

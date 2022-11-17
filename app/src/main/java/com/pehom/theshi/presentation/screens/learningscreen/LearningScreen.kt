@@ -67,17 +67,18 @@ fun LearningScreen(
                             onClick = {
                                 viewModel.currentTask.value.currentLearningItem.value = 0
                                 viewModel.currentTask.value.setReadyForLearning()
-                                val updateTaskRoomItem = taskRoomItem.value
-                                updateTaskRoomItem.progress = viewModel.currentTask.value.progress
-                                updateTaskRoomItem.currentLearningItem = viewModel.currentTask.value.currentLearningItem.value
-                                updateTaskRoomItem.currentTaskItem = viewModel.currentTask.value.currentTaskItem.value
-                                updateTaskRoomItem.currentTestItem = viewModel.currentTask.value.currentTestItem.value
-                                updateTaskRoomItem.wrongTestAnswers = viewModel.currentTask.value.wrongTestAnswers
-                                viewModel.viewModelScope.launch(Dispatchers.IO) {
-                                    Constants.REPOSITORY.updateTaskRoomItem(updateTaskRoomItem){
-                                        isRestarted.value = true
-                                    }
-                                }
+                           //     viewModel.currentTaskRoomItem.value.currentLearningItem = 0
+//                                val updateTaskRoomItem = taskRoomItem.value
+//                                updateTaskRoomItem.progress = viewModel.currentTask.value.progress
+//                                updateTaskRoomItem.currentLearningItem = viewModel.currentTask.value.currentLearningItem.value
+//                                updateTaskRoomItem.currentTaskItem = viewModel.currentTask.value.currentTaskItem.value
+//                                updateTaskRoomItem.currentTestItem = viewModel.currentTask.value.currentTestItem.value
+//                                updateTaskRoomItem.wrongTestAnswers = viewModel.currentTask.value.wrongTestAnswers
+//                                viewModel.viewModelScope.launch(Dispatchers.IO) {
+//                                    Constants.REPOSITORY.updateTaskRoomItem(updateTaskRoomItem){
+//                                        isRestarted.value = true
+//                                    }
+//                                }
                             }) {
                             Text(text = stringResource(id = R.string.retry), fontSize = 12.sp)                        }
                     }
@@ -134,9 +135,7 @@ fun LearningScreen(
                         Icon(painter = painterResource(id = R.drawable.ic_speaker), contentDescription = "pronunciation")
                     }
                 }
-
             }
-
         }
         Box(
             Modifier

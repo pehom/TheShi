@@ -26,6 +26,8 @@ interface DatabaseRepository {
 
     suspend fun readTaskRoomItemById(taskId: String, onSuccess: (TaskRoomItem?) -> Unit)
 
+    suspend fun getTaskRoomItemsCountByUserFsId(userFsId: String): Int
+
     suspend fun createTaskRoomItem(taskRoom: TaskRoomItem, onSuccess: () -> Unit)
 
     suspend fun updateTaskRoomItem(taskRoom: TaskRoomItem, onSuccess: () -> Unit)

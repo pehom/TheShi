@@ -2,12 +2,16 @@ package com.pehom.theshi.domain.usecase.firestoreusecase
 
 import android.content.Context
 import android.util.Log
+import androidx.compose.runtime.LaunchedEffect
+import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.pehom.theshi.domain.model.FsId
 import com.pehom.theshi.presentation.viewmodel.MainViewModel
 import com.pehom.theshi.utils.Constants
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class SetupMainViewModelFsUseCase() {
     fun execute(
@@ -28,10 +32,29 @@ class SetupMainViewModelFsUseCase() {
                             viewModel.currentWordbookTaskRoomItem.value.studentFsId = user.fsId.value
                             viewModel.useCases.readRequestsAddFsUseCase.execute(viewModel){
                                 viewModel.useCases.setTaskIdFactoryFsUseCase.execute(fsId,viewModel){
-                                    viewModel.isViewModelSet.value = true
-                                    if (viewModel.isStarterScreenEnded.value){
-                                        viewModel.screenState.value = viewModel.MODE_STUDENT_SCREEN
-                                        onResponse()
+                                    viewModel.useCases.readNewUserMentorsFsUseCase.execute(user.fsId.value){newMentors ->
+                                        viewModel.viewModelScope.launch(Dispatchers.IO) {
+                                            newMentors.forEach(){mentorRoomItem ->
+                                                Constants.REPOSITORY.addMentorRoomItem(mentorRoomItem)
+                                            }
+                                            val tasksCount = Constants.REPOSITORY.getTaskRoomItemsCountByUserFsId(viewModel.user.value.fsId.value)
+                                            if (tasksCount == 0){
+                                                viewModel.useCases.readAllUserTasksFsUseCase.execute(viewModel){
+                                                    if (it.isNotEmpty()){
+                                                        it.forEach {taskRoomItem ->
+                                                            viewModel.useCases.addTaskRoomUseCase.execute(viewModel, taskRoomItem){}
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            viewModel.useCases.writeNewTasksByMentorToRoomFsUseCase.execute(viewModel){
+                                                viewModel.isViewModelSet.value = true
+                                                if (viewModel.isStarterScreenEnded.value){
+                                                    viewModel.screenState.value = viewModel.MODE_STUDENT_SCREEN
+                                                    onResponse()
+                                                }
+                                            }
+                                        }
                                     }
                                  //TODO   sync room with fs needed
                                 }

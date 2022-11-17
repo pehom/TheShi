@@ -27,12 +27,12 @@ class AddStudentTaskFsUseCase {
             Constants.CURRENT_TEST_ITEM to _newTask.currentTestItem,
             Constants.CURRENT_LEARNING_ITEM to _newTask.currentLearningItem,
             Constants.WRONG_TEST_ANSWERS to _newTask.wrongTestAnswers,
-            Constants.SYNC_COUNT to _newTask.syncCount,
             Constants.VOCABULARY_TITLE to _newTask.vcbTitle,
             Constants.IS_CHECKED to false
         )
         val details = hashMapOf(
             Constants.DETAILS to newTask,
+            Constants.STATUS to _newTask.status,
             Constants.MENTOR_FS_ID to _newTask.mentorFsId
             )
         db.collection(Constants.USERS).document(viewModel.currentStudent.value.fsId.value)

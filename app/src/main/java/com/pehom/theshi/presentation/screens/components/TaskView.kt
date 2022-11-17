@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -28,9 +29,10 @@ fun TaskView(
     userFsID: String,
     taskRoomItem: TaskRoomItem
     ) {
+    val context = LocalContext.current
     val TAG = "TaskView"
     val taskProgress = taskRoomItem.progress
-    val mentorName = remember{ mutableStateOf("You")}
+    val mentorName = remember{ mutableStateOf("")}
     Log.d(TAG, "taskRoomItem = $taskRoomItem")
     if (taskRoomItem.mentorFsId != userFsID) {
         LaunchedEffect(key1 = null ) {
@@ -41,6 +43,8 @@ fun TaskView(
                 }
             }
         }
+    } else {
+        mentorName.value = context.getString(R.string.you)
     }
         Row(
             modifier = Modifier
@@ -78,6 +82,12 @@ fun TaskView(
                         .padding(start = 10.dp, bottom = 3.dp), contentAlignment = Alignment.CenterStart){
                         Text(text ="${taskRoomItem.taskTitle}  ")
                     }
+                    Spacer(modifier = Modifier.height(3.dp))
+                    Box(modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 10.dp, bottom = 3.dp), contentAlignment = Alignment.CenterStart){
+                        Text(text = stringResource(id = R.string.status) + " ${taskRoomItem.status}")
+                    }
                 }
             }
             Box(
@@ -88,14 +98,5 @@ fun TaskView(
                 contentAlignment = Alignment.CenterEnd) {
                 Text(text = ".. ${taskProgress}%", Modifier.padding(end = 10.dp))
             }
-           /* Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
-                    .fillMaxHeight()
-                    .border(2.dp, Color.Black),
-                contentAlignment = Alignment.Center) {
-                Icon(painterResource(id = R.drawable.ic_baseline_cancel_24), "cancel task")
-            }*/
         }
 }

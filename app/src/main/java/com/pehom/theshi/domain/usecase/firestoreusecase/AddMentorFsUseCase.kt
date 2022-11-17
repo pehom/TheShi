@@ -20,7 +20,8 @@ class AddMentorFsUseCase {
             .set(hashMapOf(
                 Constants.MENTOR_FS_ID to mentor.fsId,
                 Constants.NAME to mentor.name,
-                Constants.PHONE_NUMBER to mentor.phoneNumber
+                Constants.PHONE_NUMBER to mentor.phoneNumber,
+                Constants.STATUS to Constants.ACCEPTED
             ))
             .addOnSuccessListener {
                 Firebase.firestore.collection(Constants.USERS).document(user.fsId.value)

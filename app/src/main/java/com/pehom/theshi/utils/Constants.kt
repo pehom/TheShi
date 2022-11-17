@@ -37,19 +37,17 @@ object Constants {
     const val DECLINED = "declined"
     const val ACCEPTED = "accepted"
     const val CANCELLED = "cancelled"
+    const val DISMISSED = "dismissed"
+    const val BLOCKED= "blocked"
     const val SENDER_FSID = "senderFsId"
     const val RECEIVER_FSID = "receiverFsID"
     const val STATE = "state"
-    const val SENT_REQUESTS = "sentRequests"
-    const val RECEIVED_REQUESTS = "receivedRequests"
+
     const val TASK = "task"
     const val ORIG = "orig"
     const val TRANS = "trans"
     const val IMG_URL = "imgUrl"
-    const val USER_WORDBOOK = "userWordbook"
-    const val REQUEST_SENT = true
-    const val REQUEST_RECEIVED = false
-    const val REQUEST_TYPE = "requestType"
+
     const val PENDING_REQUESTS = "pendingRequests"
     const val SENDER_NAME = "senderName"
     const val SENDER_PHONE = "senderPhone"
@@ -90,6 +88,10 @@ object Constants {
     const val REFERENCE = "reference"
     const val IS_CHECKED = "isChecked"
     const val MENTORS = "mentors"
+    const val STATUS = "status"
+    const val STATUS_IN_PROGRESS = "inProgress"
+    const val STATUS_CANCELLED = "cancelled"
+    const val STATUS_FINISHED = "finished"
     lateinit var REPOSITORY: DatabaseRepository
 
 

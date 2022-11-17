@@ -12,9 +12,12 @@ data class StudentRoomItem(
     var fsId: String,
 
     @ColumnInfo(name = Constants.NAME)
-    var name: String,
+    var name: String = "name",
 
     @ColumnInfo(name = Constants.MENTOR_FS_ID)
-    var mentorFsID : String
+    var mentorFsId : String = "mentorFsId",
+
+    @ColumnInfo(name = Constants.STATUS)
+    var studentStatus: String = "studentStatus"
 
 )

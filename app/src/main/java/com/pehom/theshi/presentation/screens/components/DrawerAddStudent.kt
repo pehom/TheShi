@@ -46,13 +46,19 @@ fun DrawerAddStudent(
     val context = LocalContext.current
     val searchingTextFieldBorderState = remember { mutableStateOf(0) }
     val searchingTextFieldIsError = remember { mutableStateOf(false) }
+    val wrongPhoneNumberLabelText = remember { mutableStateOf("") }
     Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.SpaceBetween) {
 
         Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.SpaceAround) {
-            Box(modifier = Modifier
-                .fillMaxWidth()
-                .padding(15.dp), contentAlignment = Alignment.Center) {
-                Text(text = stringResource(id = R.string.send_request_to_add_new_student), fontSize = 20.sp)
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(15.dp), contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = stringResource(id = R.string.send_request_to_add_new_student),
+                    fontSize = 20.sp
+                )
             }
             OutlinedTextField(
                 modifier = Modifier
@@ -62,16 +68,20 @@ fun DrawerAddStudent(
                 onValueChange = {
                     newStudentPhoneNumber.value = it
                     searchingTextFieldIsError.value = false
-                                },
+                },
                 singleLine = true,
-                label = { if (searchingTextFieldIsError.value) Text(stringResource(id = R.string.phone_not_found))
-                else Text(stringResource(id = R.string.new_student_phone_number))
+                label = {
+                    if (searchingTextFieldIsError.value) Text(wrongPhoneNumberLabelText.value)
+                    else Text(stringResource(id = R.string.new_student_phone_number))
                 },
                 //  visualTransformation = PhoneNumberVisualTransformation(),
                 placeholder = { Text(text = stringResource(id = R.string.phone_number_placeholder)) },
                 isError = searchingTextFieldIsError.value,
 
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone, imeAction = ImeAction.Search),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Phone,
+                    imeAction = ImeAction.Search
+                ),
                 keyboardActions = KeyboardActions(
                     onSearch = {
                         scope.launch {
@@ -85,10 +95,10 @@ fun DrawerAddStudent(
                     .fillMaxWidth()
                     .padding(10.dp),
                 value = newStudentName.value,
-                onValueChange = {newStudentName.value = it},
+                onValueChange = { newStudentName.value = it },
                 label = { Text(text = stringResource(id = R.string.new_student_name)) },
                 placeholder = { Text(stringResource(id = R.string.new_student_name_placeholder)) },
-                keyboardOptions = KeyboardOptions( imeAction = ImeAction.Done),
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                 keyboardActions = KeyboardActions(
                     onDone = {
                         scope.launch {
@@ -102,9 +112,9 @@ fun DrawerAddStudent(
             horizontalArrangement = Arrangement.Center,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 15.dp)
-            ,
-            verticalAlignment = Alignment.CenterVertically){
+                .padding(bottom = 15.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Button(modifier = Modifier
                 .fillMaxWidth(0.5f)
                 .padding(horizontal = 20.dp),
@@ -123,37 +133,46 @@ fun DrawerAddStudent(
                 .fillMaxWidth()
                 .padding(horizontal = 20.dp),
                 enabled = !searchingTextFieldIsError.value && newStudentName.value.isNotEmpty(),
-                onClick =  {
-                        val newStudent = Student(
-                            FsId(newStudentPhoneNumber.value),
-                            newStudentName.value,
-                            newStudentPhoneNumber.value)
-                        // TODO sendRequestToAdd(newStudent.id)
-                        viewModel.useCases.getUserFsIdByPhoneFsUseCase.execute(newStudentPhoneNumber.value) { receiverFsId ->
-                            Log.d("vvv", "receiverFsId = ${receiverFsId.value}")
-                            if (receiverFsId.value == "") {
-                                searchingTextFieldIsError.value = true
-                               // Toast.makeText(context, toastText , Toast.LENGTH_SHORT).show()
-                            } else {
-                                val requestAdd = RequestAdd(viewModel.user.value.fsId, receiverFsId )
-                                requestAdd.receiverName = newStudentName.value
-                                requestAdd.receiverPhone = newStudentPhoneNumber.value
-                                requestAdd.senderPhone = viewModel.user.value.phoneNumber
-                                requestAdd.senderName = viewModel.user.value.name
-                                viewModel.requestsAdd.add(requestAdd)
-                                viewModel.useCases.createRequestAddFsUseCase.execute(viewModel, requestAdd) {}
-                                Log.d("newStudent", "newStudent.name = ${newStudent.name}")
-                                //  viewModel.students.add(newStudent)
-                                scope.launch {
-                                    scaffoldState.drawerState.close()
-                                    newStudentPhoneNumber.value = ""
-                                    newStudentName.value = ""
-                                    searchingTextFieldBorderState.value = 0
-                                }
+                onClick = {
+                    val newStudent = Student(
+                        FsId(newStudentPhoneNumber.value),
+                        newStudentName.value,
+                        newStudentPhoneNumber.value
+                    )
+                    // TODO sendRequestToAdd(newStudent.id)
+                    viewModel.useCases.getUserFsIdByPhoneFsUseCase.execute(newStudentPhoneNumber.value) { receiverFsId ->
+                        Log.d("vvv", "receiverFsId = ${receiverFsId.value}")
+                        if (receiverFsId.value == "") {
+                            wrongPhoneNumberLabelText.value = context.getString(R.string.phone_not_found)
+                            searchingTextFieldIsError.value = true
+                            // Toast.makeText(context, toastText , Toast.LENGTH_SHORT).show()
+                        } else if (receiverFsId.value == viewModel.user.value.fsId.value) {
+                            wrongPhoneNumberLabelText.value = context.getString(R.string.wrong_phone_number)
+                            searchingTextFieldIsError.value = true
+
+                        } else {
+                            val requestAdd = RequestAdd(viewModel.user.value.fsId, receiverFsId)
+                            requestAdd.receiverName = newStudentName.value
+                            requestAdd.receiverPhone = newStudentPhoneNumber.value
+                            requestAdd.senderPhone = viewModel.user.value.phoneNumber
+                            requestAdd.senderName = viewModel.user.value.name
+                            viewModel.requestsAdd.add(requestAdd)
+                            viewModel.useCases.createRequestAddFsUseCase.execute(
+                                viewModel,
+                                requestAdd
+                            ) {}
+                            Log.d("newStudent", "newStudent.name = ${newStudent.name}")
+                            //  viewModel.students.add(newStudent)
+                            scope.launch {
+                                scaffoldState.drawerState.close()
+                                newStudentPhoneNumber.value = ""
+                                newStudentName.value = ""
+                                searchingTextFieldBorderState.value = 0
                             }
                         }
+                    }
 
-                } ) {
+                }) {
                 Icon(Icons.Filled.Done, "Send request to add")
             }
         }

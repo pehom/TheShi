@@ -35,7 +35,8 @@ class ReadStudentTasksFsUseCase {
                         val progress = details[Constants.PROGRESS].toString().toInt()
                         val taskId = details[Constants.TASK_ID].toString()
                         val vcbTitle = details[Constants.VOCABULARY_TITLE].toString()
-                        val task = TaskInfo(taskId,title,VocabularyTitle(vcbTitle))
+                        val status = doc[Constants.STATUS].toString()
+                        val task = TaskInfo(taskId,title,VocabularyTitle(vcbTitle), status)
                         task.progress = progress
                         Log.d(TAG, "task.title = ${task.title}")
                         tasks.add(task)

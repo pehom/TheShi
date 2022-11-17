@@ -64,19 +64,19 @@ fun TestScreen(
                             viewModel.currentTask.value.isTestGoing.value = false
                             viewModel.currentTask.value.wrongTestAnswers.clear()
                             viewModel.currentTask.value.testRefresh()
-                                val updateTaskRoomItem = taskRoomItem.value
-                                updateTaskRoomItem.progress = viewModel.currentTask.value.progress
-                                updateTaskRoomItem.currentLearningItem = viewModel.currentTask.value.currentLearningItem.value
-                                updateTaskRoomItem.currentTaskItem = viewModel.currentTask.value.currentTaskItem.value
-                                updateTaskRoomItem.currentTestItem = viewModel.currentTask.value.currentTestItem.value
-                                updateTaskRoomItem.wrongTestAnswers = viewModel.currentTask.value.wrongTestAnswers
-                                updateTaskRoomItem.incrementSyncCount()
-                                viewModel.useCases.updateTaskFsUseCase.execute(viewModel, updateTaskRoomItem){}
-                                viewModel.viewModelScope.launch(Dispatchers.IO) {
-                                    Constants.REPOSITORY.updateTaskRoomItem(updateTaskRoomItem){
-                                        isTestPaused.value = true
-                                    }
-                                }
+//                                val updateTaskRoomItem = taskRoomItem.value
+//                                updateTaskRoomItem.progress = viewModel.currentTask.value.progress
+//                                updateTaskRoomItem.currentLearningItem = viewModel.currentTask.value.currentLearningItem.value
+//                                updateTaskRoomItem.currentTaskItem = viewModel.currentTask.value.currentTaskItem.value
+//                                updateTaskRoomItem.currentTestItem = viewModel.currentTask.value.currentTestItem.value
+//                                updateTaskRoomItem.wrongTestAnswers = viewModel.currentTask.value.wrongTestAnswers
+//                                updateTaskRoomItem.incrementSyncCount()
+//                                viewModel.useCases.updateTaskFsUseCase.execute(viewModel, updateTaskRoomItem){}
+//                                viewModel.viewModelScope.launch(Dispatchers.IO) {
+//                                    Constants.REPOSITORY.updateTaskRoomItem(updateTaskRoomItem){
+//                                        isTestPaused.value = true
+//                                    }
+//                                }
                         }) {
                             Text(text = stringResource(id = R.string.retry), fontSize = 12.sp)
                         }

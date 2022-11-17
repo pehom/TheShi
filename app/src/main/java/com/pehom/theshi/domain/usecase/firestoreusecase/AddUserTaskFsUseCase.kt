@@ -12,7 +12,7 @@ class AddUserTaskFsUseCase {
     fun execute(viewModel: MainViewModel,
                 _newTask: TaskRoomItem,
                 onResponse: () -> Unit) {
-        val newTask = hashMapOf(
+        val details = hashMapOf(
             Constants.TASK_ID to _newTask.id,
             Constants.TASK_TITLE to _newTask.taskTitle,
             Constants.STUDENT_FS_ID to _newTask.studentFsId,
@@ -24,14 +24,14 @@ class AddUserTaskFsUseCase {
             Constants.CURRENT_TEST_ITEM to _newTask.currentTestItem,
             Constants.CURRENT_LEARNING_ITEM to _newTask.currentLearningItem,
             Constants.WRONG_TEST_ANSWERS to _newTask.wrongTestAnswers,
-            Constants.SYNC_COUNT to _newTask.syncCount
         )
-        val details = hashMapOf(
-            Constants.DETAILS to newTask,
-            Constants.MENTOR_FS_ID to _newTask.mentorFsId
+        val data = hashMapOf(
+            Constants.DETAILS to details,
+            Constants.MENTOR_FS_ID to _newTask.mentorFsId,
+            Constants.STATUS to _newTask.status
         )
         db.collection("Users").document(viewModel.user.value.fsId.value)
-            .collection(Constants.TASKS_BY_USER).document(_newTask.id).set(details)
+            .collection(Constants.TASKS_BY_USER).document(_newTask.id).set(data)
             .addOnSuccessListener {
                 onResponse()
             }

@@ -12,10 +12,11 @@ import com.pehom.theshi.utils.Constants
 class ReadAllUserTasksFsUseCase {
     private val TAG ="readAllUserTasksFsUseCase"
     fun execute(
-        viewModel: MainViewModel
-    ): LiveData<List<TaskRoomItem>>
+        viewModel: MainViewModel,
+        onSuccess: (List<TaskRoomItem>) -> Unit
+    )
     {
-        val result = MutableLiveData<List<TaskRoomItem>>()
+        Log.d(TAG, "readAllUserTasksFsUseCase.execute() has been invoked")
         val resultList = mutableListOf<TaskRoomItem>()
         Firebase.firestore.collection(Constants.USERS).document(viewModel.user.value.fsId.value)
             .collection(Constants.TASKS_BY_USER).get()
@@ -36,7 +37,7 @@ class ReadAllUserTasksFsUseCase {
                     val currentTestItem = details[Constants.CURRENT_TEST_ITEM].toString().toInt()
                     val currentLearningItem = details[Constants.CURRENT_LEARNING_ITEM].toString().toInt()
                     val wrongTestAnswers = details[Constants.WRONG_TEST_ANSWERS] as MutableMap<Int, String>
-                    val syncCount = details[Constants.SYNC_COUNT].toString().toInt()
+                    val status = details[Constants.STATUS].toString()
                     val taskRoomItem = TaskRoomItem(
                         taskId,
                         mentorFsId,
@@ -50,7 +51,7 @@ class ReadAllUserTasksFsUseCase {
                         currentTestItem,
                         currentLearningItem,
                         wrongTestAnswers,
-                        syncCount
+                        status
                     )
                     resultList.add(taskRoomItem)
                 }
@@ -73,7 +74,7 @@ class ReadAllUserTasksFsUseCase {
                             val currentTestItem = details[Constants.CURRENT_TEST_ITEM].toString().toInt()
                             val currentLearningItem = details[Constants.CURRENT_LEARNING_ITEM].toString().toInt()
                             val wrongTestAnswers = details[Constants.WRONG_TEST_ANSWERS] as MutableMap<Int, String>
-                            val syncCount = details[Constants.SYNC_COUNT].toString().toInt()
+                            val status = details[Constants.STATUS].toString()
                             val taskRoomItem = TaskRoomItem(
                                 taskId,
                                 mentorFsId,
@@ -87,12 +88,11 @@ class ReadAllUserTasksFsUseCase {
                                 currentTestItem,
                                 currentLearningItem,
                                 wrongTestAnswers,
-                                syncCount
+                                status
                             )
                             resultList.add(taskRoomItem)
                         }
-
-                        result.value = resultList
+                        onSuccess(resultList)
                     }
                     .addOnFailureListener {
                         Log.d(TAG, "reading tasks by mentor failed, Error: ${it.message}")
@@ -101,6 +101,5 @@ class ReadAllUserTasksFsUseCase {
             }.addOnFailureListener{
                 Log.d(TAG, "reading  tasks by user failed, Error: ${it.message}")
             }
-        return result
     }
 }

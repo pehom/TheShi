@@ -32,9 +32,11 @@ fun TaskListItem(
         modifier = Modifier
             .fillMaxSize()
             .clickable {
-                Log.d(TAG, "currentTaskRoomItem = $taskRoomItem")
-                viewModel.currentTaskRoomItem.value = taskRoomItem
-                viewModel.screenState.value = viewModel.MODE_TASK_SCREEN
+                if (taskRoomItem.status == Constants.STATUS_IN_PROGRESS) {
+                    Log.d(TAG, "currentTaskRoomItem = $taskRoomItem")
+                    viewModel.currentTaskRoomItem.value = taskRoomItem
+                    viewModel.screenState.value = viewModel.MODE_TASK_SCREEN
+                }
             }
     ) {
         TaskView(

@@ -74,17 +74,18 @@ fun GameScreen(
                     Button( onClick = {
                         viewModel.currentTask.value.currentTaskItem.value = 0
                         viewModel.currentTask.value.setReadyForTask()
-                        var updateTaskRoomItem = taskRoomItem.value
-                        updateTaskRoomItem.progress = viewModel.currentTask.value.progress
-                        updateTaskRoomItem.currentLearningItem = viewModel.currentTask.value.currentLearningItem.value
-                        updateTaskRoomItem.currentTaskItem = viewModel.currentTask.value.currentTaskItem.value
-                        updateTaskRoomItem.currentTestItem = viewModel.currentTask.value.currentTestItem.value
-                        updateTaskRoomItem.wrongTestAnswers = viewModel.currentTask.value.wrongTestAnswers
-                        updateTaskRoomItem.incrementSyncCount()
-                        viewModel.useCases.updateTaskFsUseCase.execute(viewModel, updateTaskRoomItem){}
-                        viewModel.viewModelScope.launch(Dispatchers.IO) {
-                            Constants.REPOSITORY.updateTaskRoomItem(updateTaskRoomItem){}
-                        }
+             //           viewModel.currentTaskRoomItem.value.currentTaskItem = 0
+//                        var updateTaskRoomItem = taskRoomItem.value
+//                        updateTaskRoomItem.progress = viewModel.currentTask.value.progress
+//                        updateTaskRoomItem.currentLearningItem = viewModel.currentTask.value.currentLearningItem.value
+//                        updateTaskRoomItem.currentTaskItem = viewModel.currentTask.value.currentTaskItem.value
+//                        updateTaskRoomItem.currentTestItem = viewModel.currentTask.value.currentTestItem.value
+//                        updateTaskRoomItem.wrongTestAnswers = viewModel.currentTask.value.wrongTestAnswers
+                     //   updateTaskRoomItem.incrementSyncCount()
+//                        viewModel.useCases.updateTaskFsUseCase.execute(viewModel, updateTaskRoomItem){}
+//                        viewModel.viewModelScope.launch(Dispatchers.IO) {
+//                            Constants.REPOSITORY.updateTaskRoomItem(updateTaskRoomItem){}
+//                        }
                     }) {
                         Text(stringResource(id = R.string.retry))
                     }

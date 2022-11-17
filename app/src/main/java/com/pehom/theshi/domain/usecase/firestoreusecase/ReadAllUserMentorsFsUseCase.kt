@@ -21,7 +21,8 @@ class ReadAllUserMentorsFsUseCase {
                 for (doc in docs) {
                     val mentorFsId = doc[Constants.MENTOR_FS_ID].toString()
                     val mentorName = doc[Constants.NAME].toString()
-                    val mentorRoomItem = MentorRoomItem(mentorFsId,mentorName,viewModel.user.value.fsId.value)
+                    val mentorPhoneNumber = doc[Constants.PHONE_NUMBER].toString()
+                    val mentorRoomItem = MentorRoomItem(mentorFsId,mentorName,mentorPhoneNumber, viewModel.user.value.fsId.value)
                     mentorRoomItems.add(mentorRoomItem)
                 }
                 onSuccess(mentorRoomItems)

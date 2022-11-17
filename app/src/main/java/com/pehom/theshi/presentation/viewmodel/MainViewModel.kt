@@ -6,6 +6,8 @@ import android.content.SharedPreferences
 import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.pehom.theshi.data.localdata.approomdatabase.AppRoomDatabase
 import com.pehom.theshi.data.localdata.approomdatabase.TaskRoomItem
@@ -63,10 +65,12 @@ class MainViewModel(
     val allVocabularyTitles = mutableStateListOf<VocabularyTitle>()
     val drawerType = mutableStateOf(Constants.DRAWER_USER_PROFILE)
     val user = mutableStateOf(User(FsId(""),"","","",Funds()))
-    var lastTaskInfo = mutableStateOf(TaskInfo("","",VocabularyTitle()))
+    var lastTaskInfo = mutableStateOf(TaskInfo("taskId","taskTitle",VocabularyTitle(), "taskStatus"))
     val isStarterScreenEnded = mutableStateOf(false)
     val isViewModelSet = mutableStateOf(false)
     val currentWordbookTaskRoomItem = mutableStateOf(TaskRoomItem(id = Constants.WORDBOOK_TASK_ROOM_ITEM))
+
+    val vocabularyTitlesListItemOrigItems = mutableMapOf<String, MutableList<String>>()
 
     private val vocabularyTitlesIdsList = MutableStateFlow(listOf<Int>())
     val vocabularyTitlesIds: StateFlow<List<Int>> get() = vocabularyTitlesIdsList
@@ -124,7 +128,10 @@ class MainViewModel(
         ReadStudentWordbookFsUseCase(),
         AddMentorFsUseCase(),
         DeleteStudentTaskByIdFsUseCase(),
-        ReadAllUserMentorsFsUseCase()
+        ReadAllUserMentorsFsUseCase(),
+        ReadNewUserTasksByMentorFsUseCase(),
+        CancelStudentTaskByIdFsUseCase(),
+        ReadNewUserMentorsFsUseCase()
         )
 
     init {
@@ -156,11 +163,25 @@ class MainViewModel(
         }
     }
 
-    fun onVcbTitleItemClicked(itemId: Int) {
+    fun onVcbTitleItemClicked(itemId: Int, item: VocabularyTitle) {
+        Log.d("qqq", "OrigItems.containsKey(${item.fsDocRefPath}) = ${vocabularyTitlesListItemOrigItems.containsKey(item.fsDocRefPath)}")
         vocabularyTitlesIdsList.value = vocabularyTitlesIdsList.value.toMutableList().also {
-            if (it.contains(itemId)){
+            if (it.contains(itemId)) {
                 it.remove(itemId)
             } else {
+                if (vocabularyTitlesListItemOrigItems[item.fsDocRefPath].isNullOrEmpty()) {
+                    useCases.readVcbItemsByVcbDocRefFsUseCase.execute(item.fsDocRefPath) {
+                        val origs = mutableListOf<String>()
+                        it.forEach { vcbItemScheme ->
+                            origs.add(vcbItemScheme.orig)
+                            Log.d("qqq", "origFs = ${vcbItemScheme.orig}")
+                        }
+                        // vocabularyTitlesListItemOrigItems[item.fsDocRefPath] = mutableStateListOf()
+                        vocabularyTitlesListItemOrigItems[item.fsDocRefPath]?.addAll(origs)
+                        Log.d("qqq", "OrigItems.containsKey(vcbTitle.fsDocRefPath) = ${vocabularyTitlesListItemOrigItems.containsKey(item.fsDocRefPath)}")
+
+                    }
+                }
                 it.add(itemId)
             }
         }
