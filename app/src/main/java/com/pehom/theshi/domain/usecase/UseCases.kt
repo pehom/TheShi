@@ -65,5 +65,6 @@ data class UseCases(
     val writeNewAvailableWordsToRoomByFsDocRefPathUseCase: WriteNewAvailableWordsToRoomByFsDocRefPathUseCase,
     val setUserByUserFsIdRoomUseCase: SetUserByUserFsIdRoomUseCase,
     val signInRoomUseCase: SignInRoomUseCase,
-    val updateUsernameFsUseCase: UpdateUsernameFsUseCase
+    val updateUsernameFsUseCase: UpdateUsernameFsUseCase,
+    val updateMentorNameFsUseCase: UpdateMentorNameFsUseCase
 )

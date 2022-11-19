@@ -134,7 +134,8 @@ class MainViewModel(
         WriteNewAvailableWordsToRoomByFsDocRefPathUseCase(),
         SetUserByUserFsIdRoomUseCase(),
         SignInRoomUseCase(),
-        UpdateUsernameFsUseCase()
+        UpdateUsernameFsUseCase(),
+        UpdateMentorNameFsUseCase()
         )
 
     init {

@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.Icon
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.ScaffoldState
 import androidx.compose.material.Text
@@ -47,6 +48,12 @@ fun DrawerUserProfile(viewModel: MainViewModel, scaffoldState: ScaffoldState, au
         Box(modifier = Modifier
             .fillMaxWidth()
             .padding(start = 10.dp), contentAlignment = Alignment.CenterStart){
+            Text(text = stringResource(id = R.string.phone) + ": ${viewModel.user.value.phoneNumber}")
+        }
+        Spacer(modifier = Modifier.height(10.dp))
+        Box(modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 10.dp), contentAlignment = Alignment.CenterStart){
             Text(text = stringResource(id = R.string.funds) + ": ${viewModel.user.value.funds.amount.value}")
         }
         Spacer(modifier = Modifier.height(10.dp))
@@ -62,7 +69,9 @@ fun DrawerUserProfile(viewModel: MainViewModel, scaffoldState: ScaffoldState, au
             .fillMaxWidth()
             .padding(start = 10.dp), contentAlignment = Alignment.CenterStart){
             Text(text = stringResource(id = R.string.mentors),
-                modifier = Modifier.clickable {  }
+                modifier = Modifier.clickable {
+                    viewModel.screenState.value = viewModel.MODE_USER_MENTORS_SCREEN
+                }
             )
         }
         Spacer(modifier = Modifier.height(10.dp))
@@ -100,145 +109,6 @@ fun DrawerUserProfile(viewModel: MainViewModel, scaffoldState: ScaffoldState, au
             )
         }
     }
-
-    /*val TAG = "DrawerUserProfile"
-    val availableWordsRoomItems = Constants.REPOSITORY
-        .readAllAvailableWordsRoomItem
-        .observeAsState(listOf()).value
-    var wordbookRoomItems = remember { mutableStateListOf(WordbookRoomItem(null,"","")) }
-    LaunchedEffect(key1 = null, block ={
-        wordbookRoomItems.clear()
-        viewModel.viewModelScope.launch(Dispatchers.IO) {
-            wordbookRoomItems += Constants.REPOSITORY.readWordbookRoomItemsByUserFsId(viewModel.user.value.fsId.value)
-        }
-    } )
-    val context = LocalContext.current
-    val tasks = Constants.REPOSITORY.readTaskRoomItemsByUserFsId(viewModel.user.value.fsId.value).observeAsState(
-        listOf()
-    ).value
-    val availableVocabularyRoomItems = Constants.REPOSITORY.
-        readAvailableVocabularyRoomItemsByUserFsId(viewModel.user.value.fsId.value).observeAsState(
-        listOf()).value
-    val isAdminState = remember { mutableStateOf(false) }
-    val mentors = Constants.REPOSITORY.readAllMentorRoomItems.observeAsState(listOf()).value
-
-
-    Column(
-       modifier = Modifier.fillMaxSize(),
-       horizontalAlignment = Alignment.CenterHorizontally
-   ) {
-
-       OutlinedTextField(
-           modifier = Modifier
-               .fillMaxWidth()
-               .padding(10.dp),
-           value = viewModel.user.value.email,
-           onValueChange = {},
-           readOnly = true
-       )
-       Button(onClick = {
-           viewModel.useCases.signOutUseCase.execute(viewModel, auth)
-       }) {
-           Text(text = stringResource(id = R.string.sign_out))
-       }
-
-        Button(onClick = {
-            Log.d("viewModelInfo", "viewModel.drawerType = ${viewModel.drawerType.value}")
-            Log.d("viewModelInfo", "viewModel.isStudentProfileShown = ${viewModel.isStudentProfileShown.value}")
-            Log.d("viewModelInfo", "viewModel.allVocabularyTitles.size = ${viewModel.allVocabularyTitles.size}")
-            Log.d("viewModelInfo", "viewModel.currentTaskRoom = ${viewModel.currentTaskRoomItem.value}")
-            Log.d("viewModelInfo", "viewModel.screenState = ${viewModel.screenState.value}")
-
-
-        }) {
-            Text(text = "viewModel info")
-        }
-        Button(onClick = {
-            viewModel.viewModelScope.launch(Dispatchers.IO) {
-                availableWordsRoomItems.forEach {
-                    Constants.REPOSITORY.deleteAvailableWordsRoomItem(it)
-                }
-            }
-        }) {
-            Text(text = "clear available words ${availableWordsRoomItems.size}")
-        }
-
-        Button(onClick = {
-            viewModel.screenState.value = viewModel.MODE_DEVELOPER_SCREEN
-        }) {
-            Text("developer screen")
-        }
-
-        Button(onClick = {
-            viewModel.viewModelScope.launch(Dispatchers.IO) {
-                wordbookRoomItems.forEachIndexed() { _, wordbookItem ->
-                    viewModel.viewModelScope.launch(Dispatchers.IO) {
-                        Constants.REPOSITORY.deleteWordbookRoomItem(wordbookItem){}
-                    }
-                }
-                availableWordsRoomItems.forEach {
-                    Constants.REPOSITORY.deleteAvailableWordsRoomItem(it)
-                }
-            }
-        }) {
-            Text(text = "clear wordbookRoomDb (${wordbookRoomItems.size})")
-        }
-        Button(onClick = {
-           viewModel.viewModelScope.launch(Dispatchers.IO) {
-               tasks.forEachIndexed { _, taskRoomItem ->
-                   Constants.REPOSITORY.deleteTaskRoomItem(taskRoomItem){}
-               }
-               Log.d("deleteTaskRoomItem", "allTaskRoomItems.size = ${Constants.REPOSITORY.readAllTaskRoomItems.value?.size}")
-           }
-        }) {
-            Text(text = "clearTasksRoom (size=${tasks.size}")
-        }
-        Button(onClick = {
-            viewModel.viewModelScope.launch(Dispatchers.IO) {
-                availableVocabularyRoomItems.forEach {
-                    Constants.REPOSITORY.deleteVocabularyRoomItem(it) {}
-                }
-            }
-        }) {
-            Text(text = "clear vcbRoom (size = ${availableVocabularyRoomItems.size})")
-        }
-        Button(onClick = {
-            viewModel.lastScreen = viewModel.screenState.value
-            viewModel.screenState.value = viewModel.MODE_USER_INFO_SCREEN
-        }) {
-            Text("edit username")
-        }
-
-        viewModel.useCases.checkIsAdminFsUseCase.execute(viewModel.user.value){
-            isAdminState.value = it
-        }
-        if (isAdminState.value) {
-            Button(onClick = {
-                viewModel.screenState.value = viewModel.MODE_ADMIN_SCREEN
-            }) {
-                Text(text = "admin screen")
-            }
-        }
-
-        Button(onClick = {
-            viewModel.lastScreen = viewModel.screenState.value
-            viewModel.screenState.value = viewModel.MODE_USER_MENTORS_SCREEN
-        }) {
-            Text("userMentorsScreen")
-        }
-
-        Button(onClick = {
-            mentors.forEach {
-                viewModel.viewModelScope.launch(Dispatchers.IO){
-                    Constants.REPOSITORY.deleteMentorRoomItem(it)
-                }
-            }
-        }) {
-            Text(text = "clear mentorsRoom (size = ${mentors.size})")
-        }
-
-   }*/
-
 }
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -247,36 +117,40 @@ private fun UserDetails(
     userFsID: String,
     modifier: Modifier = Modifier,
     viewModel: MainViewModel
-    ){
+    ) {
     val username = remember { mutableStateOf("") }
     val scope = rememberCoroutineScope()
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
-    val user = remember { mutableStateOf(UserRoomItem("","","","","","",0)) }
+    val user = remember { mutableStateOf(UserRoomItem("", "", "", "", "", "", 0)) }
     LaunchedEffect(key1 = null,) {
         val userRoomItem = Constants.REPOSITORY.readUserRoomItemByUserFsId(userFsID)
-        if (userRoomItem != null){
+        if (userRoomItem != null) {
             user.value = userRoomItem
             username.value = userRoomItem.userName
         }
     }
     Box(
         modifier = modifier,
-        contentAlignment = Alignment.CenterStart){
+        contentAlignment = Alignment.CenterStart
+    ) {
         OutlinedTextField(
+            modifier = Modifier.fillMaxWidth(),
             value = username.value,
-            onValueChange = {username.value = it},
+            onValueChange = { username.value = it },
             maxLines = 1,
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
             keyboardActions = KeyboardActions(
                 onDone = {
                     scope.launch(Dispatchers.IO) {
-                        user.value.userName = username.value
-                        Constants.REPOSITORY.updateUserRoomItem(user.value)
-                        viewModel.useCases.updateUsernameFsUseCase.execute(
-                            viewModel.user.value.fsId.value,
-                            username.value
-                        ){}
+                        if (username.value != user.value.userName) {
+                            user.value.userName = username.value
+                            Constants.REPOSITORY.updateUserRoomItem(user.value)
+                            viewModel.useCases.updateUsernameFsUseCase.execute(
+                                viewModel.user.value.fsId.value,
+                                username.value
+                            ) {}
+                        }
                         keyboardController?.hide()
                         focusManager.clearFocus()
                     }
@@ -292,7 +166,13 @@ private fun UserDetails(
                     contentScale = ContentScale.Crop
                 )
             },
-            label = { Text(text = stringResource(id = R.string.username))}
+            trailingIcon = {
+                Icon(
+                    painterResource(id = R.drawable.ic_baseline_edit_24),
+                    contentDescription = "edit name icon"
+                )
+            },
+            label = { Text(text = stringResource(id = R.string.username)) }
         )
     }
 }
