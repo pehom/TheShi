@@ -10,10 +10,13 @@ import com.pehom.theshi.utils.isNetworkAvailable
 
 class AddVocabularyToWordbookFsUseCase {
     private val TAG = "AddVocabularyToWordbookFsUseCase"
-    fun execute(vocabulary: Vocabulary,
-                fsId: FsId,
-                onSuccess: ()-> Unit) {
-            val data = hashMapOf(
+    fun execute(
+        vocabulary: Vocabulary,
+        fsId: FsId,
+        onSuccess: ()-> Unit)
+    {
+        Log.d(TAG, "$TAG invoked")
+        val data = hashMapOf(
                 Constants.VOCABULARY_FS_DOC_REF_PATH to vocabulary.title.fsDocRefPath,
                 Constants.VOCABULARY_TITLE to vocabulary.title.value
             )

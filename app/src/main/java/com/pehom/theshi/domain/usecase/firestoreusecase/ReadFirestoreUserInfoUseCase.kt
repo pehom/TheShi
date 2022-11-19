@@ -9,11 +9,13 @@ import com.pehom.theshi.domain.model.*
 import com.pehom.theshi.utils.*
 
 class ReadFirestoreUserInfoUseCase {
+    private val TAG = "ReadFirestoreUserInfoUseCase"
     fun execute(
         fsId: String,
         context: Context,
         onSuccess: (User) -> Unit
     ) {
+        Log.d(TAG, "$TAG invoked")
         val infoUser = User(FsId(""),"","","",  Funds())
         Firebase.firestore.collection("Users").document(fsId).get()
             .addOnSuccessListener { doc ->
@@ -23,11 +25,13 @@ class ReadFirestoreUserInfoUseCase {
                     val email = doc.get( Constants.EMAIL).toString()
                     val phoneNumber = doc.get(Constants.PHONE_NUMBER).toString()
                     val fundsAmount = doc.get(Constants.FUNDS).toString().toInt()
+                    val name = doc[Constants.NAME].toString()
                     infoUser.authId = authId
                     infoUser.fsId = FsId(fsId)
                     infoUser.email = email
                     infoUser.phoneNumber = phoneNumber
                     infoUser.funds.setAmount(fundsAmount)
+                    infoUser.name = name
                     onSuccess(infoUser)
                 }
                 else

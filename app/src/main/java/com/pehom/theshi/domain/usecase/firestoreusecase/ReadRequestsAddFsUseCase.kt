@@ -4,9 +4,7 @@ import android.util.Log
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.pehom.theshi.domain.model.FsId
-import com.pehom.theshi.domain.model.Mentor
 import com.pehom.theshi.domain.model.RequestAdd
-import com.pehom.theshi.domain.model.Student
 import com.pehom.theshi.presentation.viewmodel.MainViewModel
 import com.pehom.theshi.utils.Constants
 
@@ -16,6 +14,7 @@ class ReadRequestsAddFsUseCase {
         viewModel: MainViewModel,
         onSuccess: (List<RequestAdd>)-> Unit
     ) {
+        Log.d(TAG, "$TAG invoked")
         val resultList = mutableListOf<RequestAdd>()
         Firebase.firestore.collection(Constants.USERS).document(viewModel.user.value.fsId.value).collection(Constants.PENDING_REQUESTS).get()
             .addOnSuccessListener { docs ->

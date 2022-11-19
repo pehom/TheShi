@@ -12,6 +12,7 @@ class ReadVcbTitleByFsDocRefPathFsUseCase {
         vcbFsDocRefPath: String,
         onSuccess: (VocabularyTitle) -> Unit
     ){
+        Log.d(TAG, "$TAG invoked")
         Firebase.firestore.document(vcbFsDocRefPath).get()
             .addOnSuccessListener {
                 val title = it[Constants.VOCABULARY_TITLE].toString()

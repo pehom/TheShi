@@ -8,11 +8,13 @@ import com.pehom.theshi.presentation.viewmodel.MainViewModel
 import com.pehom.theshi.utils.Constants
 
 class DeclineRequestAddUseCase {
+    private val TAG ="DeclineRequestAddUseCase"
     fun execute(
         request: RequestAdd,
         viewModel: MainViewModel,
         onResponse: () -> Unit
     ){
+        Log.d(TAG, "$TAG invoked")
         Firebase.firestore.collection(Constants.USERS).document(viewModel.user.value.fsId.value)
             .collection(Constants.PENDING_REQUESTS).whereEqualTo(Constants.SENDER_FSID, request.senderFsId.value).get()
             .addOnSuccessListener { docs ->

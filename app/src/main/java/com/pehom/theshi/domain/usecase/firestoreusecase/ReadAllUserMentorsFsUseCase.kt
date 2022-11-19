@@ -14,6 +14,7 @@ class ReadAllUserMentorsFsUseCase {
         viewModel: MainViewModel,
         onSuccess: (List<MentorRoomItem>) -> Unit
     ){
+        Log.d(TAG, "$TAG invoked")
         val mentorRoomItems = mutableListOf<MentorRoomItem>()
         Firebase.firestore.collection(Constants.USERS).document(viewModel.user.value.fsId.value)
             .collection(Constants.MENTORS).get()

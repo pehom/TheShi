@@ -22,6 +22,9 @@ interface AvailableWordsRoomDao {
     @Query("SELECT * FROM available_words_table WHERE userFsId = :userFsId")
     fun getAvailableWordsRoomItemsByUserFsIdAsLiveData(userFsId: String): LiveData<List<AvailableWordsRoomItem>>
 
+    @Query("SELECT COUNT(*) FROM available_words_table WHERE userFsId =:userFsId AND VocabularyFsDocRefPath =:vcbDocRefPath")
+    fun getAvailableWordsRoomItemsCountByUserFsIdAndVcbDocRefPath(userFsId: String, vcbDocRefPath: String): Int
+
     @Query("SELECT * FROM available_words_table WHERE userFsId = :userFsId")
     suspend fun getAvailableWordsRoomItemsByUserFsIdAsList(userFsId: String): List<AvailableWordsRoomItem>
 

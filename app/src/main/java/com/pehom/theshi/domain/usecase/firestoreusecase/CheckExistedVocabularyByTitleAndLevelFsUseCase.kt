@@ -13,6 +13,7 @@ class CheckExistedVocabularyByTitleAndLevelFsUseCase {
         vcbLevel: String,
         onResult: (Boolean) -> Unit
     ){
+        Log.d(TAG, "$TAG invoked")
         Firebase.firestore.collection(Constants.VOCABULARIES_MAIN_REF).document(vcbLevel)
             .collection(Constants.VOCABULARIES).document(vcbTitle).get()
             .addOnSuccessListener {

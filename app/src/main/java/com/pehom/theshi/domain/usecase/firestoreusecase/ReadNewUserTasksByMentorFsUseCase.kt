@@ -14,7 +14,8 @@ class ReadNewUserTasksByMentorFsUseCase {
         user: User,
         onSuccess: (List<TaskRoomItem>) -> Unit
     ){
-        Log.d(TAG, "ReadNewUserTasksByMentorFsUseCase execute() invoked")
+        Log.d(TAG, "$TAG invoked")
+     //   Log.d(TAG, "ReadNewUserTasksByMentorFsUseCase execute() invoked")
         val resultList = mutableListOf<TaskRoomItem>()
         Firebase.firestore.collection(Constants.USERS).document(user.fsId.value).collection(Constants.TASKS_BY_MENTOR).get()
             .addOnSuccessListener {

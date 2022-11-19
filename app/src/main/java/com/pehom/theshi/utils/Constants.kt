@@ -24,7 +24,7 @@ object Constants {
     const val STUDENTS_DIVIDER = "^^"
     const val VOCABULARY_TITLE_DIVIDER = "{{"
     const val APP_SHARED_PREF = "appSP"
-    const val SHARED_PREF_USER_ID = "userId"
+    const val SHARED_PREF_LAST_USER_ID = "lastUserId"
     const val WORDBOOK = "wordbook"
     const val TASK_ID = "taskId"
     const val TASK_TITLE = "title"
@@ -92,6 +92,7 @@ object Constants {
     const val STATUS_IN_PROGRESS = "inProgress"
     const val STATUS_CANCELLED = "cancelled"
     const val STATUS_FINISHED = "finished"
+    const val PASSWORD = "password"
     lateinit var REPOSITORY: DatabaseRepository
 
 

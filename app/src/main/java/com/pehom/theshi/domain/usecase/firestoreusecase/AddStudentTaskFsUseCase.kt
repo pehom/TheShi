@@ -1,7 +1,6 @@
 package com.pehom.theshi.domain.usecase.firestoreusecase
 
 import android.util.Log
-import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.pehom.theshi.data.localdata.approomdatabase.TaskRoomItem
@@ -15,6 +14,7 @@ class AddStudentTaskFsUseCase {
         _newTask:TaskRoomItem,
         onSuccess: () -> Unit
     ) {
+        Log.d(TAG, "$TAG invoked")
         val db = Firebase.firestore
         val newTask = hashMapOf(
             Constants.TASK_ID to _newTask.id,

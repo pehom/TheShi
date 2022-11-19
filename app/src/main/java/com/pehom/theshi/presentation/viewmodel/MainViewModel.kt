@@ -6,8 +6,6 @@ import android.content.SharedPreferences
 import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.pehom.theshi.data.localdata.approomdatabase.AppRoomDatabase
 import com.pehom.theshi.data.localdata.approomdatabase.TaskRoomItem
@@ -58,7 +56,7 @@ class MainViewModel(
     val studentWordbook = mutableStateListOf<String>()
     val currentStudent = mutableStateOf(Student(FsId(""),"",""))
     val lastStudent = mutableStateOf(Student(FsId(""),"",""))
-    val mentors = mutableStateListOf<Mentor>()
+   // val mentors = mutableStateListOf<Mentor>()
     val isStudentProfileShown = mutableStateOf(false)
     val requestsAdd = mutableStateListOf<RequestAdd>()
     val currentWordbookVocabulary = mutableStateOf(Vocabulary(VocabularyTitle(""), mutableListOf()))
@@ -69,19 +67,16 @@ class MainViewModel(
     val isStarterScreenEnded = mutableStateOf(false)
     val isViewModelSet = mutableStateOf(false)
     val currentWordbookTaskRoomItem = mutableStateOf(TaskRoomItem(id = Constants.WORDBOOK_TASK_ROOM_ITEM))
-
+    val loadedVocabularies = mutableSetOf<Vocabulary>()
     val vocabularyTitlesListItemOrigItems = mutableMapOf<String, MutableList<String>>()
-
     private val vocabularyTitlesIdsList = MutableStateFlow(listOf<Int>())
     val vocabularyTitlesIds: StateFlow<List<Int>> get() = vocabularyTitlesIdsList
-
     lateinit var taskIdFactory: TaskIdFactory
     lateinit var sharedPreferences: SharedPreferences
 
-
     val useCases = UseCases(
         SetTaskByVocabulary(),
-        SignInUseCase(),
+        SignInFsUseCase(),
         CreateFirestoreAccountUseCase(),
         ReadFirestoreUserInfoUseCase(),
         AddUserTaskFsUseCase(),
@@ -131,7 +126,15 @@ class MainViewModel(
         ReadAllUserMentorsFsUseCase(),
         ReadNewUserTasksByMentorFsUseCase(),
         CancelStudentTaskByIdFsUseCase(),
-        ReadNewUserMentorsFsUseCase()
+        ReadNewUserMentorsFsUseCase(),
+        ReadNewStudentsFsUseCase(),
+        WriteNewStudentsToRoomFsUseCase(),
+        ReadNewAvailableVocabulariesFsUseCase(),
+        WriteNewAvailableVocabulariesToRoomUseCase(),
+        WriteNewAvailableWordsToRoomByFsDocRefPathUseCase(),
+        SetUserByUserFsIdRoomUseCase(),
+        SignInRoomUseCase(),
+        UpdateUsernameFsUseCase()
         )
 
     init {
@@ -188,7 +191,7 @@ class MainViewModel(
     }
 
     fun saveAppStateToSharedPreferences(){
-        sharedPreferences.edit().putString(Constants.SHARED_PREF_USER_ID, user.value.fsId.value)
+        sharedPreferences.edit().putString(Constants.SHARED_PREF_LAST_USER_ID, user.value.fsId.value).apply()
        // sharedPreferences.edit().putString(Constants.)
     }
 
@@ -200,7 +203,8 @@ class MainViewModel(
         val studentDao = AppRoomDatabase.getInstance(context).getStudentDao()
         val availableWordsRoomDao = AppRoomDatabase.getInstance(context).getAvailableWordsRoomDao()
         val mentorRoomDao = AppRoomDatabase.getInstance(context).getMentorRoomDao()
-        Constants.REPOSITORY = RoomRepository(taskRoomDao, wordbookDao, vocabularyRoomDao, studentDao, availableWordsRoomDao,mentorRoomDao)
+        val userRoomDao = AppRoomDatabase.getInstance(context).getUserRoomDao()
+        Constants.REPOSITORY = RoomRepository(taskRoomDao, wordbookDao, vocabularyRoomDao, studentDao, availableWordsRoomDao,mentorRoomDao, userRoomDao)
         onSuccess()
     }
 }

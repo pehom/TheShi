@@ -12,6 +12,7 @@ class ReadStudentWordbookFsUseCase {
         studentFsID: String,
         onSuccess: (List<String>) -> Unit
     ) {
+        Log.d(TAG, "$TAG invoked")
         val result = mutableListOf<String>()
         Firebase.firestore.collection(Constants.USERS).document(studentFsID).collection(Constants.WORDBOOK).get()
             .addOnSuccessListener {docs ->

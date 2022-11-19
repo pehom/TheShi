@@ -28,6 +28,7 @@ import com.pehom.theshi.domain.model.Vocabulary
 import com.pehom.theshi.domain.model.VocabularyTitle
 import com.pehom.theshi.presentation.screens.components.DialogBuyVocabulary
 import com.pehom.theshi.presentation.screens.components.DialogCancelTask
+import com.pehom.theshi.utils.isNetworkAvailable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -71,44 +72,6 @@ fun InfoRegularTaskScreen(
                         }
                     }
                 }
-               /* Constants.REPOSITORY.readAvailableVocabularyRoomItemByVcbDocRefPath(
-                    currentTaskRoomItem.vcbFsDocRefPath,
-                    viewModel.user.value.fsId.value
-                ) { availableVocabularyRoomItem ->
-                    if (availableVocabularyRoomItem != null) {
-                        Log.d("nnn", "availableVocabularyRoomItem = $availableVocabularyRoomItem")
-                        vcbTitle.value.value = availableVocabularyRoomItem.vcbTitle
-                        vcbTitle.value.fsDocRefPath = availableVocabularyRoomItem.vcbDocRefPath
-                        vcbTitle.value.timestamp = availableVocabularyRoomItem.vcbTimeStamp
-                        vcbTitle.value.price = availableVocabularyRoomItem.price
-                        viewModel.viewModelScope.launch(Dispatchers.IO) {
-                            Constants.REPOSITORY
-                                .readAvailableWordsRoomItemsByVcbDocRefPath(currentTaskRoomItem.vcbFsDocRefPath,viewModel.user.value.fsId.value)
-                                { wordsRoom ->
-                                    Log.d("nnn", "wordsRoom = $wordsRoom")
-                                  //  val vcbItems = mutableListOf<VocabularyItemScheme>()
-                                    if (wordsRoom.isNotEmpty()) {
-                                        wordsRoom.forEach {item ->
-                                            Log.d("nnn", "wordsFromRoom current item = $item")
-                                            wordsFromRoom.add(VocabularyItemScheme(item.orig, item.trans, item.imgUrl))
-                                        }
-                                        val vcb = Vocabulary(vcbTitle.value, wordsFromRoom)
-                                        Log.d("zzzz", "vcbRoom = $vcb")
-                                        viewModel.useCases.setTaskByVocabulary.execute(viewModel, vcb, taskRoomItem) {}
-                                    }
-                                }
-                        }
-                    } else {
-                        viewModel.useCases.readVcbTitleByFsDocRefPath.execute(currentTaskRoomItem.vcbFsDocRefPath) {_vcbTitle ->
-                            vcbTitle.value = _vcbTitle
-                            viewModel.useCases.readVcbItemsByVcbDocRefFsUseCase.execute(currentTaskRoomItem.vcbFsDocRefPath){_vcbItems ->
-                                val vocabulary = Vocabulary(vcbTitle.value, _vcbItems)
-                                viewModel.useCases.setTaskByVocabulary.execute(viewModel, vocabulary, taskRoomItem){}
-                                viewModel.useCases.saveAvailableVocabularyRoomUseCase.execute(viewModel, vocabulary)
-                            }
-                        }
-                    }
-                }*/
             }
         }
         Column(
@@ -149,47 +112,58 @@ fun InfoRegularTaskScreen(
         }
     }
     else {
-        val vcbTitle = remember { mutableStateOf(VocabularyTitle()) }
-        viewModel.useCases.readVcbTitleByFsDocRefPathFsUseCase.execute(currentTaskRoomItem.vcbFsDocRefPath) {
-            vcbTitle.value = it
-            Log.d("zzzz", "vcbTitleFs.value = ${vcbTitle.value}")
-            viewModel.useCases.readVcbItemsByVcbDocRefFsUseCase.execute(currentTaskRoomItem.vcbFsDocRefPath){
-                Log.d("zzzz", "readVcbItemsByVcbDocRefFsUseCase it = $it")
-                wordsFs += it
+        if (isNetworkAvailable()){
+            val vcbTitle = remember { mutableStateOf(VocabularyTitle(currentTaskRoomItem.vcbTitle)) }
+            var isVcbLoaded = false
+            viewModel.loadedVocabularies.forEachIndexed { index, vocabulary ->
+                if (vocabulary.title.value == vcbTitle.value.value)
+                    isVcbLoaded = true
             }
-        }
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .wrapContentSize(Alignment.Center),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
+            if (!isVcbLoaded){
+                viewModel.useCases.readVcbTitleByFsDocRefPathFsUseCase.execute(currentTaskRoomItem.vcbFsDocRefPath) {
+                    vcbTitle.value = it
+                    Log.d("zzzz", "vcbTitleFs.value = ${vcbTitle.value}")
+                    viewModel.useCases.readVcbItemsByVcbDocRefFsUseCase.execute(currentTaskRoomItem.vcbFsDocRefPath){
+                        Log.d("zzzz", "readVcbItemsByVcbDocRefFsUseCase it = $it")
+                        wordsFs += it
+                        viewModel.loadedVocabularies.add(Vocabulary(vcbTitle.value, wordsFs))
+                    }
+                }
+            }
 
-            TopBarTaskInfo(
-                viewModel= viewModel,
-                vcbTitle = vcbTitle,
-                isAvailable = isAvailable,
-                words = wordsFs
-            )
-            Card(
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight()
-                    .weight(7f)
-                    .padding(10.dp),
-                elevation = 5.dp
+                    .fillMaxSize()
+                    .wrapContentSize(Alignment.Center),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Column() {
-                    LazyColumn(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .fillMaxHeight()
-                            // .padding(vertical = 7.dp)
-                            .weight(7f),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ){
-                        itemsIndexed(wordsFs) {_, item ->
-                            Text(text = item.trans, fontSize = 16.sp)
+
+                TopBarTaskInfo(
+                    viewModel= viewModel,
+                    vcbTitle = vcbTitle,
+                    isAvailable = isAvailable,
+                    words = wordsFs
+                )
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight()
+                        .weight(7f)
+                        .padding(10.dp),
+                    elevation = 5.dp
+                ) {
+                    Column() {
+                        LazyColumn(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .fillMaxHeight()
+                                // .padding(vertical = 7.dp)
+                                .weight(7f),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ){
+                            itemsIndexed(wordsFs) {_, item ->
+                                Text(text = item.trans, fontSize = 16.sp)
+                            }
                         }
                     }
                 }

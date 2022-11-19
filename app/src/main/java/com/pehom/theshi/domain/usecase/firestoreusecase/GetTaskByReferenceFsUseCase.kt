@@ -12,6 +12,7 @@ class GetTaskByReferenceFsUseCase {
         docRef: DocumentReference,
         onSuccess: (TaskRoomItem?) -> Unit
     ) {
+        Log.d(TAG, "$TAG invoked")
         docRef.get()
             .addOnSuccessListener {
                 val details = it.data?.get("details") as MutableMap<*,*>

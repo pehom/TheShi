@@ -1,8 +1,6 @@
 package com.pehom.theshi.domain.usecase.firestoreusecase
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.pehom.theshi.data.localdata.approomdatabase.TaskRoomItem
@@ -16,7 +14,9 @@ class ReadAllUserTasksFsUseCase {
         onSuccess: (List<TaskRoomItem>) -> Unit
     )
     {
-        Log.d(TAG, "readAllUserTasksFsUseCase.execute() has been invoked")
+        Log.d(TAG, "$TAG invoked")
+
+    //    Log.d(TAG, "readAllUserTasksFsUseCase.execute() has been invoked")
         val resultList = mutableListOf<TaskRoomItem>()
         Firebase.firestore.collection(Constants.USERS).document(viewModel.user.value.fsId.value)
             .collection(Constants.TASKS_BY_USER).get()

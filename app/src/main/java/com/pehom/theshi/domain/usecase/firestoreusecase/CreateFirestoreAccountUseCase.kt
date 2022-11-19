@@ -11,17 +11,17 @@ import com.pehom.theshi.domain.model.User
 import com.pehom.theshi.presentation.viewmodel.MainViewModel
 import com.pehom.theshi.utils.*
 
-class CreateFirestoreAccountUseCase(
-
-) {
-
-    fun execute(viewModel: MainViewModel,
-                auth: FirebaseAuth,
-                loginData: LoginModel) {
-        Log.d(
-            "tagg",
-            " CreateAccount. execute():  email = ${loginData.email}  password = ${loginData.password}"
-        )
+class CreateFirestoreAccountUseCase() {
+    private val TAG = "CreateFirestoreAccountUseCase"
+    fun execute(
+        viewModel: MainViewModel,
+        auth: FirebaseAuth,
+        loginData: LoginModel,
+        name: String,
+        onSuccess: (User?) -> Unit
+    )
+    {
+        Log.d(TAG, "$TAG invoked")
         val db = Firebase.firestore
         auth.createUserWithEmailAndPassword(loginData.email, loginData.password)
             .addOnSuccessListener {
@@ -30,6 +30,7 @@ class CreateFirestoreAccountUseCase(
                     Constants.AUTH_ID to auth.currentUser?.uid,
                     Constants.PHONE_NUMBER to loginData.phoneNumber,
                     Constants.EMAIL to loginData.email,
+                    Constants.NAME to name,
                     Constants.FUNDS to 7,
                     Constants.LAST_TASK_ID_SFX to 0
                 )
@@ -48,28 +49,35 @@ class CreateFirestoreAccountUseCase(
                                             val fundsString = doc.get(Constants.FUNDS).toString()
                                             val funds = fundsFromString(fundsString)
                                             val createdUser = User(fsId,authId, email, phoneNumber, funds)
+                                            createdUser.name = doc[Constants.NAME].toString()
                                             val lastTaskIdSfx = doc.get(Constants.LAST_TASK_ID_SFX).toString().toInt()
                                             viewModel.user.value = createdUser
                                             viewModel.taskIdFactory = TaskIdFactory(fsId, lastTaskIdSfx, viewModel.sharedPreferences)
-                                            viewModel.screenState.value = viewModel.MODE_STUDENT_SCREEN
+                                            onSuccess(createdUser)
+                                        // viewModel.screenState.value = viewModel.MODE_STUDENT_SCREEN
                                         }
                                     }
                                     .addOnFailureListener {
                                         Log.d("createAccountUseCase", "db.Users reading failed")
+                                        onSuccess(null)
+
                                     }
 
                             }
                             .addOnFailureListener {
                                 Log.d("createAccountUseCase", "db.Users updating fsId failed")
+                                onSuccess(null)
+
                             }
                     }
                     .addOnFailureListener {
                         Log.d("createAccountUseCase", "db.Users adding failure")
+                        onSuccess(null)
                     }
             }
             .addOnFailureListener {
                 Log.d("createAccountUseCase", "failure ${it.message.toString()} ")
-                // onFailure(it.message.toString())
+                onSuccess(null)
             }
     }
 }

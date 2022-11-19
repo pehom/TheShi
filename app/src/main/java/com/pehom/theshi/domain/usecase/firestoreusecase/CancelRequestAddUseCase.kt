@@ -14,9 +14,9 @@ class CancelRequestAddUseCase {
         viewModel: MainViewModel,
         onResponse: () -> Unit
     ){
+        Log.d(TAG, "$TAG invoked")
         Log.d(TAG, "request.sender = ${request.senderFsId}")
         Log.d(TAG, "request.receiver = ${request.receiverFsId}")
-
         viewModel.requestsAdd.remove(request)
         if (viewModel.user.value.fsId.value == request.senderFsId.value) {
             Firebase.firestore.collection(Constants.USERS).document(viewModel.user.value.fsId.value)

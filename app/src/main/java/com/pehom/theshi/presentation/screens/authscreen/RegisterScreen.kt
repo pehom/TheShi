@@ -19,13 +19,18 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.launch
 import com.pehom.theshi.R
+import com.pehom.theshi.data.localdata.approomdatabase.UserRoomItem
 import com.pehom.theshi.domain.model.LoginModel
 import com.pehom.theshi.presentation.viewmodel.MainViewModel
+import com.pehom.theshi.utils.Constants
+import com.pehom.theshi.utils.isNetworkAvailable
+import kotlinx.coroutines.Dispatchers
 
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -36,6 +41,7 @@ fun RegisterScreen(viewModel: MainViewModel, auth: FirebaseAuth) {
     val email = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
     val phoneNumber = remember { mutableStateOf("") }
+    val name = remember { mutableStateOf("") }
     val scope = rememberCoroutineScope()
     val kc = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
@@ -99,6 +105,24 @@ fun RegisterScreen(viewModel: MainViewModel, auth: FirebaseAuth) {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 40.dp),
+            value = name.value,
+            onValueChange = {name.value = it},
+            label = { Text(text = stringResource(id = R.string.enter_your_name)) },
+            singleLine = true,
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Done),
+            keyboardActions = KeyboardActions(
+                onDone = {
+                    scope.launch {
+                        kc?.hide()
+                        focusManager.clearFocus()
+                    }
+                })
+        )
+        Spacer(modifier = Modifier.height(20.dp))
+        OutlinedTextField(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 40.dp),
             value = password.value,
             onValueChange = {password.value = it},
             label = { Text(text = stringResource(id = R.string.enter_your_password)) },
@@ -116,7 +140,29 @@ fun RegisterScreen(viewModel: MainViewModel, auth: FirebaseAuth) {
         Button(
             enabled = email.value.isNotEmpty() && isPhoneNumberValid.value && password.value.isNotEmpty(),
             onClick = {
-                viewModel.useCases.createFirestoreAccountUseCase.execute(viewModel, auth, LoginModel( email.value, password.value, phoneNumber.value))
+                if (isNetworkAvailable()) {
+                    viewModel.useCases.createFirestoreAccountUseCase
+                        .execute(viewModel, auth, LoginModel( email.value, password.value, phoneNumber.value), name.value ){createdUser ->
+                            if (createdUser != null) {
+                                viewModel.viewModelScope.launch(Dispatchers.IO) {
+                                    Constants.REPOSITORY.addUserRoomItem(
+                                        UserRoomItem(
+                                            createdUser.fsId.value,
+                                            createdUser.authId,
+                                            createdUser.name,
+                                            createdUser.phoneNumber,
+                                            createdUser.email,
+                                            password.value,
+                                            createdUser.funds.amount.value
+                                        )
+                                    )
+                                    viewModel.screenState.value = viewModel.MODE_STUDENT_SCREEN
+                                }
+                            }
+                        }
+                } else {
+                    Toast.makeText(context, context.getString(R.string.network_unavailable), Toast.LENGTH_SHORT).show()
+                }
             }) {
             Text(text = stringResource(id = R.string.create_account))
         }

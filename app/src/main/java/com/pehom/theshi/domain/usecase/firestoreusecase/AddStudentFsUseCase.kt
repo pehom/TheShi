@@ -8,11 +8,13 @@ import com.pehom.theshi.presentation.viewmodel.MainViewModel
 import com.pehom.theshi.utils.Constants
 
 class AddStudentFsUseCase {
+    private val TAG ="AddStudentFsUseCase"
     fun execute(
         viewModel: MainViewModel,
         _newStudent: Student,
         onResponse: ()->Unit
     ) {
+        Log.d(TAG, "$TAG invoked")
         val db = Firebase.firestore
         val newStudent = hashMapOf(
             Constants.FS_ID to _newStudent.fsId.value,

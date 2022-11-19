@@ -8,11 +8,13 @@ import com.pehom.theshi.presentation.viewmodel.MainViewModel
 import com.pehom.theshi.utils.Constants
 
 class UpdateTaskFsUseCase {
+    private val TAG = "UpdateTaskFsUseCase"
     fun execute(
         viewModel: MainViewModel,
         taskRoomItem: TaskRoomItem,
         onResponse: ()-> Unit
     ){
+        Log.d(TAG, "$TAG invoked")
         val stringMap =  mutableMapOf<String,String>()
         taskRoomItem.wrongTestAnswers.keys.forEach() {
             stringMap[it.toString()] = taskRoomItem.wrongTestAnswers[it].toString()

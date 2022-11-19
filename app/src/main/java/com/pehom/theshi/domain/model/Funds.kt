@@ -2,8 +2,11 @@ package com.pehom.theshi.domain.model
 
 import androidx.compose.runtime.mutableStateOf
 
-class Funds {
-    val amount = mutableStateOf(0)
+class Funds(_amount: Int) {
+    val amount = mutableStateOf(_amount)
+
+    constructor() : this(0)
+
 
     fun setAmount(_amount: Int) {
         amount.value = _amount

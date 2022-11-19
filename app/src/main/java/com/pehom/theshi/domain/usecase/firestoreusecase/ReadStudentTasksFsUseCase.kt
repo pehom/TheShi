@@ -3,8 +3,6 @@ package com.pehom.theshi.domain.usecase.firestoreusecase
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
-import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.viewModelScope
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.pehom.theshi.R
@@ -13,7 +11,6 @@ import com.pehom.theshi.domain.model.VocabularyTitle
 import com.pehom.theshi.presentation.viewmodel.MainViewModel
 import com.pehom.theshi.utils.Constants
 import com.pehom.theshi.utils.isNetworkAvailable
-import kotlinx.coroutines.async
 
 class ReadStudentTasksFsUseCase {
     private val TAG ="ReadStudentTasksFsUseCase"
@@ -22,6 +19,8 @@ class ReadStudentTasksFsUseCase {
         viewModel: MainViewModel,
         onResponse: (MutableList<TaskInfo>) -> Unit
     ){
+        Log.d(TAG, "$TAG invoked")
+
         if (isNetworkAvailable()) {
             val tasks = mutableListOf<TaskInfo>()
             val studentFsId = viewModel.currentStudent.value.fsId.value

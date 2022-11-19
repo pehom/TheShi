@@ -2,7 +2,6 @@ package com.pehom.theshi.domain.usecase.firestoreusecase
 
 import android.content.Context
 import android.util.Log
-import androidx.compose.runtime.LaunchedEffect
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.ktx.firestore
@@ -14,12 +13,14 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class SetupMainViewModelFsUseCase() {
+    private val TAG = "SetupMainViewModelFsUseCase"
     fun execute(
         context: Context,
         viewModel: MainViewModel,
         currentUser: FirebaseUser,
         onResponse: () -> Unit
     ){
+        Log.d(TAG, "$TAG invoked")
         Firebase.firestore.collection(Constants.USERS).whereEqualTo(Constants.AUTH_ID,  currentUser.uid).get()
             .addOnSuccessListener {documents ->
                 Log.d("setupViewModelFs", "setupViewModelFs I'm here. documents.size = ${documents.size()} ")
@@ -29,6 +30,7 @@ class SetupMainViewModelFsUseCase() {
                         val fsId = FsId(doc.get(Constants.FS_ID).toString())
                         viewModel.useCases.readFirestoreUserInfoUseCase.execute(fsId.value, context){user->
                             viewModel.user.value = user
+
                             viewModel.currentWordbookTaskRoomItem.value.studentFsId = user.fsId.value
                             viewModel.useCases.readRequestsAddFsUseCase.execute(viewModel){
                                 viewModel.useCases.setTaskIdFactoryFsUseCase.execute(fsId,viewModel){
@@ -48,10 +50,12 @@ class SetupMainViewModelFsUseCase() {
                                                 }
                                             }
                                             viewModel.useCases.writeNewTasksByMentorToRoomFsUseCase.execute(viewModel){
-                                                viewModel.isViewModelSet.value = true
-                                                if (viewModel.isStarterScreenEnded.value){
-                                                    viewModel.screenState.value = viewModel.MODE_STUDENT_SCREEN
+                                                viewModel.useCases.writeNewStudentsToRoomFsUseCase.execute(viewModel){
+                                                    viewModel.isViewModelSet.value = true
+                                                    Log.d("viewModel", "setup viewmodel.isViewModelSet = ${viewModel.isViewModelSet.value}")
+                                                    Log.d("viewModel", "setup viewmodel.isStarterScreenEnded = ${viewModel.isStarterScreenEnded.value}")
                                                     onResponse()
+                                                    //  may be starter screen is not ended yet
                                                 }
                                             }
                                         }

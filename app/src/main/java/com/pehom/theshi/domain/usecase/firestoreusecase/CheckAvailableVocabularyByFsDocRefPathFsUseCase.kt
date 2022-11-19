@@ -1,5 +1,6 @@
 package com.pehom.theshi.domain.usecase.firestoreusecase
 
+import android.util.Log
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.pehom.theshi.domain.model.User
@@ -12,7 +13,7 @@ class CheckAvailableVocabularyByFsDocRefPathFsUseCase {
         fsDocRefPath: String,
         onSuccess: (Boolean) -> Unit
     ){
-
+        Log.d(TAG, "$TAG invoked")
         Firebase.firestore.collection(Constants.USERS).document(user.fsId.value)
             .collection(Constants.AVAILABLE_VOCABULARIES)
             .whereEqualTo(Constants.VOCABULARY_FS_DOC_REF_PATH, fsDocRefPath).get()

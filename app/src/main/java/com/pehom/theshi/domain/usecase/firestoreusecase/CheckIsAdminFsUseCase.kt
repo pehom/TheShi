@@ -14,6 +14,7 @@ class CheckIsAdminFsUseCase {
         user: User,
         onResult: (Boolean) -> Unit
     ) {
+        Log.d(TAG, "$TAG invoked")
         if (user.fsId.value != ""){
             if (isNetworkAvailable()) {
                 Firebase.firestore.collection(Constants.ADMINS).document(user.fsId.value).get()

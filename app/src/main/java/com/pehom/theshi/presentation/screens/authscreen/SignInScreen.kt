@@ -21,10 +21,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
 import com.pehom.theshi.R
+import com.pehom.theshi.data.localdata.approomdatabase.UserRoomItem
 import com.pehom.theshi.domain.model.LoginModel
 import com.pehom.theshi.presentation.viewmodel.MainViewModel
+import com.pehom.theshi.utils.Constants
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -83,12 +87,43 @@ fun SignInScreen(viewModel: MainViewModel, auth: FirebaseAuth){
         Button(
             enabled = email.value.isNotEmpty() && password.value.isNotEmpty(),
             onClick = {
-                viewModel.useCases.signInUseCase.execute(
+
+                viewModel.useCases.signInFsUseCase.execute(
                     context,
                     viewModel,
                     auth,
                     LoginModel(email.value, password.value)
-                )
+                ){
+                    if (it) {
+                        auth.currentUser?.let {fbUser ->
+                            viewModel.useCases.setupMainViewModelFsUseCase.execute(context, viewModel, fbUser){
+                                viewModel.viewModelScope.launch(Dispatchers.IO) {
+                                    var userRoomItem = Constants.REPOSITORY.readUserRoomItemByUserFsId(viewModel.user.value.fsId.value)
+                                    if (userRoomItem == null) {
+                                        userRoomItem = UserRoomItem(
+                                            viewModel.user.value.fsId.value,
+                                            viewModel.user.value.authId,
+                                            viewModel.user.value.name,
+                                            viewModel.user.value.phoneNumber,
+                                            viewModel.user.value.email,
+                                            password.value,
+                                            viewModel.user.value.funds.amount.value
+                                            )
+                                        Constants.REPOSITORY.addUserRoomItem(userRoomItem)
+                                    }
+                                    viewModel.screenState.value = viewModel.MODE_STUDENT_SCREEN
+                                }
+                            }
+                        }
+                    } else {
+                        viewModel.useCases.signInRoomUseCase.execute(context,viewModel, LoginModel(email.value, password.value)){result ->
+                            if (result) {
+                                viewModel.screenState.value = viewModel.MODE_STUDENT_SCREEN
+
+                            }
+                        }
+                    }
+                }
             }) {
             Text(text = stringResource(id = R.string.sign_in))
         }

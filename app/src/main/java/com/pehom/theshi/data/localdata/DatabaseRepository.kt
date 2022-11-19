@@ -70,6 +70,8 @@ interface DatabaseRepository {
 
     suspend fun getAvailableVocabularyRoomItemSizeByVcbDocRefPath(vcbDocRefPath: String): Int
 
+    suspend fun getAvailableWordsRoomItemsCountByUserFsIdAndVcbDocRefPath(userFsId: String, vcbDocRefPath: String): Int
+
     suspend fun updateAvailableWordsRoomItem(availableWordsRoomItem: AvailableWordsRoomItem)
 
     suspend fun deleteAvailableWordsRoomItem(availableWordsRoomItem: AvailableWordsRoomItem)
@@ -87,6 +89,16 @@ interface DatabaseRepository {
     suspend fun updateMentorRoomItem(mentorRoomItem: MentorRoomItem)
 
     suspend fun deleteMentorRoomItem(mentorRoomItem: MentorRoomItem)
+
+    suspend fun addUserRoomItem(userRoomItem: UserRoomItem)
+
+    suspend fun readUserRoomItemByUserFsId(userFsId: String): UserRoomItem?
+
+    suspend fun readUserRoomItemByEmailAndPassword(email: String, password: String): UserRoomItem?
+
+    suspend fun updateUserRoomItem(userRoomItem: UserRoomItem)
+
+    suspend fun deleteUserRoomItem(userRoomItem: UserRoomItem)
 
 
 }

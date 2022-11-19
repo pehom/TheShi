@@ -4,7 +4,6 @@ import android.util.Log
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.pehom.theshi.data.localdata.approomdatabase.MentorRoomItem
-import com.pehom.theshi.domain.model.Mentor
 import com.pehom.theshi.utils.Constants
 
 class ReadNewUserMentorsFsUseCase {
@@ -14,6 +13,7 @@ class ReadNewUserMentorsFsUseCase {
         userFsId: String,
         onSuccess: (List<MentorRoomItem>) -> Unit
     ){
+        Log.d(TAG, "$TAG invoked")
         val resultList = mutableListOf<MentorRoomItem>()
         Firebase.firestore.collection(Constants.USERS).document(userFsId).collection(Constants.MENTORS).get()
             .addOnSuccessListener {
@@ -24,7 +24,6 @@ class ReadNewUserMentorsFsUseCase {
                         doc.document[Constants.NAME].toString(),
                         doc.document[Constants.PHONE_NUMBER].toString(),
                         userFsId
-
                     )
                     resultList.add(mentor)
                 }

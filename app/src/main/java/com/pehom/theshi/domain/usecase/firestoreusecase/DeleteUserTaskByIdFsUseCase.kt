@@ -13,6 +13,7 @@ class DeleteUserTaskByIdFsUseCase {
         taskId: String,
         onSuccess: () -> Unit
     ){
+        Log.d(TAG, "$TAG invoked")
         Firebase.firestore.collection(Constants.USERS).document(viewModel.user.value.fsId.value)
             .collection(Constants.TASKS_BY_USER).document(taskId).delete()
             .addOnSuccessListener {

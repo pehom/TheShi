@@ -9,11 +9,12 @@ import com.pehom.theshi.presentation.viewmodel.MainViewModel
 import com.pehom.theshi.utils.Constants
 
 class GetAllVocabularyTitlesFsUseCase() {
-
+    private val TAG = "GetAllVocabularyTitlesFsUseCase"
     fun execute(
         viewModel: MainViewModel,
         onResponse: () -> Unit
     ) {
+        Log.d(TAG, "$TAG invoked")
         val db = Firebase.firestore
         val titles = mutableListOf<VocabularyTitle>()
         db.collection(Constants.VOCABULARIES_MAIN_REF)

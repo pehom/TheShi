@@ -3,15 +3,16 @@ package com.pehom.theshi.domain.usecase.firestoreusecase
 import android.util.Log
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import com.pehom.theshi.domain.model.VocabularyItemScheme
 import com.pehom.theshi.presentation.viewmodel.MainViewModel
 import com.pehom.theshi.utils.Constants
 
 class ReadWordbookFsUseCase {
+    private val TAG = "ReadWordbookFsUseCase"
     fun execute(
         viewModel: MainViewModel,
         onSuccess: (List<String>) -> Unit
     ) {
+        Log.d(TAG, "$TAG invoked")
         val fsDocRefPaths = mutableListOf<String>()
         Firebase.firestore.collection(Constants.USERS).document(viewModel.user.value.fsId.value).collection(Constants.WORDBOOK).get()
             .addOnSuccessListener { docs ->

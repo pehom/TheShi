@@ -15,6 +15,7 @@ class AddMentorFsUseCase {
         mentor: Mentor,
         onSuccess: () -> Unit
     ){
+        Log.d(TAG, "$TAG invoked")
         Firebase.firestore.collection(Constants.USERS).document(user.fsId.value)
             .collection(Constants.MENTORS).document(mentor.fsId)
             .set(hashMapOf(

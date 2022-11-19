@@ -1,6 +1,7 @@
 package com.pehom.theshi.domain.usecase
 
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.firestore.ktx.firestore
@@ -23,8 +24,16 @@ class BuyVocabularyWithLoadedItemsUseCase {
         vocabulary: Vocabulary,
         onSuccess: () -> Unit
     ){
+        Log.d(TAG, "$TAG invoked")
         if (price <= viewModel.user.value.funds.amount.value) {
             viewModel.user.value.funds.spend(price)
+            viewModel.viewModelScope.launch(Dispatchers.IO) {
+                val userRoomItem = Constants.REPOSITORY.readUserRoomItemByUserFsId(viewModel.user.value.fsId.value)
+                if (userRoomItem != null){
+                    userRoomItem.funds = viewModel.user.value.funds.amount.value
+                    Constants.REPOSITORY.updateUserRoomItem(userRoomItem)
+                }
+            }
             Firebase.firestore.collection(Constants.USERS).document(viewModel.user.value.fsId.value)
                 .update(Constants.FUNDS, viewModel.user.value.funds.amount.value)
             viewModel.currentTaskRoomItem.value.isAvailable = true

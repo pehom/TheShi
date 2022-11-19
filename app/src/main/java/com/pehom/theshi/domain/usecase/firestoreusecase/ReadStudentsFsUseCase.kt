@@ -9,10 +9,12 @@ import com.pehom.theshi.presentation.viewmodel.MainViewModel
 import com.pehom.theshi.utils.Constants
 
 class ReadStudentsFsUseCase {
+    private val TAG = "ReadStudentsFsUseCase"
     fun execute(
         viewModel: MainViewModel,
         onSuccess: (List<Student>) -> Unit
     ) {
+        Log.d(TAG, "$TAG invoked")
         val resultList = mutableListOf<Student>()
         Firebase.firestore.collection(Constants.USERS).document(viewModel.user.value.fsId.value)
             .collection(Constants.STUDENTS).get()

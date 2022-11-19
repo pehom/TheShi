@@ -11,12 +11,13 @@ import com.pehom.theshi.presentation.viewmodel.MainViewModel
 import com.pehom.theshi.utils.Constants
 
 class SetCurrentTaskByTaskIdFsUseCase {
-    private val tag = "SetCurrentTaskByTaskIdFsUseCase"
+    private val TAG = "SetCurrentTaskByTaskIdFsUseCase"
     fun execute(
         viewModel: MainViewModel,
         vocabularyTitle: VocabularyTitle,
         onSuccess: () -> Unit
     ){
+        Log.d(TAG, "$TAG invoked")
         val currentTaskRoomItem = viewModel.currentTaskRoomItem.value
         val taskId = currentTaskRoomItem.id
         val taskTitle = currentTaskRoomItem.taskTitle
@@ -35,7 +36,7 @@ class SetCurrentTaskByTaskIdFsUseCase {
                 onSuccess()
             }
             .addOnFailureListener {
-                Log.d(tag, "Setting task failed, Error: ${it.message}")
+                Log.d(TAG, "Setting task failed, Error: ${it.message}")
             }
     }
 }

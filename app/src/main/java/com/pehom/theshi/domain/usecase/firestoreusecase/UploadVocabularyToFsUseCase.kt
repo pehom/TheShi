@@ -15,6 +15,7 @@ class UploadVocabularyToFsUseCase {
         vcbUpload: VocabularyUploadToFs,
         onSuccess: () -> Unit
     ){
+        Log.d(TAG, "$TAG invoked")
         val vcbData = hashMapOf(
             Constants.VOCABULARY_TITLE to vcbUpload.vcb.title.value,
             Constants.PRICE to vcbUpload.price,

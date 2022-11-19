@@ -76,10 +76,14 @@
     <string name="all_words">All words</string>
     <string name="vocabularies">Vocabularies</string>
     <string name="overwrite_vocabulary_alert">Such vocabulary already exists. Overwrite?</string>
-    <string name="mentors">Mentors:</string>
-    <string name="students">Students:</string>
+    <string name="mentors">Mentors</string>
+    <string name="students">Students</string>
     <string name="username">username</string>
     <string name="you">You</string>
     <string name="status">Status:</string>
     <string name="wrong_phone_number">wrong phone number</string>
+    <string name="wrong_email_or_password">wrong email or password</string>
+    <string name="available_vocabularies">Available vocabularies</string>
+    <string name="settings">Settings</string>
+    <string name="enter_your_name">Enter your name</string>
 </resources>

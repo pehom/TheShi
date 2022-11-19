@@ -15,8 +15,9 @@ import com.pehom.theshi.utils.MapConverter
     AvailableVocabularyRoomItem::class,
     StudentRoomItem::class,
     AvailableWordsRoomItem::class,
-    MentorRoomItem::class
-                     ], version = 25)
+    MentorRoomItem::class,
+    UserRoomItem::class
+                     ], version = 27)
 @TypeConverters(MapConverter::class)
 abstract class AppRoomDatabase: RoomDatabase() {
 
@@ -26,6 +27,7 @@ abstract class AppRoomDatabase: RoomDatabase() {
     abstract fun getStudentDao(): StudentDao
     abstract fun getAvailableWordsRoomDao(): AvailableWordsRoomDao
     abstract fun getMentorRoomDao(): MentorRoomDao
+    abstract fun getUserRoomDao(): UserRoomDao
 
     companion object {
 

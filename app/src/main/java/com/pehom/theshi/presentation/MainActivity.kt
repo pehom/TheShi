@@ -48,15 +48,37 @@ class MainActivity : ComponentActivity(), TextToSpeech.OnInitListener {
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d("lifecycle", "onCreate() invoked")
-
         // if (!isDeviceProtectedStorage )
-        auth = FirebaseAuth.getInstance()
-        Log.d("viewModel", "on create auth.currentUser = ${auth.currentUser}")
-
         vm = ViewModelProvider(this, MainViewModelFactory(this, this.application))[MainViewModel::class.java]
         vm.sharedPreferences = getSharedPreferences(Constants.APP_SHARED_PREF, MODE_PRIVATE)
         tts = TextToSpeech(this, this)
+
+        if (isNetworkAvailable()) {
+            auth = FirebaseAuth.getInstance()
+            Log.d("ppp", "auth.currentUser = ${auth.currentUser}")
+            if (auth.currentUser != null) {
+                vm.useCases.setupMainViewModelFsUseCase.execute(this, vm, auth.currentUser!!){
+                    if (vm.isStarterScreenEnded.value){
+                        vm.screenState.value = vm.MODE_STUDENT_SCREEN
+                    }
+                }
+            } else
+                vm.screenState.value = vm.MODE_LOGIN_SCREEN
+        } else if (vm.sharedPreferences.contains(Constants.SHARED_PREF_LAST_USER_ID) ){
+            val sharedUserFsId = vm.sharedPreferences.getString((Constants.SHARED_PREF_LAST_USER_ID), "")
+            if ( sharedUserFsId != ""){
+                if (sharedUserFsId != null) {
+                    vm.useCases.setUserByUserFsIdRoomUseCase.execute(vm, sharedUserFsId){
+                        vm.isViewModelSet.value = true
+                        if (vm.isStarterScreenEnded.value){
+                            vm.screenState.value = vm.MODE_STUDENT_SCREEN
+                        }                    }
+                } else {
+                    vm.screenState.value = vm.MODE_LOGIN_SCREEN
+                }
+            }
+        }
+
         setContent {
             TheShiTheme {
                 // A surface container using the 'background' color from the theme
@@ -68,18 +90,7 @@ class MainActivity : ComponentActivity(), TextToSpeech.OnInitListener {
                 }
             }
         }
-        if (isNetworkAvailable()) {
-            if (auth.currentUser != null) {
-                Log.d("ppp", "auth.currentUser = ${auth.currentUser}")
 
-                vm.useCases.setupMainViewModelFsUseCase.execute(this, vm, auth.currentUser!!){}
-            }
-        } else if (vm.sharedPreferences.contains(Constants.SHARED_PREF_USER_ID) ) {
-            // TODO readUserInfoRoom()
-        }
-        //TODO network status checking needed
-        else
-            vm.screenState.value = vm.MODE_LOGIN_SCREEN
 
 
     }
@@ -156,8 +167,9 @@ class MainActivity : ComponentActivity(), TextToSpeech.OnInitListener {
                 Constants.REPOSITORY.updateTaskRoomItem(vm.currentWordbookTaskRoomItem.value){}
             }
         }
+
         val sharedPref = getSharedPreferences(Constants.APP_SHARED_PREF, MODE_PRIVATE)
-        sharedPref.edit().putString(Constants.SHARED_PREF_USER_ID, vm.user.value.fsId.value).apply()
+        sharedPref.edit().putString(Constants.SHARED_PREF_LAST_USER_ID, vm.user.value.fsId.value).apply()
         sharedPref.edit().putInt(Constants.SHARED_PREF_SCREEN_STATE, vm.screenState.value).apply()
 
     }

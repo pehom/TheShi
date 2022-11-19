@@ -1,7 +1,6 @@
 package com.pehom.theshi.presentation.screens.mentorscreen
 
 import android.util.Log
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -11,20 +10,15 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.pehom.theshi.presentation.viewmodel.MainViewModel
 import kotlinx.coroutines.launch
 import com.pehom.theshi.R
-import com.pehom.theshi.domain.model.FsId
-import com.pehom.theshi.domain.model.Student
+import com.pehom.theshi.data.localdata.approomdatabase.StudentRoomItem
 import com.pehom.theshi.utils.Constants
 
 @Composable
@@ -32,12 +26,10 @@ fun MentorScreenView(
     viewModel: MainViewModel,
     scaffoldState: ScaffoldState,
 ) {
-    val students = remember { mutableStateListOf(Student(FsId(""),"","")) }
+    var students = listOf<StudentRoomItem>()
     if (viewModel.user.value.fsId.value != "") {
-        viewModel.useCases.readStudentsFsUseCase.execute(viewModel){
-            students.clear()
-            students.addAll(it)
-        }
+        students = Constants.REPOSITORY.readStudentRoomItemsByMentorId(viewModel.user.value.fsId.value).observeAsState(
+            listOf()).value
     }
     val scope = rememberCoroutineScope()
     Card(modifier = Modifier
@@ -65,7 +57,7 @@ fun MentorScreenView(
                         .fillMaxWidth()
                         .padding(horizontal = 10.dp)
                         .clickable {
-                            viewModel.currentStudent.value = item
+                            viewModel.currentStudent.value = item.mapToStudent()
                             // viewModel.studentFsId.value = item.fsId
                             viewModel.isStudentProfileShown.value = true
                             viewModel.drawerType.value = Constants.DRAWER_ADD_NEW_TASK

@@ -11,7 +11,8 @@ class RoomRepository(
     private val vocabularyRoomDao: AvailableVocabularyRoomDao,
     private val studentDao: StudentDao,
     private val availableWordsRoomDao: AvailableWordsRoomDao,
-    private val mentorRoomDao: MentorRoomDao
+    private val mentorRoomDao: MentorRoomDao,
+    private val userRoomDao: UserRoomDao
     ) : DatabaseRepository {
 
     override val readAllWordbookRoomItems: LiveData<List<WordbookRoomItem>>
@@ -179,6 +180,14 @@ class RoomRepository(
         return availableWordsRoomDao.getAvailableVocabularyRoomItemSizeByVcbDocRefPath(vcbDocRefPath)
     }
 
+    override suspend fun getAvailableWordsRoomItemsCountByUserFsIdAndVcbDocRefPath(
+        userFsId: String,
+        vcbDocRefPath: String,
+
+    ): Int {
+        return availableWordsRoomDao.getAvailableWordsRoomItemsCountByUserFsIdAndVcbDocRefPath(userFsId,vcbDocRefPath)
+    }
+
     override suspend fun updateAvailableWordsRoomItem(availableWordsRoomItem: AvailableWordsRoomItem) {
         availableWordsRoomDao.updateAvailableWordsRoomItem(availableWordsRoomItem)
     }
@@ -217,5 +226,28 @@ class RoomRepository(
 
     override suspend fun deleteMentorRoomItem(mentorRoomItem: MentorRoomItem) {
         mentorRoomDao.deleteMentorRoomItem(mentorRoomItem)
+    }
+
+    override suspend fun addUserRoomItem(userRoomItem: UserRoomItem) {
+        userRoomDao.addUserRoomItem(userRoomItem)
+    }
+
+    override suspend fun readUserRoomItemByUserFsId(userFsId: String): UserRoomItem? {
+        return userRoomDao.getUserRoomItemByFsId(userFsId)
+    }
+
+    override suspend fun readUserRoomItemByEmailAndPassword(
+        email: String,
+        password: String
+    ): UserRoomItem? {
+        return userRoomDao.getUserRoomItemByEmailAndPassword(email, password)
+    }
+
+    override suspend fun updateUserRoomItem(userRoomItem: UserRoomItem) {
+        userRoomDao.updateUserRoomItem(userRoomItem)
+    }
+
+    override suspend fun deleteUserRoomItem(userRoomItem: UserRoomItem) {
+        userRoomDao.deleteUserRoomItem(userRoomItem)
     }
 }

@@ -9,9 +9,13 @@ import com.pehom.theshi.utils.Constants
 
 class AddUserTaskFsUseCase {
     private val db = Firebase.firestore
-    fun execute(viewModel: MainViewModel,
-                _newTask: TaskRoomItem,
-                onResponse: () -> Unit) {
+    private val TAG = "AddUserTaskFsUseCase"
+    fun execute(
+        viewModel: MainViewModel,
+        _newTask: TaskRoomItem,
+        onResponse: () -> Unit)
+    {
+        Log.d(TAG, "$TAG invoked")
         val details = hashMapOf(
             Constants.TASK_ID to _newTask.id,
             Constants.TASK_TITLE to _newTask.taskTitle,

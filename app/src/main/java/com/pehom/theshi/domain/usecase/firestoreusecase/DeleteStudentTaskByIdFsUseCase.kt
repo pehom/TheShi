@@ -3,7 +3,6 @@ package com.pehom.theshi.domain.usecase.firestoreusecase
 import android.util.Log
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import com.pehom.theshi.presentation.viewmodel.MainViewModel
 import com.pehom.theshi.utils.Constants
 
 class DeleteStudentTaskByIdFsUseCase {
@@ -13,6 +12,7 @@ class DeleteStudentTaskByIdFsUseCase {
         studentFsId: String,
         taskId: String
     ){
+        Log.d(TAG, "$TAG invoked")
         Firebase.firestore.collection(Constants.USERS).document(studentFsId)
             .collection(Constants.TASKS_BY_MENTOR).document(taskId).get()
             .addOnSuccessListener {

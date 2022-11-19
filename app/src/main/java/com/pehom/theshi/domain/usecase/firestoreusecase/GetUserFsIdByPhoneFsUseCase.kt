@@ -8,11 +8,12 @@ import com.pehom.theshi.utils.Constants
 
 
 class GetUserFsIdByPhoneFsUseCase {
-
+    private val TAG = "GetUserFsIdByPhoneFsUseCase"
     fun execute (
          phone: String,
          onResponse: (FsId) -> Unit
     ) {
+        Log.d(TAG, "$TAG invoked")
         var fsId = FsId("")
         Firebase.firestore.collection(Constants.USERS).whereEqualTo(Constants.PHONE_NUMBER, phone).get()
             .addOnSuccessListener { docs ->

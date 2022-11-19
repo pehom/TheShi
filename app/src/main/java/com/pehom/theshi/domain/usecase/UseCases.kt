@@ -7,7 +7,7 @@ import com.pehom.theshi.domain.usecase.roomusecase.*
 data class UseCases(
   //  val getAllVocabularyTitlesFsUseCase: GetAllVocabularyTitlesFsUseCase,
     val setTaskByVocabulary: SetTaskByVocabulary,
-    val signInUseCase: SignInUseCase,
+    val signInFsUseCase: SignInFsUseCase,
     val createFirestoreAccountUseCase: CreateFirestoreAccountUseCase,
     val readFirestoreUserInfoUseCase: ReadFirestoreUserInfoUseCase,
     val addUserTaskFsUseCase: AddUserTaskFsUseCase,
@@ -57,5 +57,13 @@ data class UseCases(
     val readAllUserMentorsFsUseCase: ReadAllUserMentorsFsUseCase,
     val readNewUserTasksByMentorFsUseCase: ReadNewUserTasksByMentorFsUseCase,
     val cancelStudentTaskByIdFsUseCase: CancelStudentTaskByIdFsUseCase,
-    val readNewUserMentorsFsUseCase: ReadNewUserMentorsFsUseCase
+    val readNewUserMentorsFsUseCase: ReadNewUserMentorsFsUseCase,
+    val readNewStudentsFsUseCase: ReadNewStudentsFsUseCase,
+    val writeNewStudentsToRoomFsUseCase: WriteNewStudentsToRoomFsUseCase,
+    val readNewAvailableVocabulariesFsUseCase: ReadNewAvailableVocabulariesFsUseCase,
+    val writeNewAvailableVocabulariesToRoomUseCase: WriteNewAvailableVocabulariesToRoomUseCase,
+    val writeNewAvailableWordsToRoomByFsDocRefPathUseCase: WriteNewAvailableWordsToRoomByFsDocRefPathUseCase,
+    val setUserByUserFsIdRoomUseCase: SetUserByUserFsIdRoomUseCase,
+    val signInRoomUseCase: SignInRoomUseCase,
+    val updateUsernameFsUseCase: UpdateUsernameFsUseCase
 )

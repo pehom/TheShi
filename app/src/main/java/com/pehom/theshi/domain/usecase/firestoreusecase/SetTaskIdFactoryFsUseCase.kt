@@ -9,12 +9,13 @@ import com.pehom.theshi.utils.Constants
 import com.pehom.theshi.utils.TaskIdFactory
 
 class SetTaskIdFactoryFsUseCase {
+    private val TAG = "SetTaskIdFactoryFsUseCase"
     fun execute(
         fsId: FsId,
         viewModel: MainViewModel,
         onResponse: () -> Unit
     ){
-
+        Log.d(TAG, "$TAG invoked")
         Firebase.firestore.collection(Constants.USERS).document(fsId.value).get()
             .addOnSuccessListener { doc ->
                 if (doc.get(Constants.LAST_TASK_ID_SFX)!= null) {
