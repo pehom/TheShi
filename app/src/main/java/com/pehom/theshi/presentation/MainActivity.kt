@@ -20,6 +20,7 @@ import com.pehom.theshi.presentation.screens.StarterScreen
 import com.pehom.theshi.presentation.screens.adminscreen.AdminScreen
 import com.pehom.theshi.presentation.screens.authscreen.RegisterScreen
 import com.pehom.theshi.presentation.screens.authscreen.SignInScreen
+import com.pehom.theshi.presentation.screens.availablevocabulariesscreen.AvailableVocabulariesScreen
 import com.pehom.theshi.presentation.screens.developerscreen.DeveloperScreen
 import com.pehom.theshi.presentation.screens.loginscreen.LoginScreen
 import com.pehom.theshi.presentation.screens.mentorscreen.MentorScreen
@@ -51,6 +52,10 @@ class MainActivity : ComponentActivity(), TextToSpeech.OnInitListener {
         // if (!isDeviceProtectedStorage )
         vm = ViewModelProvider(this, MainViewModelFactory(this, this.application))[MainViewModel::class.java]
         vm.sharedPreferences = getSharedPreferences(Constants.APP_SHARED_PREF, MODE_PRIVATE)
+        if (vm.sharedPreferences.contains(Constants.SHARED_PREF_TASKS_FILTER)){
+            val filterValue = vm.sharedPreferences.getString((Constants.SHARED_PREF_TASKS_FILTER), Constants.FILTER_ALL)
+            vm.tasksFilterState.value =filterValue!!
+        }
         tts = TextToSpeech(this, this)
 
         if (isNetworkAvailable()) {
@@ -65,7 +70,7 @@ class MainActivity : ComponentActivity(), TextToSpeech.OnInitListener {
             } else
                 vm.screenState.value = vm.MODE_LOGIN_SCREEN
         } else if (vm.sharedPreferences.contains(Constants.SHARED_PREF_LAST_USER_ID) ){
-            val sharedUserFsId = vm.sharedPreferences.getString((Constants.SHARED_PREF_LAST_USER_ID), "")
+            val sharedUserFsId = vm.sharedPreferences.getString(Constants.SHARED_PREF_LAST_USER_ID, "")
             if ( sharedUserFsId != ""){
                 if (sharedUserFsId != null) {
                     vm.useCases.setUserByUserFsIdRoomUseCase.execute(vm, sharedUserFsId){
@@ -78,7 +83,6 @@ class MainActivity : ComponentActivity(), TextToSpeech.OnInitListener {
                 }
             }
         }
-
         setContent {
             TheShiTheme {
                 // A surface container using the 'background' color from the theme
@@ -90,9 +94,6 @@ class MainActivity : ComponentActivity(), TextToSpeech.OnInitListener {
                 }
             }
         }
-
-
-
     }
 
     @Deprecated("Deprecated in Java")
@@ -145,6 +146,9 @@ class MainActivity : ComponentActivity(), TextToSpeech.OnInitListener {
             vm.MODE_USER_INFO_SCREEN -> {
                 vm.screenState.value = vm.lastScreen
             }
+            vm.MODE_AVAILABLE_VOCABULARIES_SCREEN -> {
+                vm.screenState.value = vm.lastScreen
+            }
         }
     }
 
@@ -167,10 +171,10 @@ class MainActivity : ComponentActivity(), TextToSpeech.OnInitListener {
                 Constants.REPOSITORY.updateTaskRoomItem(vm.currentWordbookTaskRoomItem.value){}
             }
         }
-
         val sharedPref = getSharedPreferences(Constants.APP_SHARED_PREF, MODE_PRIVATE)
         sharedPref.edit().putString(Constants.SHARED_PREF_LAST_USER_ID, vm.user.value.fsId.value).apply()
         sharedPref.edit().putInt(Constants.SHARED_PREF_SCREEN_STATE, vm.screenState.value).apply()
+        sharedPref.edit().putString(Constants.SHARED_PREF_TASKS_FILTER, vm.tasksFilterState.value).apply()
 
     }
 
@@ -229,6 +233,7 @@ class MainActivity : ComponentActivity(), TextToSpeech.OnInitListener {
             viewModel.MODE_REQUESTS_SCREEN -> { RequestsScreen(viewModel) }
             viewModel.MODE_USER_MENTORS_SCREEN -> UserMentorsScreen(viewModel)
             viewModel.MODE_USER_INFO_SCREEN -> EditProfileScreen(viewModel)
+            viewModel.MODE_AVAILABLE_VOCABULARIES_SCREEN -> AvailableVocabulariesScreen(viewModel)
         }
     }
 }

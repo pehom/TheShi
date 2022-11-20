@@ -93,6 +93,11 @@ object Constants {
     const val STATUS_CANCELLED = "cancelled"
     const val STATUS_FINISHED = "finished"
     const val PASSWORD = "password"
+    const val FILTER_ALL = "all"
+    const val FILTER_IN_PROGRESS = "inProgress"
+    const val FILTER_FINISHED = "finished"
+    const val FILTER_CANCELLED = "cancelled"
+    const val SHARED_PREF_TASKS_FILTER = "tasksFilter"
     lateinit var REPOSITORY: DatabaseRepository
 
 

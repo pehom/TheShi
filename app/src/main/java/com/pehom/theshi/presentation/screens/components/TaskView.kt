@@ -73,14 +73,14 @@ fun TaskView(
                 ) {
                     Box(modifier = Modifier
                         .fillMaxWidth()
-                        .padding(start = 10.dp), contentAlignment = Alignment.CenterStart){
-                        Text(text = stringResource(id = R.string.mentor) + ": ${mentorName.value}")
+                        .padding(start = 10.dp, bottom = 3.dp), contentAlignment = Alignment.CenterStart){
+                        Text(text ="${taskRoomItem.taskTitle}  ")
                     }
                     Spacer(modifier = Modifier.height(3.dp))
                     Box(modifier = Modifier
                         .fillMaxWidth()
-                        .padding(start = 10.dp, bottom = 3.dp), contentAlignment = Alignment.CenterStart){
-                        Text(text ="${taskRoomItem.taskTitle}  ")
+                        .padding(start = 10.dp), contentAlignment = Alignment.CenterStart){
+                        Text(text = stringResource(id = R.string.mentor) + ": ${mentorName.value}")
                     }
                     Spacer(modifier = Modifier.height(3.dp))
                     Box(modifier = Modifier

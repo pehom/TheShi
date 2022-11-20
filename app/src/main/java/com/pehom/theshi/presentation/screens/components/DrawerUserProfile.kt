@@ -62,7 +62,32 @@ fun DrawerUserProfile(viewModel: MainViewModel, scaffoldState: ScaffoldState, au
             .padding(start = 10.dp), contentAlignment = Alignment.CenterStart){
             Text(
                 text = stringResource(id = R.string.available_vocabularies),
-                modifier = Modifier.clickable {  })
+                modifier = Modifier.clickable {
+                    viewModel.lastScreen = viewModel.screenState.value
+                    viewModel.screenState.value = viewModel.MODE_AVAILABLE_VOCABULARIES_SCREEN
+                })
+        }
+        Spacer(modifier = Modifier.height(10.dp))
+        Box(modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 10.dp), contentAlignment = Alignment.CenterStart){
+            Text(text = stringResource(id = R.string.wordbook),
+                modifier = Modifier.clickable {
+                    viewModel.lastScreen = viewModel.screenState.value
+                    viewModel.screenState.value = viewModel.MODE_WORDBOOK_SCREEN
+                }
+            )
+        }
+        Spacer(modifier = Modifier.height(10.dp))
+        Box(modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 10.dp), contentAlignment = Alignment.CenterStart){
+            Text(text = stringResource(id = R.string.pending_Requests),
+                modifier = Modifier.clickable {
+                    viewModel.lastScreen = viewModel.screenState.value
+                    viewModel.screenState.value = viewModel.MODE_REQUESTS_SCREEN
+                }
+            )
         }
         Spacer(modifier = Modifier.height(10.dp))
         Box(modifier = Modifier
@@ -79,15 +104,10 @@ fun DrawerUserProfile(viewModel: MainViewModel, scaffoldState: ScaffoldState, au
             .fillMaxWidth()
             .padding(start = 10.dp), contentAlignment = Alignment.CenterStart){
             Text(text = stringResource(id = R.string.students),
-                modifier = Modifier.clickable {  }
-            )
-        }
-        Spacer(modifier = Modifier.height(10.dp))
-        Box(modifier = Modifier
-            .fillMaxWidth()
-            .padding(start = 10.dp), contentAlignment = Alignment.CenterStart){
-            Text(text = stringResource(id = R.string.wordbook),
-                modifier = Modifier.clickable {  }
+                modifier = Modifier.clickable {
+                    viewModel.switchState.value = false
+                    viewModel.screenState.value = viewModel.MODE_MENTOR_SCREEN
+                }
             )
         }
         Spacer(modifier = Modifier.height(10.dp))

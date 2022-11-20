@@ -106,6 +106,7 @@ fun CardTestResult(
                         if ( result == 100) {  // synchronizing local wordbook with fsWordbook
                             viewModel.useCases.addVocabularyToWordbookFsUseCase.execute(currentVocabulary, viewModel.user.value.fsId){}
                             viewModel.useCases.addVocabularyToWordbookRoomUseCase.execute(viewModel){}
+                            taskRoomItem.value.status = Constants.STATUS_FINISHED
                         }
                         taskRoomItem.value.progress = result
                         taskRoomItem.value.currentTestItem = 0

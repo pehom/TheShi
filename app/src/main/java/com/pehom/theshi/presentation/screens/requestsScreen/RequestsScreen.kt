@@ -26,12 +26,13 @@ fun RequestsScreen(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Spacer(modifier = Modifier.height(10.dp))
         Card(
             modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxHeight()
                 .weight(5f)
-                .padding(10.dp),
+                .padding(horizontal = 10.dp),
             elevation = 5.dp
         ){
             Column(
@@ -67,14 +68,13 @@ fun RequestsScreen(
                 }
             }
         }
-        Spacer(modifier = Modifier.height(7.dp))
-
+        Spacer(modifier = Modifier.height(10.dp))
         Card(
             modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxHeight()
                 .weight(5f)
-                .padding(10.dp),
+                .padding(horizontal = 10.dp),
             elevation = 5.dp
         ){
             Column(
@@ -110,5 +110,6 @@ fun RequestsScreen(
                 }
             }
         }
+        Spacer(modifier = Modifier.height(10.dp))
     }
 }

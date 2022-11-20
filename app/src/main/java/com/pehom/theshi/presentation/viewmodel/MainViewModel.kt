@@ -34,15 +34,16 @@ class MainViewModel(
     val MODE_TEST_SCREEN = 5
     val MODE_LOGIN_SCREEN = 6
     val MODE_STARTER_SCREEN =9
-    val MODE_LEARNING_SCREEN = 10
+   // val MODE_LEARNING_SCREEN = 10
     val MODE_DEVELOPER_SCREEN = 11
-    val MODE_TASK_INFO = 12
+  //  val MODE_TASK_INFO = 12
     val MODE_WORDBOOK_SCREEN = 13
     val MODE_WORDBOOK_TASK_SCREEN = 14
     val MODE_ADMIN_SCREEN = 15
     val MODE_REQUESTS_SCREEN = 16
     val MODE_USER_MENTORS_SCREEN = 17
     val MODE_USER_INFO_SCREEN = 18
+    val MODE_AVAILABLE_VOCABULARIES_SCREEN = 19
 
     var currentTask = mutableStateOf(Task("","", Vocabulary(VocabularyTitle("","","",0), mutableListOf(VocabularyItemScheme("","","")))))
     val wordbook = mutableSetOf<VocabularyItemScheme>()
@@ -57,6 +58,7 @@ class MainViewModel(
     val currentStudent = mutableStateOf(Student(FsId(""),"",""))
     val lastStudent = mutableStateOf(Student(FsId(""),"",""))
    // val mentors = mutableStateListOf<Mentor>()
+    val tasksFilterState = mutableStateOf(Constants.FILTER_ALL)
     val isStudentProfileShown = mutableStateOf(false)
     val requestsAdd = mutableStateListOf<RequestAdd>()
     val currentWordbookVocabulary = mutableStateOf(Vocabulary(VocabularyTitle(""), mutableListOf()))

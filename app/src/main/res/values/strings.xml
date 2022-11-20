@@ -30,7 +30,7 @@
     <string name="new_student_phone_number">New student phone number</string>
     <string name="new_student_name">New student name</string>
     <string name="send_request_to_add_new_student">Send request to add new student</string>
-    <string name="pending_Requests">pending requests</string>
+    <string name="pending_Requests">Pending requests</string>
     <string name="phone_not_found">Phone not found</string>
     <string name="wordbook">Wordbook</string>
     <string name="words">words</string>
@@ -88,4 +88,10 @@
     <string name="enter_your_name">Enter your name</string>
     <string name="phone">Phone</string>
     <string name="name">Name</string>
+    <string name="items">Items</string>
+    <string name="filter">Filter</string>
+    <string name="filter_all">All</string>
+    <string name="filter_in_progress">In progress</string>
+    <string name="filter_finished">Finished</string>
+    <string name="filter_cancelled">Cancelled</string>
 </resources>
