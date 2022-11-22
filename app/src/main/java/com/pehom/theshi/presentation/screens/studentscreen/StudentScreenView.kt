@@ -95,7 +95,7 @@ fun StudentScreenView(
             LazyColumn(modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxHeight()
-                .weight(10f)
+                .weight(9f)
                 .padding(horizontal = 10.dp),
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ){

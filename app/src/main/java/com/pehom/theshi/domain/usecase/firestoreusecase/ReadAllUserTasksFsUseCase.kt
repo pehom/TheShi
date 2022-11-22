@@ -37,7 +37,7 @@ class ReadAllUserTasksFsUseCase {
                     val currentTestItem = details[Constants.CURRENT_TEST_ITEM].toString().toInt()
                     val currentLearningItem = details[Constants.CURRENT_LEARNING_ITEM].toString().toInt()
                     val wrongTestAnswers = details[Constants.WRONG_TEST_ANSWERS] as MutableMap<Int, String>
-                    val status = details[Constants.STATUS].toString()
+                    val status = doc[Constants.STATUS].toString()
                     val taskRoomItem = TaskRoomItem(
                         taskId,
                         mentorFsId,

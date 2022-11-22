@@ -1,23 +1,27 @@
 package com.pehom.theshi.utils
 
-import android.content.SharedPreferences
 import android.util.Log
-import androidx.activity.ComponentActivity
-import com.pehom.theshi.domain.model.FsId
+import androidx.lifecycle.viewModelScope
+import com.pehom.theshi.presentation.viewmodel.MainViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
-class TaskIdFactory(val userFsId: FsId, var lastIdSfx: Int,  val sharedPreferences: SharedPreferences) {
+object TaskIdFactory
+  //  (val userFsId: FsId, var lastIdSfx: Int,  val sharedPreferences: SharedPreferences)
+{
     var lastId = ""
 
-    fun createId(): String {
-        if (sharedPreferences.contains(Constants.SHARED_PREF_LAST_TASK_ID_SFX)) {
-            val shPrefSfx = sharedPreferences.getInt(Constants.SHARED_PREF_LAST_TASK_ID_SFX, 0)
-            if (shPrefSfx > lastIdSfx) lastIdSfx = shPrefSfx
+    fun createId(viewModel: MainViewModel): String {
+
+        viewModel.user.value.lastIdSfx++
+        lastId = viewModel.user.value.fsId.value + viewModel.user.value.lastIdSfx
+        viewModel.viewModelScope.launch(Dispatchers.IO) {
+            val userRoomItem = Constants.REPOSITORY.readUserRoomItemByUserFsId(viewModel.user.value.fsId.value)
+            if (userRoomItem != null){
+                userRoomItem.lastTaskIdSfx = viewModel.user.value.lastIdSfx
+                Constants.REPOSITORY.updateUserRoomItem(userRoomItem)
+            }
         }
-
-        lastIdSfx++
-        lastId = userFsId.value + lastIdSfx
-
-        sharedPreferences.edit().putInt(Constants.SHARED_PREF_LAST_TASK_ID_SFX, lastIdSfx).apply()
         Log.d("createTaskId", "lastId = $lastId")
         return lastId
     }

@@ -33,7 +33,6 @@ class SetupMainViewModelFsUseCase() {
 
                             viewModel.currentWordbookTaskRoomItem.value.studentFsId = user.fsId.value
                             viewModel.useCases.readRequestsAddFsUseCase.execute(viewModel){
-                                viewModel.useCases.setTaskIdFactoryFsUseCase.execute(fsId,viewModel){
                                     viewModel.useCases.readNewUserMentorsFsUseCase.execute(user.fsId.value){newMentors ->
                                         viewModel.viewModelScope.launch(Dispatchers.IO) {
                                             newMentors.forEach(){mentorRoomItem ->
@@ -61,7 +60,6 @@ class SetupMainViewModelFsUseCase() {
                                         }
                                     }
                                  //TODO   sync room with fs needed
-                                }
                             }
                         }
                     }

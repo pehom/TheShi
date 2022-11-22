@@ -23,7 +23,8 @@ class ReadNewUserMentorsFsUseCase {
                         doc.document[Constants.MENTOR_FS_ID].toString(),
                         doc.document[Constants.NAME].toString(),
                         doc.document[Constants.PHONE_NUMBER].toString(),
-                        userFsId
+                        userFsId,
+                        doc.document[Constants.STATUS].toString()
                     )
                     resultList.add(mentor)
                 }

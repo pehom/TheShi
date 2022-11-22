@@ -50,9 +50,9 @@ class CreateFirestoreAccountUseCase() {
                                             val funds = fundsFromString(fundsString)
                                             val createdUser = User(fsId,authId, email, phoneNumber, funds)
                                             createdUser.name = doc[Constants.NAME].toString()
-                                            val lastTaskIdSfx = doc.get(Constants.LAST_TASK_ID_SFX).toString().toInt()
+                                            createdUser.lastIdSfx = doc.get(Constants.LAST_TASK_ID_SFX).toString().toInt()
                                             viewModel.user.value = createdUser
-                                            viewModel.taskIdFactory = TaskIdFactory(fsId, lastTaskIdSfx, viewModel.sharedPreferences)
+                                        //   viewModel.taskIdFactory = TaskIdFactory(fsId, lastTaskIdSfx, viewModel.sharedPreferences)
                                             onSuccess(createdUser)
                                         // viewModel.screenState.value = viewModel.MODE_STUDENT_SCREEN
                                         }

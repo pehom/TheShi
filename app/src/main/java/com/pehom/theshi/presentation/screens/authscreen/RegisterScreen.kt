@@ -138,9 +138,19 @@ fun RegisterScreen(viewModel: MainViewModel, auth: FirebaseAuth) {
         )
         Spacer(modifier = Modifier.height(20.dp))
         Button(
-            enabled = email.value.isNotEmpty() && isPhoneNumberValid.value && password.value.isNotEmpty(),
+            enabled = email.value.isNotEmpty() /*&& isPhoneNumberValid.value*/ && password.value.isNotEmpty(),
             onClick = {
                 if (isNetworkAvailable()) {
+                    findPhoneNumber(phoneNumber.value, isPhoneNumberValid) {
+                        if (isPhoneNumberValid.value) {
+                            isErrorState.value = false
+                            kc?.hide()
+                            focusManager.clearFocus()
+                        } else {
+                            isErrorState.value = true
+                            Toast.makeText(context, context.getString(R.string.invalid_phone), Toast.LENGTH_SHORT).show()
+                        }
+                    }
                     viewModel.useCases.createFirestoreAccountUseCase
                         .execute(viewModel, auth, LoginModel( email.value, password.value, phoneNumber.value), name.value ){createdUser ->
                             if (createdUser != null) {
@@ -153,7 +163,8 @@ fun RegisterScreen(viewModel: MainViewModel, auth: FirebaseAuth) {
                                             createdUser.phoneNumber,
                                             createdUser.email,
                                             password.value,
-                                            createdUser.funds.amount.value
+                                            createdUser.funds.amount.value,
+                                            createdUser.lastIdSfx
                                         )
                                     )
                                     viewModel.screenState.value = viewModel.MODE_STUDENT_SCREEN
@@ -180,5 +191,4 @@ fun findPhoneNumber(phoneNumber: String, result: MutableState<Boolean>
             Log.d("docs", "result = ${result.value}")
             onResponse()
         }
-
 }

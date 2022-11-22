@@ -98,6 +98,8 @@ object Constants {
     const val FILTER_FINISHED = "finished"
     const val FILTER_CANCELLED = "cancelled"
     const val SHARED_PREF_TASKS_FILTER = "tasksFilter"
+    const val COMMON_TAG = "commonTag"
+    const val INSPECTING_TAG = "inspectingTag"
     lateinit var REPOSITORY: DatabaseRepository
 
 

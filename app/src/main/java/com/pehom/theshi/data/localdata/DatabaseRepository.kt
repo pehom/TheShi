@@ -42,9 +42,9 @@ interface DatabaseRepository {
 
     suspend fun createAvailableVocabularyRoomItem(vocabularyRoomItem: AvailableVocabularyRoomItem, onSuccess: () -> Unit)
 
-    suspend fun updateVocabularyRoomItem(vocabularyRoomItem: AvailableVocabularyRoomItem, onSuccess: () -> Unit)
+    suspend fun updateAvailableVocabularyRoomItem(vocabularyRoomItem: AvailableVocabularyRoomItem, onSuccess: () -> Unit)
 
-    suspend fun deleteVocabularyRoomItem(vocabularyRoomItem: AvailableVocabularyRoomItem, onSuccess: () -> Unit)
+    suspend fun deleteAvailableVocabularyRoomItem(vocabularyRoomItem: AvailableVocabularyRoomItem, onSuccess: () -> Unit)
 
     val readAllStudentRoomItems: LiveData<List<StudentRoomItem>>
 

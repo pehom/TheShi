@@ -115,7 +115,10 @@ fun DrawerUserProfile(viewModel: MainViewModel, scaffoldState: ScaffoldState, au
             .fillMaxWidth()
             .padding(start = 10.dp), contentAlignment = Alignment.CenterStart){
             Text(text = stringResource(id = R.string.settings),
-                modifier = Modifier.clickable {  }
+                modifier = Modifier.clickable {
+                    viewModel.lastScreen = viewModel.screenState.value
+                    viewModel.screenState.value = viewModel.MODE_SETTINGS_SCREEN
+                }
             )
         }
         Spacer(modifier = Modifier.height(10.dp))
@@ -142,7 +145,7 @@ private fun UserDetails(
     val scope = rememberCoroutineScope()
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
-    val user = remember { mutableStateOf(UserRoomItem("", "", "", "", "", "", 0)) }
+    val user = remember { mutableStateOf(UserRoomItem("", "", "", "", "", "", 0, 0)) }
     LaunchedEffect(key1 = null,) {
         val userRoomItem = Constants.REPOSITORY.readUserRoomItemByUserFsId(userFsID)
         if (userRoomItem != null) {

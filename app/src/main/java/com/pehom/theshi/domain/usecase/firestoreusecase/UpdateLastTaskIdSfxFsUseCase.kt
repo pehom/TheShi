@@ -10,11 +10,11 @@ class UpdateLastTaskIdSfxFsUseCase {
     private val TAG = "UpdateLastTaskIdSfxFsUseCase"
     fun execute(
         lastTaskIdSfx: Int,
-        viewModel: MainViewModel,
+        userFsId: String,
         onResponse: ()-> Unit
     ) {
         Log.d(TAG, "$TAG invoked")
-        Firebase.firestore.collection(Constants.USERS).document(viewModel.user.value.fsId.value)
+        Firebase.firestore.collection(Constants.USERS).document(userFsId)
             .update(Constants.LAST_TASK_ID_SFX, lastTaskIdSfx)
             .addOnSuccessListener {
                 onResponse()

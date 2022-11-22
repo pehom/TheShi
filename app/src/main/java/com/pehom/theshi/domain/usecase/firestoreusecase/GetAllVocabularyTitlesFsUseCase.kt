@@ -12,7 +12,7 @@ class GetAllVocabularyTitlesFsUseCase() {
     private val TAG = "GetAllVocabularyTitlesFsUseCase"
     fun execute(
         viewModel: MainViewModel,
-        onResponse: () -> Unit
+        onResponse: (List<VocabularyTitle>) -> Unit
     ) {
         Log.d(TAG, "$TAG invoked")
         val db = Firebase.firestore
@@ -38,18 +38,20 @@ class GetAllVocabularyTitlesFsUseCase() {
                                 viewModel.vocabularyTitlesListItemOrigItems[title.fsDocRefPath] = mutableStateListOf()
                             }
                             if (index == result.size()-1) {
-                                viewModel.allVocabularyTitles.clear()
-                                viewModel.allVocabularyTitles += titles
-                                onResponse()
+                               /* viewModel.allVocabularyTitles.clear()
+                                viewModel.allVocabularyTitles += titles*/
+                                onResponse(titles)
                             }
                         }
                         .addOnFailureListener {
                             Log.d("getAllVocabularyTitlesFsUseCase", "reading titles failed, Error: ${it.message}")
+                            onResponse(titles)
                         }
                 }
             }
             .addOnFailureListener {
                 Log.d("getVocabularyTitles", "Error = ${it.message}")
+                onResponse(titles)
             }
     }
 }

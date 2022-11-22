@@ -44,6 +44,7 @@ class MainViewModel(
     val MODE_USER_MENTORS_SCREEN = 17
     val MODE_USER_INFO_SCREEN = 18
     val MODE_AVAILABLE_VOCABULARIES_SCREEN = 19
+    val MODE_SETTINGS_SCREEN = 20
 
     var currentTask = mutableStateOf(Task("","", Vocabulary(VocabularyTitle("","","",0), mutableListOf(VocabularyItemScheme("","","")))))
     val wordbook = mutableSetOf<VocabularyItemScheme>()
@@ -73,7 +74,7 @@ class MainViewModel(
     val vocabularyTitlesListItemOrigItems = mutableMapOf<String, MutableList<String>>()
     private val vocabularyTitlesIdsList = MutableStateFlow(listOf<Int>())
     val vocabularyTitlesIds: StateFlow<List<Int>> get() = vocabularyTitlesIdsList
-    lateinit var taskIdFactory: TaskIdFactory
+  //  lateinit var taskIdFactory: TaskIdFactory
     lateinit var sharedPreferences: SharedPreferences
 
     val useCases = UseCases(
@@ -137,7 +138,10 @@ class MainViewModel(
         SetUserByUserFsIdRoomUseCase(),
         SignInRoomUseCase(),
         UpdateUsernameFsUseCase(),
-        UpdateMentorNameFsUseCase()
+        UpdateMentorNameFsUseCase(),
+        LoadWholeDataFsUseCase(),
+        ReadUserinfoByAuthIdFsUseCase(),
+        SetViewmodelNetworkItemsFsUseCase()
         )
 
     init {

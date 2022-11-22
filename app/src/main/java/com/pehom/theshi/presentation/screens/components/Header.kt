@@ -14,12 +14,14 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pehom.theshi.presentation.viewmodel.MainViewModel
 import com.pehom.theshi.utils.Constants
 import kotlinx.coroutines.launch
+import com.pehom.theshi.R
 
 @Composable
 fun Header(
@@ -80,7 +82,7 @@ fun Header(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "Funds: $fundsAmount",
+                text = stringResource(id = R.string.funds) + " $fundsAmount",
                 fontSize = 14.sp,
                 textAlign = TextAlign.Left,
                 modifier = Modifier.padding(horizontal = 25.dp)

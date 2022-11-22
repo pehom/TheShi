@@ -29,16 +29,22 @@ data class UserRoomItem(
     var password: String,
 
     @ColumnInfo(name = Constants.FUNDS)
-    var funds: Int
+    var funds: Int,
+
+    @ColumnInfo(name = Constants.LAST_TASK_ID_SFX)
+    var lastTaskIdSfx : Int
 
 ) {
     fun mapToUser(): User{
-        return User(
+        val user = User(
             FsId(userFsId),
             authId,
             email,
             phoneNumber,
-            Funds(funds)
-        )
+            Funds(funds))
+        user.lastIdSfx = lastTaskIdSfx
+        user.name = userName
+
+        return  user
     }
 }

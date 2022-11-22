@@ -10,10 +10,14 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
 import com.pehom.theshi.presentation.viewmodel.MainViewModel
+import com.pehom.theshi.utils.Constants
 import com.pehom.theshi.utils.isNetworkAvailable
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
@@ -37,14 +41,25 @@ fun StarterScreen(viewModel: MainViewModel, auth: FirebaseAuth) {
 
             if (index == words.size-1) {
                 viewModel.isStarterScreenEnded.value = true
-                if (isViewModelSet.value) {
+                if (viewModel.sharedPreferences.contains(Constants.SHARED_PREF_LAST_USER_ID)){
+                    val lastFsId = viewModel.sharedPreferences.getString(Constants.SHARED_PREF_LAST_USER_ID, null)
+                    if ( lastFsId != null){
+                        Log.d(Constants.INSPECTING_TAG, " lastFsId = $lastFsId" )
+                        viewModel.screenState.value = viewModel.MODE_STUDENT_SCREEN
+                    } else {
+                        viewModel.screenState.value = viewModel.MODE_LOGIN_SCREEN
+                    }
+                } else {
+                    viewModel.screenState.value = viewModel.MODE_LOGIN_SCREEN
+                }
+                /*if (isViewModelSet.value) {
                     viewModel.screenState.value = viewModel.MODE_STUDENT_SCREEN
                     Log.d("viewModel", "starter screen viewModel.screenState = ${viewModel.screenState.value}")
                 } else if (isNetworkAvailable()) {
                     contentType.value = false
                 } else {
                     viewModel.screenState.value = viewModel.MODE_LOGIN_SCREEN
-                }
+                }*/
             }
         }
     }

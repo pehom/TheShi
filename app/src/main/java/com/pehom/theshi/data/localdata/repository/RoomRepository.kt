@@ -105,7 +105,7 @@ class RoomRepository(
         onSuccess()
     }
 
-    override suspend fun updateVocabularyRoomItem(
+    override suspend fun updateAvailableVocabularyRoomItem(
         vocabularyRoomItem: AvailableVocabularyRoomItem,
         onSuccess: () -> Unit
     ) {
@@ -113,7 +113,7 @@ class RoomRepository(
         onSuccess()
     }
 
-    override suspend fun deleteVocabularyRoomItem(
+    override suspend fun deleteAvailableVocabularyRoomItem(
         vocabularyRoomItem: AvailableVocabularyRoomItem,
         onSuccess: () -> Unit
     ) {

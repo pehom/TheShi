@@ -19,21 +19,26 @@ class ReadNewAvailableVocabulariesFsUseCase {
         Firebase.firestore.collection(Constants.USERS).document(viewModel.user.value.fsId.value)
             .collection(Constants.AVAILABLE_VOCABULARIES).get()
             .addOnSuccessListener {docs ->
-                docs.forEachIndexed{index, doc ->
-                    viewModel.useCases.readVcbTitleByFsDocRefPathFsUseCase.
-                    execute(doc[Constants.VOCABULARY_FS_DOC_REF_PATH].toString()){vcbTitle ->
-                        resultList.add(
-                            AvailableVocabularyRoomItem(
-                                null,
-                                vcbTitle.fsDocRefPath,
-                                vcbTitle.timestamp,
-                                vcbTitle.value,
-                                vcbTitle.price,
-                                viewModel.user.value.fsId.value
+                Log.d(Constants.INSPECTING_TAG, "$TAG docs = ${docs.documents}")
+                if (docs.isEmpty){
+                    onSuccess(resultList)
+                } else {
+                    docs.forEachIndexed{index, doc ->
+                        viewModel.useCases.readVcbTitleByFsDocRefPathFsUseCase.
+                        execute(doc[Constants.VOCABULARY_FS_DOC_REF_PATH].toString()){vcbTitle ->
+                            resultList.add(
+                                AvailableVocabularyRoomItem(
+                                    null,
+                                    vcbTitle.fsDocRefPath,
+                                    vcbTitle.timestamp,
+                                    vcbTitle.value,
+                                    vcbTitle.price,
+                                    viewModel.user.value.fsId.value
+                                )
                             )
-                        )
-                        if (index == docs.size()-1){
-                            onSuccess(resultList)
+                            if (index == docs.size()-1){
+                                onSuccess(resultList)
+                            }
                         }
                     }
                 }

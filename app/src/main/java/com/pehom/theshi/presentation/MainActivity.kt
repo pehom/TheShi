@@ -50,6 +50,7 @@ class MainActivity : ComponentActivity(), TextToSpeech.OnInitListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // if (!isDeviceProtectedStorage )
+        auth = FirebaseAuth.getInstance()
         vm = ViewModelProvider(this, MainViewModelFactory(this, this.application))[MainViewModel::class.java]
         vm.sharedPreferences = getSharedPreferences(Constants.APP_SHARED_PREF, MODE_PRIVATE)
         if (vm.sharedPreferences.contains(Constants.SHARED_PREF_TASKS_FILTER)){
@@ -58,7 +59,46 @@ class MainActivity : ComponentActivity(), TextToSpeech.OnInitListener {
         }
         tts = TextToSpeech(this, this)
 
-        if (isNetworkAvailable()) {
+        if (vm.sharedPreferences.contains(Constants.SHARED_PREF_LAST_USER_ID) ){
+            val sharedUserFsId = vm.sharedPreferences.getString(Constants.SHARED_PREF_LAST_USER_ID, null)
+         //   if ( sharedUserFsId != ""){
+                if (sharedUserFsId != null) {
+                    vm.useCases.setUserByUserFsIdRoomUseCase.execute(vm, sharedUserFsId){
+                        if (isNetworkAvailable()){
+
+                            vm.useCases.setViewmodelNetworkItemsFsUseCase.execute(vm){
+                                vm.isViewModelSet.value = true
+                                if (vm.isStarterScreenEnded.value && vm.user.value.fsId.value != ""){
+                                    vm.screenState.value = vm.MODE_STUDENT_SCREEN
+                                } else {
+                                    vm.screenState.value = vm.MODE_LOGIN_SCREEN
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    vm.isViewModelSet.value = true
+                    if (vm.isStarterScreenEnded.value){
+                        vm.screenState.value = vm.MODE_LOGIN_SCREEN
+                    }
+                }
+            /*} else {
+                vm.isViewModelSet.value = true
+                if (vm.isStarterScreenEnded.value){
+                    vm.screenState.value = vm.MODE_LOGIN_SCREEN
+                }
+            }*/
+        } else {
+            vm.isViewModelSet.value = true
+            if (vm.isStarterScreenEnded.value){
+                vm.screenState.value = vm.MODE_LOGIN_SCREEN
+            }
+        }
+
+
+
+        //=======================
+     /*   if (isNetworkAvailable()) {
             auth = FirebaseAuth.getInstance()
             Log.d("ppp", "auth.currentUser = ${auth.currentUser}")
             if (auth.currentUser != null) {
@@ -83,6 +123,8 @@ class MainActivity : ComponentActivity(), TextToSpeech.OnInitListener {
                 }
             }
         }
+*/
+     //   =================
         setContent {
             TheShiTheme {
                 // A surface container using the 'background' color from the theme
@@ -226,7 +268,7 @@ class MainActivity : ComponentActivity(), TextToSpeech.OnInitListener {
             viewModel.MODE_REGISTER_SCREEN -> { RegisterScreen(viewModel, auth) }
             viewModel.MODE_SIGN_IN_SCREEN -> { SignInScreen( viewModel,auth ) }
             viewModel.MODE_STARTER_SCREEN -> { StarterScreen(viewModel, auth) }
-            viewModel.MODE_DEVELOPER_SCREEN -> { DeveloperScreen(viewModel) }
+            viewModel.MODE_DEVELOPER_SCREEN -> { DeveloperScreen(viewModel, auth) }
             viewModel.MODE_WORDBOOK_SCREEN -> { WordbookScreen(viewModel) }
             viewModel.MODE_WORDBOOK_TASK_SCREEN -> { WordbookTaskScreen(viewModel, tts) }
             viewModel.MODE_ADMIN_SCREEN -> { AdminScreen(viewModel) }
@@ -234,6 +276,7 @@ class MainActivity : ComponentActivity(), TextToSpeech.OnInitListener {
             viewModel.MODE_USER_MENTORS_SCREEN -> UserMentorsScreen(viewModel)
             viewModel.MODE_USER_INFO_SCREEN -> EditProfileScreen(viewModel)
             viewModel.MODE_AVAILABLE_VOCABULARIES_SCREEN -> AvailableVocabulariesScreen(viewModel)
+            viewModel.MODE_SETTINGS_SCREEN -> DeveloperScreen(viewModel, auth)
         }
     }
 }

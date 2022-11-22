@@ -1,6 +1,7 @@
 package com.pehom.theshi.presentation.screens.authscreen
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -35,7 +36,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun SignInScreen(viewModel: MainViewModel, auth: FirebaseAuth){
     Log.d("ppp", "SignInScreen is on")
-
+    val TAG = "SignInScreen"
     val email = remember {mutableStateOf("")}
     val scope = rememberCoroutineScope()
     val password = remember { mutableStateOf("") }
@@ -87,41 +88,48 @@ fun SignInScreen(viewModel: MainViewModel, auth: FirebaseAuth){
         Button(
             enabled = email.value.isNotEmpty() && password.value.isNotEmpty(),
             onClick = {
-
-                viewModel.useCases.signInFsUseCase.execute(
-                    context,
-                    viewModel,
-                    auth,
-                    LoginModel(email.value, password.value)
-                ){
-                    if (it) {
-                        auth.currentUser?.let {fbUser ->
-                            viewModel.useCases.setupMainViewModelFsUseCase.execute(context, viewModel, fbUser){
-                                viewModel.viewModelScope.launch(Dispatchers.IO) {
-                                    var userRoomItem = Constants.REPOSITORY.readUserRoomItemByUserFsId(viewModel.user.value.fsId.value)
-                                    if (userRoomItem == null) {
-                                        userRoomItem = UserRoomItem(
-                                            viewModel.user.value.fsId.value,
-                                            viewModel.user.value.authId,
-                                            viewModel.user.value.name,
-                                            viewModel.user.value.phoneNumber,
-                                            viewModel.user.value.email,
-                                            password.value,
-                                            viewModel.user.value.funds.amount.value
-                                            )
-                                        Constants.REPOSITORY.addUserRoomItem(userRoomItem)
+                viewModel.viewModelScope.launch(Dispatchers.IO) {
+                    val existedUserRoomItem = Constants.REPOSITORY.readUserRoomItemByEmailAndPassword(email.value, password.value)
+                    Log.d(Constants.INSPECTING_TAG, "$TAG userRoomItem = $existedUserRoomItem")
+                    if (existedUserRoomItem == null){
+                        viewModel.useCases.signInFsUseCase.execute(
+                            /*context,
+                            viewModel,*/
+                            auth,
+                            LoginModel(email.value, password.value)
+                        ){
+                            if (it) {
+                                Log.d(Constants.INSPECTING_TAG, "signInFsUseCase result = $it")
+                                auth.currentUser?.let {fbUser ->
+                                    Log.d(Constants.INSPECTING_TAG, "$TAG fbUser = $fbUser ")
+                                    viewModel.useCases.readUserinfoByAuthIdFsUseCase.execute(password.value, auth.uid){userRoomItem ->
+                                        Log.d(Constants.INSPECTING_TAG, "$TAG readUserinfoByAuthIdFsUseCase result = $userRoomItem ")
+                                        if (userRoomItem != null) {
+                                            viewModel.viewModelScope.launch(Dispatchers.IO) {
+                                                Constants.REPOSITORY.addUserRoomItem(userRoomItem)
+                                                viewModel.user.value = userRoomItem.mapToUser()
+                                                Log.d(Constants.INSPECTING_TAG, "$TAG that step was made ")
+                                                viewModel.useCases.loadWholeDataFsUseCase.execute(viewModel){
+                                                    viewModel.sharedPreferences.edit().putString(Constants.SHARED_PREF_LAST_USER_ID, userRoomItem.userFsId).apply()
+                                                    viewModel.screenState.value = viewModel.MODE_STUDENT_SCREEN
+                                                }
+                                            }
+                                        }
                                     }
-                                    viewModel.screenState.value = viewModel.MODE_STUDENT_SCREEN
                                 }
+                            }
+                            else {
+                                Toast.makeText(context, context.getString(R.string.wrong_email_or_password), Toast.LENGTH_SHORT).show()
                             }
                         }
                     } else {
-                        viewModel.useCases.signInRoomUseCase.execute(context,viewModel, LoginModel(email.value, password.value)){result ->
-                            if (result) {
-                                viewModel.screenState.value = viewModel.MODE_STUDENT_SCREEN
-
-                            }
+                        Log.d(Constants.INSPECTING_TAG, "am i here?")
+                        viewModel.user.value = existedUserRoomItem.mapToUser()
+                        viewModel.sharedPreferences.edit().putString(Constants.SHARED_PREF_LAST_USER_ID, viewModel.user.value.fsId.value).apply()
+                        viewModel.useCases.signInFsUseCase.execute(auth, LoginModel(email.value, password.value)){
+                            viewModel.screenState.value = viewModel.MODE_STUDENT_SCREEN
                         }
+
                     }
                 }
             }) {

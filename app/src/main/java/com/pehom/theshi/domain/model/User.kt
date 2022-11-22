@@ -9,6 +9,7 @@ data class User(
     val funds: Funds
 ) {
     var name = ""
+    var lastIdSfx = 0
 
    /* fun mapToUserRoomItem(): UserRoomItem{
         return UserRoomItem(

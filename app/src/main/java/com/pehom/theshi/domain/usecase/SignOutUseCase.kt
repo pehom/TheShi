@@ -13,6 +13,8 @@ class SignOutUseCase {
     ) {
         viewModel.screenState.value = viewModel.MODE_LOGIN_SCREEN
         auth.signOut()
+        viewModel.sharedPreferences.edit().putString(Constants.SHARED_PREF_LAST_USER_ID, null).apply()
+       // viewModel.sharedPreferences.edit().putString(Constants.SHARED_PREF_TASKS_FILTER, Constants.FILTER_ALL).apply()
         viewModel.user.value = User(FsId(""), "", "", "", Funds())
         viewModel.requestsAdd.clear()
         viewModel.wordbook.clear()

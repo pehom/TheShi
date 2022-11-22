@@ -39,6 +39,7 @@ import com.pehom.theshi.domain.model.VocabularyTitle
 import com.pehom.theshi.presentation.screens.components.ExpandableListItem
 import com.pehom.theshi.presentation.screens.components.VocabularyListItem
 import com.pehom.theshi.utils.Constants
+import com.pehom.theshi.utils.TaskIdFactory
 import kotlinx.coroutines.Dispatchers
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -48,6 +49,7 @@ fun DrawerCreateNewTask(
     scaffoldState: ScaffoldState
 ) {
     val TAG = "DrawerCreateNewTask"
+    Log.d(TAG, "drawer create new task has been invoked")
     val newTaskTitle = remember { mutableStateOf("") }
     val scope = rememberCoroutineScope()
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -57,7 +59,7 @@ fun DrawerCreateNewTask(
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
     val vocabularyTitles = remember { viewModel.allVocabularyTitles }
-    Log.d(TAG, "drawer create new task has been built")
+  //  Log.d(Constants.INSPECTING_TAG, "$TAG vocabularyTitles[0] = ${vocabularyTitles[0]}")
 
     Column(modifier = Modifier.fillMaxSize()) {
         OutlinedTextField(
@@ -115,6 +117,8 @@ fun DrawerCreateNewTask(
         if (vocabularyTitles.isNullOrEmpty()) {
             TitlesLoading()
             viewModel.useCases.getAllVocabularyTitlesFsUseCase.execute(viewModel){
+                viewModel.allVocabularyTitles.clear()
+                viewModel.allVocabularyTitles.addAll(it)
             }
         }
         else
@@ -151,7 +155,8 @@ fun DrawerCreateNewTask(
                                 if (!viewModel.isStudentProfileShown.value){
                                     if (newTaskTitle.value == "") newTaskTitle.value = vocabularyTitles[selectedIndex.value].value
                                     val newTask = TaskRoomItem(
-                                        viewModel.taskIdFactory.createId(),
+                                        TaskIdFactory.createId(viewModel),
+                                        //  viewModel.taskIdFactory.createId(),
                                         viewModel.user.value.fsId.value,
                                         viewModel.user.value.fsId.value,
                                         newTaskTitle.value,
@@ -166,7 +171,7 @@ fun DrawerCreateNewTask(
                                         Constants.STATUS_IN_PROGRESS
                                     )
                                     viewModel.useCases.addUserTaskFsUseCase.execute(viewModel, newTask){}
-                                    viewModel.useCases.updateLastTaskIdSfxFsUseCase.execute(viewModel.taskIdFactory.lastIdSfx, viewModel) {}
+                                    viewModel.useCases.updateLastTaskIdSfxFsUseCase.execute(viewModel.user.value.lastIdSfx, viewModel.user.value.fsId.value) {}
                                     viewModel.useCases.addTaskRoomUseCase.execute(viewModel, newTask) {
                                         scope.launch {
                                             scaffoldState.drawerState.close()
@@ -179,7 +184,8 @@ fun DrawerCreateNewTask(
                                 else {
                                     if (newTaskTitle.value == "") newTaskTitle.value = vocabularyTitles[selectedIndex.value].value
                                     val newTask = TaskRoomItem(
-                                        viewModel.taskIdFactory.createId(),
+                                        TaskIdFactory.createId(viewModel),
+                                        // viewModel.taskIdFactory.createId(),
                                         viewModel.user.value.fsId.value,
                                         viewModel.currentStudent.value.fsId.value,
                                         newTaskTitle.value,
@@ -194,7 +200,7 @@ fun DrawerCreateNewTask(
                                         Constants.STATUS_IN_PROGRESS
                                     )
                                     viewModel.useCases.addStudentTaskFsUseCase.execute(viewModel, newTask){}
-                                    viewModel.useCases.updateLastTaskIdSfxFsUseCase.execute(viewModel.taskIdFactory.lastIdSfx, viewModel) {}
+                                    viewModel.useCases.updateLastTaskIdSfxFsUseCase.execute(viewModel.user.value.lastIdSfx, viewModel.user.value.fsId.value) {}
                                     viewModel.studentTasks.add(TaskInfo(newTask.id, newTask.taskTitle,  vocabularyTitles[selectedIndex.value], Constants.STATUS_IN_PROGRESS))
                                     scope.launch {
                                         scaffoldState.drawerState.close()
@@ -207,7 +213,8 @@ fun DrawerCreateNewTask(
                                 if (!viewModel.isStudentProfileShown.value){
                                     if (newTaskTitle.value == "") newTaskTitle.value = vocabularyTitles[selectedIndex.value].value
                                     val newTask = TaskRoomItem(
-                                        viewModel.taskIdFactory.createId(),
+                                        TaskIdFactory.createId(viewModel),
+                                      //  viewModel.taskIdFactory.createId(),
                                         viewModel.user.value.fsId.value,
                                         viewModel.user.value.fsId.value,
                                         newTaskTitle.value,
@@ -223,7 +230,7 @@ fun DrawerCreateNewTask(
 
                                     )
                                     viewModel.useCases.addUserTaskFsUseCase.execute(viewModel, newTask){}
-                                    viewModel.useCases.updateLastTaskIdSfxFsUseCase.execute(viewModel.taskIdFactory.lastIdSfx, viewModel) {}
+                                    viewModel.useCases.updateLastTaskIdSfxFsUseCase.execute(viewModel.user.value.lastIdSfx, viewModel.user.value.fsId.value) {}
                                     viewModel.useCases.addTaskRoomUseCase.execute(viewModel, newTask) {
                                         scope.launch {
                                             scaffoldState.drawerState.close()
@@ -236,7 +243,8 @@ fun DrawerCreateNewTask(
                                 else {
                                     if (newTaskTitle.value == "") newTaskTitle.value = vocabularyTitles[selectedIndex.value].value
                                     val newTask = TaskRoomItem(
-                                        viewModel.taskIdFactory.createId(),
+                                        TaskIdFactory.createId(viewModel),
+                                       // viewModel.taskIdFactory.createId(),
                                         viewModel.user.value.fsId.value,
                                         viewModel.currentStudent.value.fsId.value,
                                         newTaskTitle.value,
@@ -252,7 +260,7 @@ fun DrawerCreateNewTask(
 
                                     )
                                     viewModel.useCases.addStudentTaskFsUseCase.execute(viewModel, newTask){}
-                                    viewModel.useCases.updateLastTaskIdSfxFsUseCase.execute(viewModel.taskIdFactory.lastIdSfx, viewModel) {}
+                                    viewModel.useCases.updateLastTaskIdSfxFsUseCase.execute(viewModel.user.value.lastIdSfx, viewModel.user.value.fsId.value) {}
                                     viewModel.studentTasks.add(TaskInfo(newTask.id, newTask.taskTitle,  vocabularyTitles[selectedIndex.value], Constants.STATUS_IN_PROGRESS))
                                     scope.launch {
                                         scaffoldState.drawerState.close()

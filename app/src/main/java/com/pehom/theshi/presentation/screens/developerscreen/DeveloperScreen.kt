@@ -9,6 +9,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.pehom.theshi.data.localdata.approomdatabase.AvailableVocabularyRoomItem
@@ -23,11 +24,19 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun DeveloperScreen(
-    viewModel: MainViewModel
+    viewModel: MainViewModel,
+    auth: FirebaseAuth
 ) {
     Log.d("ppp", "DeveloperScreen is on")
 
     val tasks = Constants.REPOSITORY.readTaskRoomItemsByUserFsId(viewModel.user.value.fsId.value).observeAsState(listOf()).value
+   // val allWordbookRoomItems =Constants.REPOSITORY.readAllWordbookRoomItems.observeAsState(listOf()).value
+    val availableVocabularyRoomItems = Constants.REPOSITORY.readAvailableVocabularyRoomItemsByUserFsId(viewModel.user.value.fsId.value)
+        .observeAsState(listOf()).value
+    val mentors = Constants.REPOSITORY.readMentorRoomItemsByUserFsId(viewModel.user.value.fsId.value)
+        .observeAsState(listOf()).value
+    val students = Constants.REPOSITORY.readStudentRoomItemsByMentorId(viewModel.user.value.fsId.value)
+        .observeAsState(listOf()).value
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center){
         Column() {
             Button(onClick = {
@@ -77,6 +86,41 @@ fun DeveloperScreen(
                 viewModel.screenState.value = viewModel.MODE_TASK_SCREEN
             }) {
                 Text(text = "go task screen")
+            }
+            Button(onClick = {
+                viewModel.viewModelScope.launch(Dispatchers.IO){
+                    students.forEach {
+                        Constants.REPOSITORY.deleteStudentRoomItem(it){}
+                    }
+                    mentors.forEach {
+                        Constants.REPOSITORY.deleteMentorRoomItem(it)
+                    }
+                    tasks.forEach {
+                        Constants.REPOSITORY.deleteTaskRoomItem(it){}
+                    }
+                    availableVocabularyRoomItems.forEach {
+                        Constants.REPOSITORY.deleteAvailableVocabularyRoomItem(it){}
+                    }
+                    Constants.REPOSITORY.readAvailableWordsRoomItemsByUserFsIdAsList(viewModel.user.value.fsId.value){
+                        it.forEach {
+                            viewModel.viewModelScope.launch(Dispatchers.IO) {
+                                Constants.REPOSITORY.deleteAvailableWordsRoomItem(it)
+                            }
+                        }
+                    }
+                    val user = Constants.REPOSITORY.readUserRoomItemByUserFsId(viewModel.user.value.fsId.value)
+                    if (user != null){
+                        Constants.REPOSITORY.deleteUserRoomItem(user)
+
+                    }
+                    val wordbookItems = Constants.REPOSITORY.readWordbookRoomItemsByUserFsId(viewModel.user.value.fsId.value)
+                    wordbookItems.forEach {
+                        Constants.REPOSITORY.deleteWordbookRoomItem(it){}
+                    }
+                    viewModel.useCases.signOutUseCase.execute(viewModel, auth )
+                }
+            }) {
+                Text(text = "sign out and clear room database")
             }
         }
     }

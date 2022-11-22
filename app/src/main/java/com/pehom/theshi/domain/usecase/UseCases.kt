@@ -66,5 +66,8 @@ data class UseCases(
     val setUserByUserFsIdRoomUseCase: SetUserByUserFsIdRoomUseCase,
     val signInRoomUseCase: SignInRoomUseCase,
     val updateUsernameFsUseCase: UpdateUsernameFsUseCase,
-    val updateMentorNameFsUseCase: UpdateMentorNameFsUseCase
+    val updateMentorNameFsUseCase: UpdateMentorNameFsUseCase,
+    val loadWholeDataFsUseCase: LoadWholeDataFsUseCase,
+    val readUserinfoByAuthIdFsUseCase: ReadUserinfoByAuthIdFsUseCase,
+    val setViewmodelNetworkItemsFsUseCase: SetViewmodelNetworkItemsFsUseCase
 )

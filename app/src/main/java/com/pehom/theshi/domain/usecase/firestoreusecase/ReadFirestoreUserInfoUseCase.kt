@@ -21,17 +21,14 @@ class ReadFirestoreUserInfoUseCase {
             .addOnSuccessListener { doc ->
                 Log.d("readFirestoreUserInfo", "fsId = $fsId")
                 if (doc.exists()) {
-                    val authId = doc.get(Constants.AUTH_ID).toString()
-                    val email = doc.get( Constants.EMAIL).toString()
-                    val phoneNumber = doc.get(Constants.PHONE_NUMBER).toString()
                     val fundsAmount = doc.get(Constants.FUNDS).toString().toInt()
-                    val name = doc[Constants.NAME].toString()
-                    infoUser.authId = authId
+                    infoUser.authId = doc.get(Constants.AUTH_ID).toString()
                     infoUser.fsId = FsId(fsId)
-                    infoUser.email = email
-                    infoUser.phoneNumber = phoneNumber
+                    infoUser.email = doc.get( Constants.EMAIL).toString()
+                    infoUser.phoneNumber = doc.get(Constants.PHONE_NUMBER).toString()
                     infoUser.funds.setAmount(fundsAmount)
-                    infoUser.name = name
+                    infoUser.name = doc[Constants.NAME].toString()
+                    infoUser.lastIdSfx = doc[Constants.LAST_TASK_ID_SFX].toString().toInt()
                     onSuccess(infoUser)
                 }
                 else

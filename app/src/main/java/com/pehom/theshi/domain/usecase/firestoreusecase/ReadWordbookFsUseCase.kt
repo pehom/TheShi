@@ -10,18 +10,19 @@ class ReadWordbookFsUseCase {
     private val TAG = "ReadWordbookFsUseCase"
     fun execute(
         viewModel: MainViewModel,
-        onSuccess: (List<String>) -> Unit
+        onSuccess: (Map<String,String>) -> Unit
     ) {
         Log.d(TAG, "$TAG invoked")
-        val fsDocRefPaths = mutableListOf<String>()
+        val map = mutableMapOf<String,String>()
         Firebase.firestore.collection(Constants.USERS).document(viewModel.user.value.fsId.value).collection(Constants.WORDBOOK).get()
             .addOnSuccessListener { docs ->
                 for (doc in docs) {
-                    fsDocRefPaths.add(doc[Constants.VOCABULARY_FS_DOC_REF_PATH].toString())
+                    map[doc[Constants.VOCABULARY_TITLE].toString()] = doc[Constants.VOCABULARY_FS_DOC_REF_PATH].toString()
                 }
-                onSuccess(fsDocRefPaths)
+                onSuccess(map)
             }
             .addOnFailureListener {
+                onSuccess(map)
                 Log.d("readWordbookFsUseCase", "reading wordbook failed, Error: ${it.message}")
             }
     }

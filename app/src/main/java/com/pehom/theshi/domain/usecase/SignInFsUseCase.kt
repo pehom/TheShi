@@ -10,8 +10,8 @@ import com.pehom.theshi.utils.*
 class SignInFsUseCase {
     private val TAG = "SignInFsUseCase"
     fun execute(
-        context: Context,
-        viewModel: MainViewModel,
+        /*context: Context,
+        viewModel: MainViewModel,*/
         auth: FirebaseAuth,
         loginData: LoginModel,
         onSuccess: (Boolean) -> Unit
