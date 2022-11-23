@@ -21,7 +21,10 @@ interface MentorRoomDao {
     suspend fun readMentorRoomItemByMentorFsId(mentorFsId: String): MentorRoomItem?
 
     @Query("SELECT * FROM mentors_table WHERE studentFsId =:userFsId")
-    fun readMentorRoomItemsByUserFsId (userFsId: String ): LiveData<List<MentorRoomItem>>
+    fun readMentorRoomItemsByUserFsIdAsLiveData (userFsId: String ): LiveData<List<MentorRoomItem>>
+
+    @Query("SELECT * FROM mentors_table WHERE studentFsId =:userFsId")
+    fun readMentorRoomItemsByUserFsIdAsList(userFsId: String): List<MentorRoomItem>
 
     @Query("SELECT COUNT(*) FROM mentors_table WHERE studentFsId =:userFsId")
     fun getMentorRoomItemsCountByUserFsId (userFsId: String): Int

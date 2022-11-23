@@ -51,7 +51,8 @@ fun ExpandableListItem(
 
 @Composable
 private fun Header(
-    index: Int, title: String,
+    index: Int,
+    title: String,
     selectedIndex: MutableState<Int>,
     onClickItem: () -> Unit,
     lazyListState: LazyListState
@@ -82,9 +83,9 @@ private fun Header(
         Text(title  , fontSize = 17.sp, modifier = Modifier.padding(10.dp))
         IconButton(onClick = {
             scope.launch {
-                if (index > 4) {
-                    lazyListState.animateScrollToItem(index -4)
-                }
+//                if (index > 4) {
+//                    lazyListState.animateScrollToItem(index -4)
+//                }
               //  lazyListState.animateScrollToItem(lazyListState.firstVisibleItemIndex)
                 onClickItem()
             }
@@ -112,7 +113,7 @@ private fun ExpandableList(
     }
     val expandTransition = remember {
         expandVertically(
-            expandFrom = Alignment.Top,
+            expandFrom = Alignment.Bottom,
             animationSpec = tween(300)
         ) + fadeIn(
             animationSpec = tween(300)

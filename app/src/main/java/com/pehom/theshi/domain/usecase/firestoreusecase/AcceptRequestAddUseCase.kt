@@ -32,7 +32,7 @@ class AcceptRequestAddUseCase {
                                             doc.reference.delete()
                                                 .addOnSuccessListener {
                                                     Firebase.firestore.collection(Constants.USERS).document(request.senderFsId.value)
-                                                        .collection(Constants.STUDENTS).document(request.receiverPhone)
+                                                        .collection(Constants.STUDENTS).document(request.receiverFsId.value)
                                                         .set(hashMapOf(
                                                             Constants.FS_ID to request.receiverFsId.value,
                                                             Constants.PHONE_NUMBER to request.receiverPhone,
@@ -55,7 +55,7 @@ class AcceptRequestAddUseCase {
                                             doc.reference.delete()
                                         }
                                         Firebase.firestore.collection(Constants.USERS).document(request.senderFsId.value)
-                                            .collection(Constants.STUDENTS).document(request.receiverPhone)
+                                            .collection(Constants.STUDENTS).document(request.receiverFsId.value)
                                             .set(hashMapOf(
                                                 Constants.FS_ID to request.receiverFsId.value,
                                                 Constants.PHONE_NUMBER to request.receiverPhone,

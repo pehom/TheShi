@@ -77,6 +77,7 @@ class MainViewModel(
   //  lateinit var taskIdFactory: TaskIdFactory
     lateinit var sharedPreferences: SharedPreferences
 
+
     val useCases = UseCases(
         SetTaskByVocabulary(),
         SignInFsUseCase(),
@@ -141,7 +142,8 @@ class MainViewModel(
         UpdateMentorNameFsUseCase(),
         LoadWholeDataFsUseCase(),
         ReadUserinfoByAuthIdFsUseCase(),
-        SetViewmodelNetworkItemsFsUseCase()
+        SetViewmodelNetworkItemsFsUseCase(),
+        UpdateMentorFsUseCase()
         )
 
     init {

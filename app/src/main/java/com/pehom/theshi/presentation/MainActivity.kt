@@ -62,7 +62,7 @@ class MainActivity : ComponentActivity(), TextToSpeech.OnInitListener {
         if (vm.sharedPreferences.contains(Constants.SHARED_PREF_LAST_USER_ID) ){
             val sharedUserFsId = vm.sharedPreferences.getString(Constants.SHARED_PREF_LAST_USER_ID, null)
          //   if ( sharedUserFsId != ""){
-                if (sharedUserFsId != null) {
+            if (sharedUserFsId != null) {
                     vm.useCases.setUserByUserFsIdRoomUseCase.execute(vm, sharedUserFsId){
                         if (isNetworkAvailable()){
 
@@ -82,49 +82,12 @@ class MainActivity : ComponentActivity(), TextToSpeech.OnInitListener {
                         vm.screenState.value = vm.MODE_LOGIN_SCREEN
                     }
                 }
-            /*} else {
-                vm.isViewModelSet.value = true
-                if (vm.isStarterScreenEnded.value){
-                    vm.screenState.value = vm.MODE_LOGIN_SCREEN
-                }
-            }*/
         } else {
             vm.isViewModelSet.value = true
             if (vm.isStarterScreenEnded.value){
                 vm.screenState.value = vm.MODE_LOGIN_SCREEN
             }
         }
-
-
-
-        //=======================
-     /*   if (isNetworkAvailable()) {
-            auth = FirebaseAuth.getInstance()
-            Log.d("ppp", "auth.currentUser = ${auth.currentUser}")
-            if (auth.currentUser != null) {
-                vm.useCases.setupMainViewModelFsUseCase.execute(this, vm, auth.currentUser!!){
-                    if (vm.isStarterScreenEnded.value){
-                        vm.screenState.value = vm.MODE_STUDENT_SCREEN
-                    }
-                }
-            } else
-                vm.screenState.value = vm.MODE_LOGIN_SCREEN
-        } else if (vm.sharedPreferences.contains(Constants.SHARED_PREF_LAST_USER_ID) ){
-            val sharedUserFsId = vm.sharedPreferences.getString(Constants.SHARED_PREF_LAST_USER_ID, "")
-            if ( sharedUserFsId != ""){
-                if (sharedUserFsId != null) {
-                    vm.useCases.setUserByUserFsIdRoomUseCase.execute(vm, sharedUserFsId){
-                        vm.isViewModelSet.value = true
-                        if (vm.isStarterScreenEnded.value){
-                            vm.screenState.value = vm.MODE_STUDENT_SCREEN
-                        }                    }
-                } else {
-                    vm.screenState.value = vm.MODE_LOGIN_SCREEN
-                }
-            }
-        }
-*/
-     //   =================
         setContent {
             TheShiTheme {
                 // A surface container using the 'background' color from the theme
@@ -184,6 +147,23 @@ class MainActivity : ComponentActivity(), TextToSpeech.OnInitListener {
             }
             vm.MODE_USER_MENTORS_SCREEN -> {
                 vm.screenState.value = vm.lastScreen
+                vm.viewModelScope.launch(Dispatchers.IO) {
+                    val mentors = Constants.REPOSITORY.readMentorRoomItemsByUserFsIdAsList(vm.user.value.fsId.value)
+                    if (mentors.isNotEmpty()){
+                        mentors.forEach {
+                            if (it.hasChanges){
+                                vm.useCases.updateMentorFsUseCase.execute(it, vm.user.value.fsId.value){result ->
+                                    if (result){
+                                        vm.viewModelScope.launch(Dispatchers.IO) {
+                                            it.hasChanges = false
+                                            Constants.REPOSITORY.updateMentorRoomItem(it)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
             vm.MODE_USER_INFO_SCREEN -> {
                 vm.screenState.value = vm.lastScreen
@@ -203,21 +183,6 @@ class MainActivity : ComponentActivity(), TextToSpeech.OnInitListener {
     override fun onPause() {
         super.onPause()
         Log.d("lifecycle", "onPause() invoked")
-        if (vm.currentTaskRoomItem.value.id != "" && vm.currentTaskRoomItem.value.id != "taskId") {
-          //  vm.currentTaskRoomItem.value.incrementSyncCount()
-            vm.useCases.updateTaskFsUseCase.execute(vm, vm.currentTaskRoomItem.value){}
-          //  vm.currentWordbookTaskRoomItem.value.incrementSyncCount()
-            vm.useCases.updateTaskFsUseCase.execute(vm, vm.currentWordbookTaskRoomItem.value){}
-            vm.viewModelScope.launch(Dispatchers.IO) {
-                Constants.REPOSITORY.updateTaskRoomItem(vm.currentTaskRoomItem.value){}
-                Constants.REPOSITORY.updateTaskRoomItem(vm.currentWordbookTaskRoomItem.value){}
-            }
-        }
-        val sharedPref = getSharedPreferences(Constants.APP_SHARED_PREF, MODE_PRIVATE)
-        sharedPref.edit().putString(Constants.SHARED_PREF_LAST_USER_ID, vm.user.value.fsId.value).apply()
-        sharedPref.edit().putInt(Constants.SHARED_PREF_SCREEN_STATE, vm.screenState.value).apply()
-        sharedPref.edit().putString(Constants.SHARED_PREF_TASKS_FILTER, vm.tasksFilterState.value).apply()
-
     }
 
     override fun onStop() {
@@ -230,6 +195,20 @@ class MainActivity : ComponentActivity(), TextToSpeech.OnInitListener {
             tts!!.stop()
             tts!!.shutdown()
         }
+        if (vm.currentTaskRoomItem.value.id != "" && vm.currentTaskRoomItem.value.id != "taskId") {
+            //  vm.currentTaskRoomItem.value.incrementSyncCount()
+            vm.useCases.updateTaskFsUseCase.execute(vm, vm.currentTaskRoomItem.value){}
+            //  vm.currentWordbookTaskRoomItem.value.incrementSyncCount()
+            vm.useCases.updateTaskFsUseCase.execute(vm, vm.currentWordbookTaskRoomItem.value){}
+            vm.viewModelScope.launch(Dispatchers.IO) {
+                Constants.REPOSITORY.updateTaskRoomItem(vm.currentTaskRoomItem.value){}
+                Constants.REPOSITORY.updateTaskRoomItem(vm.currentWordbookTaskRoomItem.value){}
+            }
+        }
+        val sharedPref = getSharedPreferences(Constants.APP_SHARED_PREF, MODE_PRIVATE)
+        sharedPref.edit().putString(Constants.SHARED_PREF_LAST_USER_ID, vm.user.value.fsId.value).apply()
+        sharedPref.edit().putInt(Constants.SHARED_PREF_SCREEN_STATE, vm.screenState.value).apply()
+        sharedPref.edit().putString(Constants.SHARED_PREF_TASKS_FILTER, vm.tasksFilterState.value).apply()
         Log.d("lifecycle", "onDestroy() invoked")
         super.onDestroy()
     }

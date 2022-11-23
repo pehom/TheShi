@@ -1,5 +1,6 @@
 package com.pehom.theshi.presentation.screens.requestsScreen
 
+import android.widget.Space
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -63,6 +64,7 @@ fun RequestsScreen(
                                 item,
                                 requests
                             )
+                            Spacer(modifier = Modifier.height(3.dp))
                         }
                     }
                 }
@@ -105,6 +107,7 @@ fun RequestsScreen(
                                 item,
                                 requests
                             )
+                            Spacer(modifier = Modifier.height(3.dp))
                         }
                     }
                 }

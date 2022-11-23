@@ -21,5 +21,8 @@ data class MentorRoomItem(
     var studentFsId: String = "studentFsId",
 
     @ColumnInfo(name = Constants.STATUS)
-    var mentorStatus: String = "mentorStatus"
+    var mentorStatus: String = "mentorStatus",
+
+    @ColumnInfo(name = Constants.HAS_CHANGES)
+    var hasChanges: Boolean = false
 )

@@ -23,11 +23,11 @@ class CreateRequestAddFsUseCase {
                         Constants.RECEIVER_NAME to request.receiverName,
                         Constants.RECEIVER_PHONE to request.receiverPhone,
                         Constants.SENDER_PHONE to request.senderPhone,
-                        Constants.SENDER_FSID to request.senderFsId.value
+                        Constants.SENDER_NAME to request.senderName
                     )
 
                     val dataRequestSent = hashMapOf(
-                        Constants.SENDER_NAME to request.senderName,
+                        Constants.SENDER_FSID to request.senderFsId.value,
                         Constants.RECEIVER_FSID to request.receiverFsId.value,
                         Constants.STATE to request.state,
                         Constants.DETAILS to details

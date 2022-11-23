@@ -33,7 +33,7 @@ fun DeveloperScreen(
    // val allWordbookRoomItems =Constants.REPOSITORY.readAllWordbookRoomItems.observeAsState(listOf()).value
     val availableVocabularyRoomItems = Constants.REPOSITORY.readAvailableVocabularyRoomItemsByUserFsId(viewModel.user.value.fsId.value)
         .observeAsState(listOf()).value
-    val mentors = Constants.REPOSITORY.readMentorRoomItemsByUserFsId(viewModel.user.value.fsId.value)
+    val mentors = Constants.REPOSITORY.readMentorRoomItemsByUserFsIdAsLiveData(viewModel.user.value.fsId.value)
         .observeAsState(listOf()).value
     val students = Constants.REPOSITORY.readStudentRoomItemsByMentorId(viewModel.user.value.fsId.value)
         .observeAsState(listOf()).value

@@ -17,7 +17,7 @@ class LoadWholeDataFsUseCase {
         onSuccess: () -> Unit
     ){
         Log.d(TAG, "$TAG invoked")
-        var count = 5
+        var count = 6
         val userFsId = viewModel.user.value.fsId.value
         viewModel.useCases.readNewStudentsFsUseCase.execute(viewModel){
             viewModel.viewModelScope.launch(Dispatchers.IO) {
@@ -108,6 +108,21 @@ class LoadWholeDataFsUseCase {
                 }
                 count--
                 Log.d(Constants.INSPECTING_TAG, "readWordbookFsUseCase count = $count")
+                if (count == 0){
+                    onSuccess()
+                }
+            }
+        }
+        viewModel.useCases.readRequestsAddFsUseCase.execute(viewModel){
+            Log.d(Constants.INSPECTING_TAG, "$TAG requests = $it")
+            if (it.isEmpty()){
+                count--
+                if (count == 0){
+                    onSuccess()
+                }
+            } else {
+                viewModel.requestsAdd.addAll(it)
+                count--
                 if (count == 0){
                     onSuccess()
                 }

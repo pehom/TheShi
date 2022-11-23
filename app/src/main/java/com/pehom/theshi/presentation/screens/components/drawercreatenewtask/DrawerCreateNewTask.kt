@@ -313,7 +313,7 @@ private fun TitlesComponentList(
             .background(Color.White),
         verticalArrangement = Arrangement.Center
     ) {
-        itemsIndexed(titles) { index, item ->
+        itemsIndexed(viewModel.allVocabularyTitles) { index, item ->
            // VocabularyListItem(index, item.value, selectedIndex)
 
             ExpandableListItem(

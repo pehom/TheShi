@@ -2,6 +2,7 @@ package com.pehom.theshi.presentation.screens.learningscreen
 
 import android.speech.tts.TextToSpeech
 import android.util.Log
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
@@ -62,8 +63,14 @@ fun LearningScreen(
                                 viewModel.currentTask.value.setReadyForLearning()
                                 isRestarted.value = true
                             }) {
-                            Text(text = stringResource(id = R.string.retry), fontSize = 12.sp)                        }
+                            Icon(
+                                painterResource(id = R.drawable.ic_baseline_restart_alt_24),
+                                contentDescription = "restart"
+                            )
+                            //  Text(text = stringResource(id = R.string.retry), fontSize = 12.sp)                        }
+                        }
                     }
+
                     Box(modifier = Modifier
                         .fillMaxWidth()
                         .weight(3f)
@@ -104,6 +111,7 @@ fun LearningScreen(
                     .padding(horizontal = 20.dp, vertical = 10.dp),
                     contentAlignment = Alignment.CenterEnd) {
                     IconButton(
+                        interactionSource = remember { MutableInteractionSource() },
                         enabled = currentTask.value.learningWordsRemain.value > 0,
                         onClick = {
 

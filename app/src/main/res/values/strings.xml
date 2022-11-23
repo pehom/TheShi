@@ -60,7 +60,7 @@
     <string name="cancel">Отмена</string>
     <string name="pay">Заплатить</string>
     <string name="funds">У.е.</string>
-    <string name="task_info">Информация</string>
+    <string name="task_info">Инфо</string>
     <string name="learning">Обучение</string>
     <string name="game">Игра</string>
     <string name="vocabulary">Словарь</string>
@@ -95,5 +95,6 @@
     <string name="filter_finished">Законченные</string>
     <string name="filter_cancelled">Отмененные</string>
     <string name="title">Задание</string>
+    <string name="delete_mentor">Удалить ментора?</string>
 
 </resources>

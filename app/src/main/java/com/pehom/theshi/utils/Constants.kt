@@ -39,6 +39,7 @@ object Constants {
     const val CANCELLED = "cancelled"
     const val DISMISSED = "dismissed"
     const val BLOCKED= "blocked"
+    const val HAS_CHANGES = "hasChanges"
     const val SENDER_FSID = "senderFsId"
     const val RECEIVER_FSID = "receiverFsID"
     const val STATE = "state"

@@ -1,6 +1,7 @@
 package com.pehom.theshi.presentation.screens.components
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -87,10 +88,28 @@ fun Header(
                 textAlign = TextAlign.Left,
                 modifier = Modifier.padding(horizontal = 25.dp)
             )
-            IconButton(
+            Text(
+                text = "Pending requests " + viewModel.requestsAdd.size,
+                fontSize = 14.sp,
+                color = if (viewModel.requestsAdd.size > 0) Color.Green
+                else Color.Transparent,
+                textAlign = TextAlign.Right,
+                modifier = Modifier
+                    .padding(horizontal = 10.dp)
+                    .clickable(
+                        indication = null,
+                        interactionSource = remember { MutableInteractionSource() }
+                    ) {
+                        viewModel.screenState.value = viewModel.MODE_REQUESTS_SCREEN
+                    }
+            )
+            /*IconButton(
+                modifier = Modifier.clickable(
+                    indication = null,
+                    interactionSource = remember { MutableInteractionSource() }
+                ) {  },
                 enabled = viewModel.requestsAdd.size > 0,
                 onClick = {
-
                     viewModel.screenState.value = viewModel.MODE_REQUESTS_SCREEN
             }) {
                 Text(
@@ -102,7 +121,7 @@ fun Header(
                     modifier = Modifier
                         .padding(horizontal = 10.dp)
                 )
-            }
+            }*/
         }
     }
 }

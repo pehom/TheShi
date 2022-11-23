@@ -69,5 +69,6 @@ data class UseCases(
     val updateMentorNameFsUseCase: UpdateMentorNameFsUseCase,
     val loadWholeDataFsUseCase: LoadWholeDataFsUseCase,
     val readUserinfoByAuthIdFsUseCase: ReadUserinfoByAuthIdFsUseCase,
-    val setViewmodelNetworkItemsFsUseCase: SetViewmodelNetworkItemsFsUseCase
+    val setViewmodelNetworkItemsFsUseCase: SetViewmodelNetworkItemsFsUseCase,
+    val updateMentorFsUseCase: UpdateMentorFsUseCase
 )

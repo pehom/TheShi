@@ -63,31 +63,22 @@ fun GameScreen(
             Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.SpaceBetween) {
                 Box(modifier = Modifier
                     .fillMaxWidth()
+                    .fillMaxHeight().weight(2f)
                     .padding(top = 10.dp), contentAlignment = Alignment.Center){
                     Text(text = currentTask.value.title, modifier = Modifier.fillMaxWidth(), fontSize = 20.sp, textAlign = TextAlign.Center)
                 }
                 Row(modifier = Modifier
                     .fillMaxWidth()
+                    .fillMaxHeight().weight(1.5f)
                     .padding(bottom = 5.dp, start = 10.dp, end = 10.dp)
                     ,horizontalArrangement = Arrangement.SpaceBetween
                     , verticalAlignment = Alignment.CenterVertically){
                     Button( onClick = {
                         viewModel.currentTask.value.currentTaskItem.value = 0
                         viewModel.currentTask.value.setReadyForTask()
-             //           viewModel.currentTaskRoomItem.value.currentTaskItem = 0
-//                        var updateTaskRoomItem = taskRoomItem.value
-//                        updateTaskRoomItem.progress = viewModel.currentTask.value.progress
-//                        updateTaskRoomItem.currentLearningItem = viewModel.currentTask.value.currentLearningItem.value
-//                        updateTaskRoomItem.currentTaskItem = viewModel.currentTask.value.currentTaskItem.value
-//                        updateTaskRoomItem.currentTestItem = viewModel.currentTask.value.currentTestItem.value
-//                        updateTaskRoomItem.wrongTestAnswers = viewModel.currentTask.value.wrongTestAnswers
-                     //   updateTaskRoomItem.incrementSyncCount()
-//                        viewModel.useCases.updateTaskFsUseCase.execute(viewModel, updateTaskRoomItem){}
-//                        viewModel.viewModelScope.launch(Dispatchers.IO) {
-//                            Constants.REPOSITORY.updateTaskRoomItem(updateTaskRoomItem){}
-//                        }
                     }) {
-                        Text(stringResource(id = R.string.retry))
+                        Icon(painterResource(id = R.drawable.ic_baseline_restart_alt_24), contentDescription ="retry" )
+                      //  Text(stringResource(id = R.string.retry))
                     }
                     Text(stringResource(id = R.string.words_remain) + "  " + wordsRemain.value)
                 }
@@ -105,7 +96,7 @@ fun GameScreen(
                     Modifier
                         .fillMaxWidth()
                         .fillMaxHeight()
-                        .weight(1f)
+                        .weight(1.5f)
                         .padding(horizontal = 10.dp)
                     , contentAlignment = Alignment.CenterStart
                 ){
@@ -113,7 +104,7 @@ fun GameScreen(
                         enabled = currentTask.value.taskWordsRemain.value > 0,
                         onClick = {
                             tts!!.speak(
-                                currentTask.value.currentLearningWord.value.trans,
+                                currentTask.value.currentTaskWord.value.trans,
                                 TextToSpeech.QUEUE_FLUSH,
                                 null,
                                 ""
@@ -133,13 +124,16 @@ fun GameScreen(
                 Row(
                     Modifier
                         .fillMaxWidth()
-                        .weight(2f)
+                        .fillMaxHeight()
+                        .weight(1.5f)
                         .padding(start = 10.dp, end = 10.dp, bottom = 10.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically){
 
                     val isHintVisible = remember { mutableStateOf(false) }
-                    Button(modifier = Modifier.fillMaxHeight(), onClick = {
+                    Button(
+                        modifier = Modifier.fillMaxHeight(),
+                        onClick = {
                         if (!hintButtonState.value){
                             isHintVisible.value = true
                             scope.launch {
@@ -155,14 +149,19 @@ fun GameScreen(
                             hintButtonState.value = false
                         }
                     }) {
-                        Text(text = if (!hintButtonState.value) stringResource(id = R.string.hint)
+                        if (!hintButtonState.value){
+                            Icon(painterResource(id = R.drawable.ic_baseline_question_mark_24), contentDescription ="hint" )
+                        } else {
+                            Icon(painterResource(id = R.drawable.ic_baseline_restart_alt_24), contentDescription ="Retry" )
+                        }
+                       /* Text(text = if (!hintButtonState.value) stringResource(id = R.string.hint)
                         else stringResource(id = R.string.restart)
-                        )
+                        )*/
                     }
                     Box(
                         contentAlignment = Alignment.Center){
                         Text(text = currentWord.value.trans,
-                            fontSize = 22.sp,
+                            fontSize = 20.sp,
                             color = if(isHintVisible.value) Color.Black else Color.Transparent)
                     }
                     Button(modifier = Modifier.fillMaxHeight(), onClick = {
@@ -170,7 +169,6 @@ fun GameScreen(
                             currentTask.value.currentTaskItem.value++
                             currentTask.value.taskRefresh()
                             Log.d("tag", "playingModel.task.currentVocabularyItem Before++ = ${ playingModel.task.currentTaskItem.value}")
-
                             //    playingModel.task.currentVocabularyItem.value++
                             playingModel.setCards()
                             Log.d("tag", "currentTask.currentVocabularyItem = ${ currentTask.value.currentTaskItem.value}")
@@ -186,7 +184,8 @@ fun GameScreen(
                             Log.d("tag", "currentTask.currentVocabularyItem = ${ currentTask.value.currentTaskItem.value}")
                         }
                     }) {
-                        Text(text = stringResource(id = R.string.skip))
+                        Icon(painterResource(id = R.drawable.ic_baseline_east_24), contentDescription = "next")
+                        //Text(text = stringResource(id = R.string.skip))
                     }
                 }
             }

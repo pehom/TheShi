@@ -84,7 +84,9 @@ interface DatabaseRepository {
 
     suspend fun getMentorRoomItemsCountByUserFsId (userFsId: String, onSuccess: (Int) -> Unit)
 
-    fun readMentorRoomItemsByUserFsId(userFsId: String): LiveData<List<MentorRoomItem>>
+    fun readMentorRoomItemsByUserFsIdAsLiveData(userFsId: String): LiveData<List<MentorRoomItem>>
+
+    suspend fun readMentorRoomItemsByUserFsIdAsList(userFsId: String): List<MentorRoomItem>
 
     suspend fun updateMentorRoomItem(mentorRoomItem: MentorRoomItem)
 

@@ -83,13 +83,19 @@ fun RequestsItem(
                     contentAlignment = Alignment.CenterStart
                 ){
                     IconButton(onClick = {
-                        viewModel.useCases.acceptRequestAddUseCase.execute(requestAdd, viewModel){
+                        viewModel.viewModelScope.launch(Dispatchers.IO) {
                             requestsList.remove(requestAdd)
-                            val mentorRoomItem = MentorRoomItem(requestAdd.senderFsId.value, requestAdd.senderName, requestAdd.senderPhone, viewModel.user.value.fsId.value)
-                            viewModel.viewModelScope.launch(Dispatchers.IO) {
-                                Constants.REPOSITORY.addMentorRoomItem(mentorRoomItem)
-                            }
+                            val mentorRoomItem = MentorRoomItem(
+                                requestAdd.senderFsId.value,
+                                requestAdd.senderName,
+                                requestAdd.senderPhone,
+                                viewModel.user.value.fsId.value,
+                                Constants.ACCEPTED,
+                                false
+                                )
+                            Constants.REPOSITORY.addMentorRoomItem(mentorRoomItem)
                         }
+                        viewModel.useCases.acceptRequestAddUseCase.execute(requestAdd, viewModel){}
                     }) {
                         Icon(painterResource(id = R.drawable.ic_baseline_done_24), contentDescription = "accept" )
                     }

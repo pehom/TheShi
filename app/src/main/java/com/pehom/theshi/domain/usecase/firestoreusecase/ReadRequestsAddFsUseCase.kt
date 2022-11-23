@@ -19,7 +19,7 @@ class ReadRequestsAddFsUseCase {
         Firebase.firestore.collection(Constants.USERS).document(viewModel.user.value.fsId.value).collection(Constants.PENDING_REQUESTS).get()
             .addOnSuccessListener { docs ->
                 if (docs.size() > 0) {
-                    viewModel.requestsAdd.clear()
+                  //  viewModel.requestsAdd.clear()
                     for (doc in docs) {
                         val details = doc[Constants.DETAILS] as Map<*,*>
                         val receiverFsId = FsId(doc[Constants.RECEIVER_FSID].toString())
@@ -51,7 +51,7 @@ class ReadRequestsAddFsUseCase {
 
                             Constants.PENDING -> {
                                 resultList.add((request))
-                                viewModel.requestsAdd.add(request)
+                              //  viewModel.requestsAdd.add(request)
                             }
                         }
                     }
