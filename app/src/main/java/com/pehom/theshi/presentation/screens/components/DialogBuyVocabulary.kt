@@ -85,7 +85,7 @@ fun DialogContent(
         Column(
             modifier= Modifier
                 // .padding(vertical = 100.dp, horizontal = 30.dp)
-                .background(Color.White)
+                //.background(Color.White)
                 // .wrapContentSize(Alignment.Center),
                 .fillMaxSize()
                 .padding(horizontal = 5.dp),

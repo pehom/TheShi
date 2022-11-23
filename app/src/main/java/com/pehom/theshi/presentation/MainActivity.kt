@@ -61,30 +61,33 @@ class MainActivity : ComponentActivity(), TextToSpeech.OnInitListener {
 
         if (vm.sharedPreferences.contains(Constants.SHARED_PREF_LAST_USER_ID) ){
             val sharedUserFsId = vm.sharedPreferences.getString(Constants.SHARED_PREF_LAST_USER_ID, null)
+            Log.d(Constants.INSPECTING_TAG, "sharedUserFsId = $sharedUserFsId")
          //   if ( sharedUserFsId != ""){
             if (sharedUserFsId != null) {
                     vm.useCases.setUserByUserFsIdRoomUseCase.execute(vm, sharedUserFsId){
                         if (isNetworkAvailable()){
-
                             vm.useCases.setViewmodelNetworkItemsFsUseCase.execute(vm){
                                 vm.isViewModelSet.value = true
+                                vm.starterCount--
+                                Log.d(Constants.INSPECTING_TAG, "onCreate vm.starterCount = ${vm.starterCount}")
+
                                 if (vm.isStarterScreenEnded.value && vm.user.value.fsId.value != ""){
                                     vm.screenState.value = vm.MODE_STUDENT_SCREEN
-                                } else {
-                                    vm.screenState.value = vm.MODE_LOGIN_SCREEN
                                 }
                             }
                         }
                     }
                 } else {
-                    vm.isViewModelSet.value = true
-                    if (vm.isStarterScreenEnded.value){
+                    vm.isViewModelSet.value = false
+                    vm.starterCount--
+                    if (vm.isStarterScreenEnded.value || vm.starterCount == 0){
                         vm.screenState.value = vm.MODE_LOGIN_SCREEN
                     }
                 }
         } else {
-            vm.isViewModelSet.value = true
-            if (vm.isStarterScreenEnded.value){
+            vm.isViewModelSet.value = false
+            vm.starterCount--
+            if (vm.isStarterScreenEnded.value || vm.starterCount == 0){
                 vm.screenState.value = vm.MODE_LOGIN_SCREEN
             }
         }

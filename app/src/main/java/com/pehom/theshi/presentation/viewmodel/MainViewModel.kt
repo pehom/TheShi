@@ -52,6 +52,7 @@ class MainViewModel(
     val switchState = mutableStateOf(true)
     val screenState = mutableStateOf(MODE_STARTER_SCREEN)
     var lastScreen = -1
+    var starterCount = 2
     val currentTaskRoomItem = mutableStateOf(TaskRoomItem("","","","", "","",false,0,0,0,0, mutableMapOf()))
     val studentNumber =  mutableStateOf(0)
     val studentTasks = mutableStateListOf<TaskInfo>()

@@ -3,6 +3,7 @@ package com.pehom.theshi.presentation.screens.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
+import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -50,39 +51,43 @@ private fun DialogCancelTaskContent(
     dialogState: MutableState<Boolean>
 ) {
     val scope = rememberCoroutineScope()
-    Column(
+    Card(
         modifier = Modifier
             .wrapContentSize(Alignment.Center)
-            .background(Color.White),
-        horizontalAlignment = Alignment.CenterHorizontally
+            .padding(20.dp),
+        elevation = 5.dp
     ) {
-        Box(contentAlignment = Alignment.Center){
-            Text(text = stringResource(id = R.string.cancel_task_message))
-        }
-        Spacer(modifier = Modifier.height(10.dp))
-        Row() {
-            Box(modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f), contentAlignment = Alignment.Center){
-                Button(onClick = {
-                    dialogState.value = false
-                }) {
-                    Text(text = stringResource(id = R.string.no))
-                }
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Box(contentAlignment = Alignment.Center){
+                Text(text = stringResource(id = R.string.cancel_task_message))
             }
-            Box(modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f), contentAlignment = Alignment.Center){
-                Button(onClick = {
-                    scope.launch(Dispatchers.IO) {
-                        viewModel.useCases.deleteUserTaskByIdFsUseCase.execute(viewModel, viewModel.currentTaskRoomItem.value.id){}
-                        Constants.REPOSITORY.deleteTaskRoomItem(viewModel.currentTaskRoomItem.value){
-                            dialogState.value = false
-                            viewModel.screenState.value = viewModel.MODE_STUDENT_SCREEN
-                        }
+            Spacer(modifier = Modifier.height(10.dp))
+            Row() {
+                Box(modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f), contentAlignment = Alignment.Center){
+                    Button(onClick = {
+                        dialogState.value = false
+                    }) {
+                        Text(text = stringResource(id = R.string.no))
                     }
-                }) {
-                    Text(text = stringResource(id = R.string.yes))
+                }
+                Box(modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f), contentAlignment = Alignment.Center){
+                    Button(onClick = {
+                        scope.launch(Dispatchers.IO) {
+                            viewModel.useCases.deleteUserTaskByIdFsUseCase.execute(viewModel, viewModel.currentTaskRoomItem.value.id){}
+                            Constants.REPOSITORY.deleteTaskRoomItem(viewModel.currentTaskRoomItem.value){
+                                dialogState.value = false
+                                viewModel.screenState.value = viewModel.MODE_STUDENT_SCREEN
+                            }
+                        }
+                    }) {
+                        Text(text = stringResource(id = R.string.yes))
+                    }
                 }
             }
         }

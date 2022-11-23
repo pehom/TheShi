@@ -41,7 +41,17 @@ fun StarterScreen(viewModel: MainViewModel, auth: FirebaseAuth) {
 
             if (index == words.size-1) {
                 viewModel.isStarterScreenEnded.value = true
-                if (viewModel.sharedPreferences.contains(Constants.SHARED_PREF_LAST_USER_ID)){
+                viewModel.starterCount--
+                Log.d(Constants.INSPECTING_TAG, "starterScreen starterCount = ${viewModel.starterCount}")
+                if (viewModel.starterCount == 0) {
+                    if (viewModel.isViewModelSet.value){
+                        viewModel.screenState.value = viewModel.MODE_STUDENT_SCREEN
+                    } else {
+                        viewModel.screenState.value = viewModel.MODE_LOGIN_SCREEN
+                    }
+                }
+
+                /*if (viewModel.sharedPreferences.contains(Constants.SHARED_PREF_LAST_USER_ID)){
                     val lastFsId = viewModel.sharedPreferences.getString(Constants.SHARED_PREF_LAST_USER_ID, null)
                     if ( lastFsId != null){
                         Log.d(Constants.INSPECTING_TAG, " lastFsId = $lastFsId" )
@@ -51,7 +61,7 @@ fun StarterScreen(viewModel: MainViewModel, auth: FirebaseAuth) {
                     }
                 } else {
                     viewModel.screenState.value = viewModel.MODE_LOGIN_SCREEN
-                }
+                }*/
                 /*if (isViewModelSet.value) {
                     viewModel.screenState.value = viewModel.MODE_STUDENT_SCREEN
                     Log.d("viewModel", "starter screen viewModel.screenState = ${viewModel.screenState.value}")

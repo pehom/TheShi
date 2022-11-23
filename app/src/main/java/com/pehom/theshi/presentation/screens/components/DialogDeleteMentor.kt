@@ -3,6 +3,7 @@ package com.pehom.theshi.presentation.screens.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
+import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -54,12 +55,17 @@ private fun DialogDeleteMentorContent(
     dialogState: MutableState<Boolean>
 ) {
     val scope = rememberCoroutineScope()
-    Column(
+    Card(
         modifier = Modifier
             .wrapContentSize(Alignment.Center)
-            .background(Color.White),
-        horizontalAlignment = Alignment.CenterHorizontally
+            .padding(20.dp)
+        //  .background(Color.White)
+        ,
+        elevation = 5.dp
     ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             Column {
                 Box(contentAlignment = Alignment.Center){
                     Text(text = stringResource(id = R.string.delete_mentor))
@@ -69,28 +75,29 @@ private fun DialogDeleteMentorContent(
                     Text(text = mentor.name)
                 }
             }
-        Spacer(modifier = Modifier.height(10.dp))
-        Row() {
-            Box(modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f), contentAlignment = Alignment.Center){
-                Button(onClick = {
-                    dialogState.value = false
-                }) {
-                    Text(text = stringResource(id = R.string.no))
-                }
-            }
-            Box(modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f), contentAlignment = Alignment.Center){
-                Button(onClick = {
-                    scope.launch(Dispatchers.IO) {
-                        mentor.mentorStatus = Constants.DISMISSED
-                        Constants.REPOSITORY.updateMentorRoomItem(mentor)
+            Spacer(modifier = Modifier.height(10.dp))
+            Row() {
+                Box(modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f), contentAlignment = Alignment.Center){
+                    Button(onClick = {
                         dialogState.value = false
+                    }) {
+                        Text(text = stringResource(id = R.string.no))
                     }
-                }) {
-                    Text(text = stringResource(id = R.string.yes))
+                }
+                Box(modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f), contentAlignment = Alignment.Center){
+                    Button(onClick = {
+                        scope.launch(Dispatchers.IO) {
+                            mentor.mentorStatus = Constants.DISMISSED
+                            Constants.REPOSITORY.updateMentorRoomItem(mentor)
+                            dialogState.value = false
+                        }
+                    }) {
+                        Text(text = stringResource(id = R.string.yes))
+                    }
                 }
             }
         }
