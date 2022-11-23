@@ -4,10 +4,12 @@ import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
 import androidx.compose.material.Card
+import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -37,13 +39,16 @@ fun TestScreen(
         taskRoomItem.value.wrongTestAnswers.clear()
     }
     Column(
-        modifier = Modifier.fillMaxSize().wrapContentSize(Alignment.Center),
+        modifier = Modifier
+            .fillMaxSize()
+            .wrapContentSize(Alignment.Center),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Card(
             Modifier
                 .fillMaxWidth()
-                .fillMaxHeight().weight(1.1f)
+                .fillMaxHeight()
+                .weight(1.1f)
                 .padding(start = 15.dp, top = 10.dp, end = 15.dp),
             elevation = 5.dp) {
             Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
@@ -78,7 +83,8 @@ fun TestScreen(
 //                                    }
 //                                }
                         }) {
-                            Text(text = stringResource(id = R.string.retry), fontSize = 12.sp)
+                            Icon(painterResource(id = R.drawable.ic_baseline_restart_alt_24), contentDescription = "retry")
+                          //  Text(text = stringResource(id = R.string.retry), fontSize = 12.sp)
                         }
                     }
                     Box(modifier = Modifier
@@ -88,7 +94,9 @@ fun TestScreen(
                         contentAlignment = Alignment.Center){
                         Text(text = stringResource(id = R.string.words_remain) + "   ${wordsRemain.value}")
                     }
-                    Box(modifier = Modifier.fillMaxWidth().weight(1f))
+                    Box(modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f))
                 }
 
             }
@@ -96,7 +104,8 @@ fun TestScreen(
         Card(
             Modifier
                 .fillMaxWidth()
-                .fillMaxHeight().weight(2f)
+                .fillMaxHeight()
+                .weight(2f)
                 .padding(start = 15.dp, top = 15.dp, end = 15.dp),
             elevation = 5.dp) {
             Box(modifier = Modifier.padding(horizontal = 10.dp),
@@ -109,7 +118,8 @@ fun TestScreen(
         Box(
             Modifier
                 .fillMaxWidth()
-                .fillMaxHeight().weight(5f)
+                .fillMaxHeight()
+                .weight(5f)
             ){
             if ( isTestScreenActive.value && !isTestPaused.value) {
                 if (wordsRemain.value > 0) {

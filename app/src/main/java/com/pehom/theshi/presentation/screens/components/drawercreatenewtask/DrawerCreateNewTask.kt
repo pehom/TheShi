@@ -287,7 +287,8 @@ private fun TitlesLoading() {
             .fillMaxWidth()
             .fillMaxHeight(0.9f)
             .padding(15.dp)
-            .background(Color.White),
+        //    .background(Color.White)
+        ,
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -310,7 +311,8 @@ private fun TitlesComponentList(
             .fillMaxWidth()
             .fillMaxHeight(0.9f)
             .padding(15.dp)
-            .background(Color.White),
+         //   .background(Color.White)
+        ,
         verticalArrangement = Arrangement.Center
     ) {
         itemsIndexed(viewModel.allVocabularyTitles) { index, item ->

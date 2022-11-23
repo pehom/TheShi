@@ -40,8 +40,8 @@ fun TaskBottomNavBar(
     DialogConfirmTestRestart(viewModel, dialogState, taskScreenState, navItemState )
 
     BottomNavigation(
-        backgroundColor = colorResource(id = R.color.white),
-        contentColor = Color.Gray
+      //  backgroundColor = colorResource(id = R.color.white),
+      //  contentColor = Color.Gray
     ) {
         items.forEach { item ->
             BottomNavigationItem(

@@ -57,6 +57,6 @@ fun TaskScreen(
                 }
             }
         },
-        backgroundColor = Color.White
+      //  backgroundColor = Color.White
     )
 }
