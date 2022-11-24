@@ -62,8 +62,8 @@ class MainActivity : ComponentActivity(), TextToSpeech.OnInitListener {
         if (vm.sharedPreferences.contains(Constants.SHARED_PREF_LAST_USER_ID) ){
             val sharedUserFsId = vm.sharedPreferences.getString(Constants.SHARED_PREF_LAST_USER_ID, null)
             Log.d(Constants.INSPECTING_TAG, "sharedUserFsId = $sharedUserFsId")
-         //   if ( sharedUserFsId != ""){
-            if (sharedUserFsId != null) {
+
+            if (sharedUserFsId != null && sharedUserFsId != "") {
                     vm.useCases.setUserByUserFsIdRoomUseCase.execute(vm, sharedUserFsId){
                         if (isNetworkAvailable()){
                             vm.useCases.setViewmodelNetworkItemsFsUseCase.execute(vm){

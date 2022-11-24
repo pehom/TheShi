@@ -2,6 +2,10 @@
 <resources>
 
     <style name="Theme.TheShi" parent="android:Theme.Material.Light.NoActionBar">
-        <item name="android:statusBarColor">@color/purple_700</item>
+        <item name="android:statusBarColor">@color/black</item>
     </style>
+
+    <!--<style name="Theme.TheShi" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+
+    </style>-->
 </resources>
