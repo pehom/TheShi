@@ -48,8 +48,8 @@ fun AdminScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .alpha(if (progressState.value) 0.3f else 1f)
-            .background(if (progressState.value) Color.Gray else Color.White),
+            .alpha(if (progressState.value) 0.3f else 1f),
+         //   .background(if (progressState.value) Color.Gray else Color.White),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
        DocPicker(

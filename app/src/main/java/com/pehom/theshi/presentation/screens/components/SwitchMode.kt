@@ -38,12 +38,12 @@ fun SwitchMode(viewModel: MainViewModel){
                 Log.d("tagg", "vm.screenState = ${viewModel.screenState.value}")
 
             },
-            colors = SwitchDefaults.colors(
+           /* colors = SwitchDefaults.colors(
                 checkedThumbColor = Color(0xFFB9730C),
                 checkedTrackColor = Color(0xFFFFC107),
                 uncheckedThumbColor = Color(0xFFB9730C),
                 uncheckedTrackColor = Color(0xFF84CA33)
-            )
+            )*/
         )
         Text(
             text = stringResource(id = R.string.student),

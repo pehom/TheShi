@@ -16,7 +16,7 @@ class SetViewmodelNetworkItemsFsUseCase {
     ){
         Log.d(TAG, "$TAG invoked")
         val fsId = viewModel.user.value.fsId.value
-        var count = 4
+        var count = 5
         viewModel.useCases.readRequestsAddFsUseCase.execute(viewModel){
             viewModel.requestsAdd.addAll(it)
             count--
@@ -76,6 +76,13 @@ class SetViewmodelNetworkItemsFsUseCase {
                 if (count == 0) {
                     onSuccess()
                 }
+            }
+        }
+        viewModel.useCases.checkIsAdminFsUseCase.execute(viewModel.user.value){
+            viewModel.isAdmin.value = it
+            count--
+            if (count == 0) {
+                onSuccess()
             }
         }
     }

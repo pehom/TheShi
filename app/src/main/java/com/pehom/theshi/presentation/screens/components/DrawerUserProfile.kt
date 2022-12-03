@@ -125,6 +125,20 @@ fun DrawerUserProfile(viewModel: MainViewModel, scaffoldState: ScaffoldState, au
                 }
             )
         }
+
+        if (viewModel.isAdmin.value) {
+            Spacer(modifier = Modifier.height(10.dp))
+            Box(modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 10.dp), contentAlignment = Alignment.CenterStart){
+                Text(text = stringResource(id = R.string.admin),
+                    modifier = Modifier.clickable {
+                        viewModel.lastScreen = viewModel.screenState.value
+                        viewModel.screenState.value = viewModel.MODE_ADMIN_SCREEN
+                    }
+                )
+            }
+        }
         Spacer(modifier = Modifier.height(10.dp))
         Box(modifier = Modifier
             .fillMaxWidth()

@@ -70,6 +70,7 @@ class MainViewModel(
     var lastTaskInfo = mutableStateOf(TaskInfo("taskId","taskTitle",VocabularyTitle(), "taskStatus"))
     val isStarterScreenEnded = mutableStateOf(false)
     val isViewModelSet = mutableStateOf(false)
+    var isAdmin = mutableStateOf(false)
     val currentWordbookTaskRoomItem = mutableStateOf(TaskRoomItem(id = Constants.WORDBOOK_TASK_ROOM_ITEM))
     val loadedVocabularies = mutableSetOf<Vocabulary>()
     val vocabularyTitlesListItemOrigItems = mutableMapOf<String, MutableList<String>>()
