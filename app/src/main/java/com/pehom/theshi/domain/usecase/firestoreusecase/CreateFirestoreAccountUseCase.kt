@@ -31,7 +31,7 @@ class CreateFirestoreAccountUseCase() {
                     Constants.PHONE_NUMBER to loginData.phoneNumber,
                     Constants.EMAIL to loginData.email,
                     Constants.NAME to name,
-                    Constants.FUNDS to 7,
+                    Constants.FUNDS to 20,
                     Constants.LAST_TASK_ID_SFX to 0
                 )
                 db.collection("Users").add(user)

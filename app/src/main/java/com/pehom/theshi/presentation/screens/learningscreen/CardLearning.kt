@@ -1,5 +1,6 @@
 package com.pehom.theshi.presentation.screens.learningscreen
 
+import android.util.Log
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -13,16 +14,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pehom.theshi.R
 import com.pehom.theshi.domain.model.Task
-import com.pehom.theshi.presentation.screens.testscreen.setVariants
+import com.pehom.theshi.domain.model.Vocabulary
 
 @Composable
 fun CardLearning(task: MutableState<Task>,
-    _isRestarted: MutableState<Boolean>) {
+    _isRestarted: MutableState<Boolean>
+                 ) {
     val WRONG_ANSWER = 1
     val CORRECT_ANSWER = 2
     val NO_ANSWER = 3
@@ -31,7 +32,7 @@ fun CardLearning(task: MutableState<Task>,
     val wordsRemain = remember {currentTask.value.learningWordsRemain}
     val currentWord = remember {currentTask.value.currentLearningWord}
     val currentLearningItem = remember {currentTask.value.currentLearningItem}
-    val variants = remember { setVariants(currentWord.value.trans, vocabulary) }
+    val variants = remember { setLearningVariants(currentWord.value.trans, vocabulary) }
     var localVariants = mutableListOf<String>()
     val answerState = remember { mutableStateOf(NO_ANSWER) }
     val letters = listOf("a)", "b)", "c)", "d)", "e)")
@@ -44,7 +45,8 @@ fun CardLearning(task: MutableState<Task>,
         if (isRestarted.value) {
             task.value.currentLearningItem.value = 0
             task.value.learningRefresh()
-            localVariants = setVariants(currentWord.value.trans, vocabulary)
+            answerState.value = NO_ANSWER
+            localVariants = setLearningVariants(currentWord.value.trans, vocabulary)
             if (localVariants.size == variants.size) {
                 for (j in localVariants.indices) variants[j] =
                     localVariants[j]
@@ -119,7 +121,7 @@ fun CardLearning(task: MutableState<Task>,
                 if (currentLearningItem.value > 0) {
                     task.value.currentLearningItem.value--
                     task.value.learningRefresh()
-                    localVariants = setVariants(currentWord.value.trans, vocabulary)
+                    localVariants = setLearningVariants(currentWord.value.trans, vocabulary)
                     if (localVariants.size == variants.size) {
                         for (j in localVariants.indices) variants[j] =
                             localVariants[j]
@@ -141,7 +143,7 @@ fun CardLearning(task: MutableState<Task>,
                 if (currentLearningItem.value < vocabulary.items.size -1 ) {
                     task.value.currentLearningItem.value++
                     task.value.learningRefresh()
-                    localVariants = setVariants(currentWord.value.trans, vocabulary)
+                    localVariants = setLearningVariants(currentWord.value.trans, vocabulary)
                     if (localVariants.size == variants.size) {
                         for (j in localVariants.indices) variants[j] =
                             localVariants[j]
@@ -158,4 +160,32 @@ fun CardLearning(task: MutableState<Task>,
             }
         }
     }
+}
+
+private fun setLearningVariants(
+    currentWord: String,
+    vocabulary: Vocabulary
+):MutableList<String> {
+    val resultSet = mutableSetOf(currentWord)
+    val words = mutableListOf<String>()
+    for (word in vocabulary.items) words.add(word.trans)
+    Log.d("setVariants", "words = $words")
+    if (words.size > 4) {
+        while (resultSet.size < 5) {
+            resultSet.add(words.random())
+        }
+    } else {
+        resultSet.add("variant1")
+        resultSet.add("variant2")
+        resultSet.add("variant3")
+        resultSet.add("variant4")
+        // val shuffledList = resultSet.asSequence().shuffled().toList()
+    }
+    val r = resultSet.asSequence().shuffled().toList()
+    val result = mutableStateListOf("","","","","")
+    if (r.size == result.size){
+        for (i in r.indices) result[i] = r[i]
+    }
+    Log.d("setVariants", "resultSet = $r")
+    return result
 }

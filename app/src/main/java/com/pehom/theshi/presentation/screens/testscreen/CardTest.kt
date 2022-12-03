@@ -24,15 +24,16 @@ import com.pehom.theshi.data.localdata.approomdatabase.TaskRoomItem
 fun CardTest(
     task: MutableState<Task>,
     isTestPaused: MutableState<Boolean>,
-    taskRoomItem: MutableState<TaskRoomItem>
+    taskRoomItem: MutableState<TaskRoomItem>,
+    currentWordDisplay: MutableState<String>
 ) {
     val currentTask = remember{ task }
     val vocabulary = currentTask.value.vocabulary
     val wordsRemain = remember {currentTask.value.testWordsRemain}
     val currentWord = remember {currentTask.value.currentTestWord}
     val currentTestItem = remember {currentTask.value.currentTestItem}
-    val variants = remember { setVariants(currentWord.value.trans, vocabulary) }
-    val timerValue = remember { mutableStateOf(7) }
+    val variants = remember { setVariants(currentWord, vocabulary, currentWordDisplay) }
+    val timerValue = remember { mutableStateOf(10) }
     var localVariants: MutableList<String>
     Card(
         Modifier
@@ -80,12 +81,12 @@ fun CardTest(
                                         currentTask.value.currentTestItem.value++
                                         taskRoomItem.value.currentTestItem++
                                         currentTask.value.testRefresh()
-                                        localVariants = setVariants(currentWord.value.trans, vocabulary)
+                                        localVariants = setVariants(currentWord, vocabulary, currentWordDisplay)
                                         if (localVariants.size == variants.size) {
                                             for (i in localVariants.indices) variants[i] =
                                                 localVariants[i]
                                         }
-                                        timerValue.value = 7
+                                        timerValue.value = 10
                                     }
                                 }
                             }
@@ -116,19 +117,29 @@ fun CardTest(
                                     .padding(horizontal = 10.dp)
                                     .clickable {
                                         if (wordsRemain.value > 0) {
-                                            if (variants[i] == currentWord.value.trans) {
-                                                timerValue.value = 7
+                                            if (currentWordDisplay.value == currentWord.value.orig){
+                                                if (variants[i] == currentWord.value.trans) {
+                                                    timerValue.value = 10
+                                                } else {
+                                                    task.value.wrongTestAnswers[currentTestItem.value] = variants[i]
+                                                    taskRoomItem.value.wrongTestAnswers[currentTestItem.value] = variants[i]
+                                                    timerValue.value = 10
+                                                }
                                             } else {
-                                                task.value.wrongTestAnswers[currentTestItem.value] = variants[i]
-                                                taskRoomItem.value.wrongTestAnswers[currentTestItem.value] = variants[i]
-                                                timerValue.value = 7
+                                                if (variants[i] == currentWord.value.orig) {
+                                                    timerValue.value = 10
+                                                } else {
+                                                    task.value.wrongTestAnswers[currentTestItem.value] = variants[i]
+                                                    taskRoomItem.value.wrongTestAnswers[currentTestItem.value] = variants[i]
+                                                    timerValue.value = 10
+                                                }
                                             }
                                             task.value.currentTestItem.value++
                                             taskRoomItem.value.currentTestItem++
                                             task.value.testRefresh()
                                             Log.d("taggg", "task.currentTestItem = ${task.value.currentTestItem.value}")
                                             localVariants =
-                                                setVariants(currentWord.value.trans, vocabulary)
+                                                setVariants(currentWord, vocabulary, currentWordDisplay)
                                             if (localVariants.size == variants.size) {
                                                 for (j in localVariants.indices) variants[j] =
                                                     localVariants[j]

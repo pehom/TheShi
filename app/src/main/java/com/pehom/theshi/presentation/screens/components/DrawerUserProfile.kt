@@ -1,5 +1,6 @@
 package com.pehom.theshi.presentation.screens.components
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -14,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
@@ -32,6 +34,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun DrawerUserProfile(viewModel: MainViewModel, scaffoldState: ScaffoldState, auth: FirebaseAuth) {
 
+    val context = LocalContext.current
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -116,8 +119,9 @@ fun DrawerUserProfile(viewModel: MainViewModel, scaffoldState: ScaffoldState, au
             .padding(start = 10.dp), contentAlignment = Alignment.CenterStart){
             Text(text = stringResource(id = R.string.settings),
                 modifier = Modifier.clickable {
-                    viewModel.lastScreen = viewModel.screenState.value
-                    viewModel.screenState.value = viewModel.MODE_SETTINGS_SCREEN
+                    Toast.makeText(context, "NOPE", Toast.LENGTH_SHORT).show()
+                    /*viewModel.lastScreen = viewModel.screenState.value
+                    viewModel.screenState.value = viewModel.MODE_SETTINGS_SCREEN*/
                 }
             )
         }

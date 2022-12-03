@@ -18,9 +18,11 @@ import com.pehom.theshi.presentation.viewmodel.MainViewModel
 import com.pehom.theshi.R
 import com.pehom.theshi.data.localdata.approomdatabase.TaskRoomItem
 import com.pehom.theshi.domain.model.Vocabulary
+import com.pehom.theshi.domain.model.VocabularyItemScheme
 import com.pehom.theshi.utils.Constants
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlin.random.Random
 
 @Composable
 fun TestScreen(
@@ -69,19 +71,7 @@ fun TestScreen(
                             viewModel.currentTask.value.isTestGoing.value = false
                             viewModel.currentTask.value.wrongTestAnswers.clear()
                             viewModel.currentTask.value.testRefresh()
-//                                val updateTaskRoomItem = taskRoomItem.value
-//                                updateTaskRoomItem.progress = viewModel.currentTask.value.progress
-//                                updateTaskRoomItem.currentLearningItem = viewModel.currentTask.value.currentLearningItem.value
-//                                updateTaskRoomItem.currentTaskItem = viewModel.currentTask.value.currentTaskItem.value
-//                                updateTaskRoomItem.currentTestItem = viewModel.currentTask.value.currentTestItem.value
-//                                updateTaskRoomItem.wrongTestAnswers = viewModel.currentTask.value.wrongTestAnswers
-//                                updateTaskRoomItem.incrementSyncCount()
-//                                viewModel.useCases.updateTaskFsUseCase.execute(viewModel, updateTaskRoomItem){}
-//                                viewModel.viewModelScope.launch(Dispatchers.IO) {
-//                                    Constants.REPOSITORY.updateTaskRoomItem(updateTaskRoomItem){
-//                                        isTestPaused.value = true
-//                                    }
-//                                }
+
                         }) {
                             Icon(painterResource(id = R.drawable.ic_baseline_restart_alt_24), contentDescription = "retry")
                           //  Text(text = stringResource(id = R.string.retry), fontSize = 12.sp)
@@ -123,7 +113,7 @@ fun TestScreen(
             ){
             if ( isTestScreenActive.value && !isTestPaused.value) {
                 if (wordsRemain.value > 0) {
-                    CardTest(currentTask, isTestPaused, taskRoomItem)
+                    CardTest(currentTask, isTestPaused, taskRoomItem, currentWordDisplay)
                 } else if (!isWrongAnswersShown.value){
                     CardTestResult(currentTask,viewModel, isWrongAnswersShown, taskRoomItem, isTestPaused)
                 } else {
@@ -137,27 +127,61 @@ fun TestScreen(
     }
 }
 
-fun setVariants(currentWord: String, vocabulary: Vocabulary): MutableList<String> {
-    val resultSet = mutableSetOf(currentWord)
-    val words = mutableListOf<String>()
-    for (word in vocabulary.items) words.add(word.trans)
-    Log.d("setVariants", "words = $words")
-    if (words.size > 4) {
-        while (resultSet.size < 5) {
-            resultSet.add(words.random())
+fun setVariants(
+    currentWord: MutableState<VocabularyItemScheme>,
+    vocabulary: Vocabulary,
+    currentWordDisplay: MutableState<String>
+): MutableList<String> {
+    val random = (0..1).random()
+    Log.d(Constants.INSPECTING_TAG, "random = $random")
+    if (random == 0){
+        val resultSet = mutableSetOf(currentWord.value.trans)
+        currentWordDisplay.value = currentWord.value.orig
+        val words = mutableListOf<String>()
+        for (word in vocabulary.items) words.add(word.trans)
+        Log.d("setVariants", "words = $words")
+        if (words.size > 4) {
+            while (resultSet.size < 5) {
+                resultSet.add(words.random())
+            }
+        } else {
+            resultSet.add("variant1")
+            resultSet.add("variant2")
+            resultSet.add("variant3")
+            resultSet.add("variant4")
+            // val shuffledList = resultSet.asSequence().shuffled().toList()
         }
+        val r = resultSet.asSequence().shuffled().toList()
+        val result = mutableStateListOf("","","","","")
+        if (r.size == result.size){
+            for (i in r.indices) result[i] = r[i]
+        }
+        Log.d("setVariants", "resultSet = $r")
+        return result
     } else {
-        resultSet.add("variant1")
-        resultSet.add("variant2")
-        resultSet.add("variant3")
-        resultSet.add("variant4")
-        // val shuffledList = resultSet.asSequence().shuffled().toList()
+        val resultSet = mutableSetOf(currentWord.value.orig)
+        currentWordDisplay.value = currentWord.value.trans
+        val words = mutableListOf<String>()
+        for (word in vocabulary.items) words.add(word.orig)
+        Log.d("setVariants", "words = $words")
+        if (words.size > 4) {
+            while (resultSet.size < 5) {
+                resultSet.add(words.random())
+            }
+        } else {
+            resultSet.add("variant1")
+            resultSet.add("variant2")
+            resultSet.add("variant3")
+            resultSet.add("variant4")
+            // val shuffledList = resultSet.asSequence().shuffled().toList()
+        }
+        val r = resultSet.asSequence().shuffled().toList()
+        val result = mutableStateListOf("","","","","")
+        if (r.size == result.size){
+            for (i in r.indices) result[i] = r[i]
+        }
+        Log.d("setVariants", "resultSet = $r")
+        return result
     }
-    val r = resultSet.asSequence().shuffled().toList()
-    val result = mutableStateListOf("","","","","")
-    if (r.size == result.size){
-        for (i in r.indices) result[i] = r[i]
-    }
-    Log.d("setVariants", "resultSet = $r")
-    return result
+
 }
