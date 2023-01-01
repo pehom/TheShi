@@ -3,6 +3,7 @@ package com.pehom.theshi.presentation.screens.adminscreen
 import android.app.Application
 import android.net.Uri
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
@@ -18,8 +19,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.pehom.theshi.R
 import com.pehom.theshi.domain.model.Vocabulary
 import com.pehom.theshi.domain.model.VocabularyItemScheme
 import com.pehom.theshi.domain.model.VocabularyTitle
@@ -72,7 +75,7 @@ private fun DocPicker(
     progressState: MutableState<Boolean>
 ){
     val TAG = "DocPicker"
-
+    val context = LocalContext.current
     val xlsUri = remember{ mutableStateOf("") }
     val xlsTitle = remember {mutableStateOf("xls title")}
     val items = remember{ mutableStateListOf(VocabularyItemScheme("","","")) }
@@ -184,7 +187,7 @@ private fun DocPicker(
             Box(modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxHeight()
-                .weight(1f),
+                .weight(2f),
                 contentAlignment = Alignment.Center
             ){
                 Row(
@@ -207,7 +210,7 @@ private fun DocPicker(
                     }) {
                         Text(text = "Select document")
                     }
-                    Spacer(modifier = Modifier.width(30.dp))
+                    Spacer(modifier = Modifier.width(10.dp))
                     Button(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -220,6 +223,11 @@ private fun DocPicker(
                                 Log.d(TAG, "checkVocabularyByTitleAndLevel result = $it")
                                 if (!it) {
                                     viewModel.useCases.uploadVocabularyToFsUseCase.execute(vcbUpload.value){
+                                        if (it) {
+                                            Toast.makeText(context, context.getString(R.string.vocabulary_loaded ), Toast.LENGTH_SHORT).show()
+                                        } else {
+                                            Toast.makeText(context, context.getString(R.string.loading_failed ), Toast.LENGTH_SHORT).show()
+                                        }
                                         Log.d(TAG, "vocabulary is uploaded successfully")
                                     }
                                 } else {
@@ -227,7 +235,7 @@ private fun DocPicker(
                                 }
                             }
                         }) {
-                        Text("add vcb to firestore")
+                        Text("Add vcb to firestore")
                     }
                 }
             }

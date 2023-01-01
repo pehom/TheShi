@@ -114,7 +114,7 @@ class Task(val id:String, val title: String, var vocabulary: Vocabulary) {
         learningWordsRemain.value = vocabulary.items.size - currentLearningItem.value
         if (learningWordsRemain.value > 0){
             currentLearningWord.value = vocabulary.items[currentLearningItem.value]
-            this.currentLearningWordDisplay.value = currentLearningWord.value.orig
+            this.currentLearningWordDisplay.value = currentLearningWord.value.trans
         }else
             this.currentLearningWordDisplay.value = currentWordDisplayTextDone
     }
@@ -146,7 +146,7 @@ class Task(val id:String, val title: String, var vocabulary: Vocabulary) {
         learningWordsRemain.value = vocabulary.items.size - currentLearningItem.value
         if (currentLearningItem.value >= 0 && currentLearningItem.value < vocabulary.items.size) {
             currentLearningWord.value = vocabulary.items[currentLearningItem.value]
-            currentLearningWordDisplay.value = currentLearningWord.value.orig
+            currentLearningWordDisplay.value = currentLearningWord.value.trans
         } else {
             currentLearningWordDisplay.value = currentWordDisplayTextDone
         }

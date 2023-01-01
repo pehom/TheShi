@@ -97,5 +97,7 @@
     <string name="title">Задание</string>
     <string name="delete_mentor">Удалить ментора?</string>
     <string name="admin">Администратор</string>
+    <string name="vocabulary_loaded">vocabulary loaded successfully</string>
+    <string name="loading_failed">loading failed</string>
 
 </resources>

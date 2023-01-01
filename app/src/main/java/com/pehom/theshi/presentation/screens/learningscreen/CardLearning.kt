@@ -32,7 +32,7 @@ fun CardLearning(task: MutableState<Task>,
     val wordsRemain = remember {currentTask.value.learningWordsRemain}
     val currentWord = remember {currentTask.value.currentLearningWord}
     val currentLearningItem = remember {currentTask.value.currentLearningItem}
-    val variants = remember { setLearningVariants(currentWord.value.trans, vocabulary) }
+    val variants = remember { setLearningVariants(currentWord.value.orig, vocabulary) }
     var localVariants = mutableListOf<String>()
     val answerState = remember { mutableStateOf(NO_ANSWER) }
     val letters = listOf("a)", "b)", "c)", "d)", "e)")
@@ -46,7 +46,7 @@ fun CardLearning(task: MutableState<Task>,
             task.value.currentLearningItem.value = 0
             task.value.learningRefresh()
             answerState.value = NO_ANSWER
-            localVariants = setLearningVariants(currentWord.value.trans, vocabulary)
+            localVariants = setLearningVariants(currentWord.value.orig, vocabulary)
             if (localVariants.size == variants.size) {
                 for (j in localVariants.indices) variants[j] =
                     localVariants[j]
@@ -85,7 +85,7 @@ fun CardLearning(task: MutableState<Task>,
                             .clickable {
                                 if (wordsRemain.value > 0) {
                                     selectedIndex.value = i
-                                    if (variants[i] == currentWord.value.trans) {
+                                    if (variants[i] == currentWord.value.orig) {
                                         answerState.value = CORRECT_ANSWER
                                     } else {
                                         answerState.value = WRONG_ANSWER
@@ -121,7 +121,7 @@ fun CardLearning(task: MutableState<Task>,
                 if (currentLearningItem.value > 0) {
                     task.value.currentLearningItem.value--
                     task.value.learningRefresh()
-                    localVariants = setLearningVariants(currentWord.value.trans, vocabulary)
+                    localVariants = setLearningVariants(currentWord.value.orig, vocabulary)
                     if (localVariants.size == variants.size) {
                         for (j in localVariants.indices) variants[j] =
                             localVariants[j]
@@ -143,7 +143,7 @@ fun CardLearning(task: MutableState<Task>,
                 if (currentLearningItem.value < vocabulary.items.size -1 ) {
                     task.value.currentLearningItem.value++
                     task.value.learningRefresh()
-                    localVariants = setLearningVariants(currentWord.value.trans, vocabulary)
+                    localVariants = setLearningVariants(currentWord.value.orig, vocabulary)
                     if (localVariants.size == variants.size) {
                         for (j in localVariants.indices) variants[j] =
                             localVariants[j]
@@ -168,7 +168,7 @@ private fun setLearningVariants(
 ):MutableList<String> {
     val resultSet = mutableSetOf(currentWord)
     val words = mutableListOf<String>()
-    for (word in vocabulary.items) words.add(word.trans)
+    for (word in vocabulary.items) words.add(word.orig)
     Log.d("setVariants", "words = $words")
     if (words.size > 4) {
         while (resultSet.size < 5) {

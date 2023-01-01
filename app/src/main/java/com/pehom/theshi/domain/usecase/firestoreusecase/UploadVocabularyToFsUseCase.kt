@@ -11,9 +11,8 @@ class UploadVocabularyToFsUseCase {
     private val TAG = "UploadVocabularyToFsUseCase"
 
     fun execute(
-
         vcbUpload: VocabularyUploadToFs,
-        onSuccess: () -> Unit
+        onSuccess: (Boolean) -> Unit
     ){
         Log.d(TAG, "$TAG invoked")
         val vcbData = hashMapOf(
@@ -33,18 +32,20 @@ class UploadVocabularyToFsUseCase {
                     )
                     Firebase.firestore.collection(Constants.VOCABULARIES_MAIN_REF).document(vcbUpload.level)
                         .collection(Constants.VOCABULARIES).document(vcbUpload.vcb.title.value)
-                        .collection(Constants.ITEMS).document(item.orig).set(data)
+                        .collection(Constants.ITEMS).document(item.trans).set(data)
                         .addOnSuccessListener {
                             if ( index == vcbUpload.vcb.items.size-1) {
-                                onSuccess()
+                                onSuccess(true)
                             }
                         }
                         .addOnFailureListener{
+                            onSuccess(false)
                             Log.d(TAG, "Uploading vocabulary to Fs failed, Error: ${it.message}")
                         }
                 }
             }
             .addOnFailureListener{
+                onSuccess(false)
                 Log.d(TAG, "Uploading vocabulary to Fs failed, Error: ${it.message}")
             }
     }
